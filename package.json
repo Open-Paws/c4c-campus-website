@@ -33,7 +33,7 @@
     "@astrojs/react": "^4.4.1",
     "@stripe/stripe-js": "^8.2.0",
     "@supabase/storage-js": "^2.76.1",
-    "@supabase/supabase-js": "^2.76.1",
+    "@supabase/supabase-js": "^2.86.2",
     "@tailwindcss/vite": "^4.1.16",
     "@tiptap/extension-link": "^3.9.0",
     "@tiptap/extension-placeholder": "^3.9.0",
