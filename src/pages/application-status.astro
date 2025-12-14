@@ -365,8 +365,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       if (!formFields) return;
 
-      // Build form based on program
+      // Build form based on program - Common fields first
       let html = `
+        <div>
+          <label class="block text-sm font-medium mb-2">Full Name</label>
+          <input type="text" name="name" value="${userApplication.name || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Your full name">
+        </div>
         <div>
           <label class="block text-sm font-medium mb-2">WhatsApp Number</label>
           <input type="tel" name="whatsapp" value="${userApplication.whatsapp || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="+91-9876543210">
@@ -382,23 +386,124 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       `;
 
       if (userApplication.program === 'bootcamp') {
+        // Bootcamp-specific fields
+        const interestsArray = userApplication.interests || [];
+        const interestsStr = Array.isArray(interestsArray) ? interestsArray.join(', ') : '';
+        
         html += `
           <div>
+            <label class="block text-sm font-medium mb-2">Interests</label>
+            <input type="text" name="interests" value="${interestsStr}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Animal Advocacy, Climate Action, AI Safety">
+            <p class="text-xs text-gray-500 mt-1">Separate multiple interests with commas</p>
+          </div>
+          <div>
             <label class="block text-sm font-medium mb-2">Motivation</label>
-            <textarea name="motivation" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg">${userApplication.motivation || ''}</textarea>
+            <textarea name="motivation" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Why do you want to join this bootcamp?">${userApplication.motivation || ''}</textarea>
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Technical Experience</label>
-            <textarea name="technicalExperience" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg">${userApplication.technical_experience || ''}</textarea>
+            <textarea name="technicalExperience" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Describe your technical background">${userApplication.technical_experience || ''}</textarea>
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Commitment</label>
-            <textarea name="commitment" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg">${userApplication.commitment || ''}</textarea>
+            <textarea name="commitment" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="How will you commit to this program?">${userApplication.commitment || ''}</textarea>
+          </div>
+          <div>
+            <label class="flex items-center gap-2 text-sm font-medium mb-2">
+              <input type="checkbox" name="scholarshipRequested" ${userApplication.scholarship_requested ? 'checked' : ''} class="rounded">
+              <span>Request Scholarship</span>
+            </label>
+          </div>
+          <div id="scholarship-category-field" class="${userApplication.scholarship_requested ? '' : 'hidden'}">
+            <label class="block text-sm font-medium mb-2">Scholarship Category</label>
+            <select name="scholarshipCategory" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select category</option>
+              <option value="SC" ${userApplication.scholarship_category === 'SC' ? 'selected' : ''}>SC (Scheduled Caste)</option>
+              <option value="OBC" ${userApplication.scholarship_category === 'OBC' ? 'selected' : ''}>OBC (Other Backward Class)</option>
+              <option value="EWS" ${userApplication.scholarship_category === 'EWS' ? 'selected' : ''}>EWS (Economically Weaker Section)</option>
+              <option value="DNT" ${userApplication.scholarship_category === 'DNT' ? 'selected' : ''}>DNT (Denotified Tribes)</option>
+              <option value="Transgender" ${userApplication.scholarship_category === 'Transgender' ? 'selected' : ''}>Transgender</option>
+            </select>
+          </div>
+        `;
+      } else if (userApplication.program === 'accelerator') {
+        // Accelerator-specific fields
+        html += `
+          <div>
+            <label class="block text-sm font-medium mb-2">Track</label>
+            <select name="track" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select track</option>
+              <option value="animal_advocacy" ${userApplication.track === 'animal_advocacy' ? 'selected' : ''}>Animal Advocacy</option>
+              <option value="climate" ${userApplication.track === 'climate' ? 'selected' : ''}>Climate Action</option>
+              <option value="ai_safety" ${userApplication.track === 'ai_safety' ? 'selected' : ''}>AI Safety</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Project Name</label>
+            <input type="text" name="projectName" value="${userApplication.project_name || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Your project name">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Project Description</label>
+            <textarea name="projectDescription" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Describe your project and its impact">${userApplication.project_description || ''}</textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Prototype Link</label>
+            <input type="url" name="prototypeLink" value="${userApplication.prototype_link || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="https://your-project.com">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Tech Stack</label>
+            <input type="text" name="techStack" value="${userApplication.tech_stack || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="React, Node.js, PostgreSQL, etc.">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Target Users</label>
+            <textarea name="targetUsers" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Who will use your product?">${userApplication.target_users || ''}</textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Production Needs</label>
+            <textarea name="productionNeeds" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="What do you need to take this to production?">${userApplication.production_needs || ''}</textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Team Size</label>
+            <input type="number" name="teamSize" value="${userApplication.team_size || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Number of team members" min="1">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Current Stage</label>
+            <select name="currentStage" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select stage</option>
+              <option value="Prototype/MVP" ${userApplication.current_stage === 'Prototype/MVP' ? 'selected' : ''}>Prototype/MVP</option>
+              <option value="Beta with users" ${userApplication.current_stage === 'Beta with users' ? 'selected' : ''}>Beta with users</option>
+              <option value="Live in production" ${userApplication.current_stage === 'Live in production' ? 'selected' : ''}>Live in production</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Funding Type</label>
+            <select name="funding" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select type</option>
+              <option value="For-profit" ${userApplication.funding === 'For-profit' ? 'selected' : ''}>For-profit</option>
+              <option value="Non-profit" ${userApplication.funding === 'Non-profit' ? 'selected' : ''}>Non-profit</option>
+              <option value="Not sure yet" ${userApplication.funding === 'Not sure yet' ? 'selected' : ''}>Not sure yet</option>
+            </select>
           </div>
         `;
       }
 
       formFields.innerHTML = html;
+      
+      // Add scholarship category toggle listener for bootcamp
+      if (userApplication.program === 'bootcamp') {
+        const scholarshipCheckbox = formFields.querySelector('input[name="scholarshipRequested"]');
+        const scholarshipCategoryField = document.getElementById('scholarship-category-field');
+        
+        scholarshipCheckbox?.addEventListener('change', (e) => {
+          const target = e.target as HTMLInputElement;
+          if (target.checked) {
+            scholarshipCategoryField?.classList.remove('hidden');
+          } else {
+            scholarshipCategoryField?.classList.add('hidden');
+          }
+        });
+      }
+      
       modal?.classList.remove('hidden');
     }
 
@@ -422,32 +527,53 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const formData = new FormData(form);
 
       const updates: any = {
+        name: formData.get('name'),
         whatsapp: formData.get('whatsapp'),
         location: formData.get('location'),
         discord: formData.get('discord')
       };
 
       if (userApplication.program === 'bootcamp') {
+        // Parse interests from comma-separated string
+        const interestsStr = formData.get('interests') as string || '';
+        const interestsArray = interestsStr.split(',').map(i => i.trim()).filter(i => i.length > 0);
+        
+        updates.interests = interestsArray;
         updates.motivation = formData.get('motivation');
         updates.technical_experience = formData.get('technicalExperience');
         updates.commitment = formData.get('commitment');
+        updates.scholarship_requested = formData.get('scholarshipRequested') === 'on';
+        updates.scholarship_category = updates.scholarship_requested ? formData.get('scholarshipCategory') : null;
+      } else if (userApplication.program === 'accelerator') {
+        updates.track = formData.get('track');
+        updates.project_name = formData.get('projectName');
+        updates.project_description = formData.get('projectDescription');
+        updates.prototype_link = formData.get('prototypeLink');
+        updates.tech_stack = formData.get('techStack');
+        updates.target_users = formData.get('targetUsers');
+        updates.production_needs = formData.get('productionNeeds');
+        updates.team_size = formData.get('teamSize') ? parseInt(formData.get('teamSize') as string) : null;
+        updates.current_stage = formData.get('currentStage');
+        updates.funding = formData.get('funding');
       }
 
-      const { error, count } = await supabase
+      const { data, error } = await supabase
         .from('applications')
         .update(updates)
         .eq('id', userApplication.id)
-        .select('id', { count: 'exact' });
+        .select();
 
       if (error) {
+        console.error('Update error:', error);
         alert('Error updating application: ' + error.message);
         submitBtn.disabled = false;
         submitBtn.textContent = originalBtnText;
         return;
       }
 
-      // Check if any rows were actually updated
-      if (count === 0) {
+      // Check if the update returned data (meaning it was successful)
+      if (!data || data.length === 0) {
+        console.error('Update failed: No data returned');
         alert('Unable to update application. Please try again or contact support.');
         submitBtn.disabled = false;
         submitBtn.textContent = originalBtnText;
@@ -460,14 +586,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       closeEditModal();
 
       // Reload application
-      const { data } = await supabase
+      const { data: updatedData } = await supabase
         .from('applications')
         .select('*')
         .eq('user_id', currentUser.id)
         .single();
 
-      if (data) {
-        userApplication = data;
+      if (updatedData) {
+        userApplication = updatedData;
         displayApplicationDetails();
       }
     }

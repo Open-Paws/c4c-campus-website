@@ -109,25 +109,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <input type="password" name="confirmPassword" id="bootcamp-confirmPassword" required minlength="12" class="w-full px-4 py-3 border border-border rounded-lg" placeholder="Re-enter password" />
             </div>
 
-            <!-- Interest -->
-            <div>
-              <label class="block font-bold mb-2">Which domain(s) interest you? *</label>
-              <div class="space-y-2">
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" name="interests" class="bootcamp-interest" />
-                  <span>Animal advocacy</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" name="interests" class="bootcamp-interest" />
-                  <span>Climate action</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" name="interests" class="bootcamp-interest" />
-                  <span>AI safety & security</span>
-                </label>
-              </div>
-            </div>
-
             <!-- Track Selection -->
             <div>
               <label class="block font-bold mb-2">Which track? *</label>
@@ -145,6 +126,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </a>
               </p>
             </div>
+
 
             <!-- Scholarship Section -->
             <div class="border border-border rounded-lg p-4 bg-surface/50">
@@ -694,9 +676,6 @@ async function handleFormSubmit(e, program) {
 
   // Add program-specific fields
   if (program === 'bootcamp') {
-    // Select only interest checkboxes (excludes scholarship checkbox)
-    data.interests = Array.from(form.querySelectorAll('input[name="interests"]:checked'))
-      .map(cb => cb.nextElementSibling?.textContent);
     data.track = formData.get('track');
     data.motivation = formData.get('motivation');
     data.technicalExperience = formData.get('technicalExperience');
@@ -735,12 +714,6 @@ async function handleFormSubmit(e, program) {
   // Validate scholarship category if scholarship is requested
   if (data.scholarshipRequested && !data.scholarshipCategory) {
     toast.error('Please select your eligibility category for the scholarship.', 'Validation Error');
-    return;
-  }
-
-  // Validate at least one interest is selected for bootcamp
-  if (program === 'bootcamp' && (!data.interests || data.interests.length === 0)) {
-    toast.error('Please select at least one domain that interests you.', 'Validation Error');
     return;
   }
 
