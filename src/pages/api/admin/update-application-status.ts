@@ -280,7 +280,7 @@ export const POST: APIRoute = async ({ request }) => {
       for (const app of updatedApps) {
         try {
           const programName = app.program === 'bootcamp' ? 'Weekend Bootcamp' :
-                             app.program === 'accelerator' ? 'Full-Time Accelerator' : 'Hackathon';
+            app.program === 'accelerator' ? 'Full-Time Accelerator' : 'Hackathon';
 
           let subject = '';
           let heading = '';

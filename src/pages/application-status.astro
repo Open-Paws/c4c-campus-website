@@ -350,6 +350,42 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <label class="text-sm font-medium text-text-muted">Project Description</label>
             <p class="mt-1 whitespace-pre-wrap">${userApplication.project_description || '-'}</p>
           </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-text-muted">Link to prototype (GitHub, demo, etc.)</label>
+            <p class="mt-1">${userApplication.prototype_link ? `<a href="${userApplication.prototype_link}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">${userApplication.prototype_link}</a>` : '-'}</p>
+          </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-text-muted">Tech stack</label>
+            <p class="mt-1">${userApplication.tech_stack || '-'}</p>
+          </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-text-muted">Who will use this tool?</label>
+            <p class="mt-1 whitespace-pre-wrap">${userApplication.target_users || '-'}</p>
+          </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-text-muted">What do you need help with to get to production?</label>
+            <p class="mt-1 whitespace-pre-wrap">${userApplication.production_needs || '-'}</p>
+          </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-text-muted">Technical experience</label>
+            <p class="mt-1 whitespace-pre-wrap">${userApplication.technical_experience || '-'}</p>
+          </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-text-muted">Team size</label>
+            <p class="mt-1">${userApplication.team_size || '-'}</p>
+          </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-text-muted">Current stage</label>
+            <p class="mt-1">${userApplication.current_stage || '-'}</p>
+          </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-text-muted">Can you commit to the 10-week program (1 week in-person, 8 weeks remote, 1 week in-person in Bengaluru)?</label>
+            <p class="mt-1">${userApplication.commitment || '-'}</p>
+          </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-text-muted">Are you building a for-profit or non-profit?</label>
+            <p class="mt-1">${userApplication.funding || '-'}</p>
+          </div>
         `;
       }
 
@@ -387,26 +423,40 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       if (userApplication.program === 'bootcamp') {
         // Bootcamp-specific fields
-        const interestsArray = userApplication.interests || [];
-        const interestsStr = Array.isArray(interestsArray) ? interestsArray.join(', ') : '';
-        
         html += `
           <div>
-            <label class="block text-sm font-medium mb-2">Interests</label>
-            <input type="text" name="interests" value="${interestsStr}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Animal Advocacy, Climate Action, AI Safety">
-            <p class="text-xs text-gray-500 mt-1">Separate multiple interests with commas</p>
+            <label class="block text-sm font-medium mb-2">Which track? *</label>
+            <select name="track" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select...</option>
+              <option ${userApplication.track === 'Animal Advocacy' ? 'selected' : ''}>Animal Advocacy</option>
+              <option ${userApplication.track === 'Climate Action' ? 'selected' : ''}>Climate Action</option>
+              <option ${userApplication.track === 'AI Safety & Security' ? 'selected' : ''}>AI Safety & Security</option>
+              <option ${userApplication.track === 'Hybrid (all three)' ? 'selected' : ''}>Hybrid (all three)</option>
+            </select>
+            <p class="text-xs text-gray-500 mt-1">
+              Not sure which track fits your interests?
+              <a href="/tracks" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                Learn more about each track
+              </a>
+            </p>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2">Motivation</label>
-            <textarea name="motivation" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Why do you want to join this bootcamp?">${userApplication.motivation || ''}</textarea>
+            <label class="block text-sm font-medium mb-2">Why do you want to learn to engineer compassion? *</label>
+            <textarea name="motivation" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="What draws you to building AI with ethics built in?">${userApplication.motivation || ''}</textarea>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2">Technical Experience</label>
-            <textarea name="technicalExperience" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Describe your technical background">${userApplication.technical_experience || ''}</textarea>
+            <label class="block text-sm font-medium mb-2">Technical experience (if any)</label>
+            <textarea name="technicalExperience" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Any coding, automation, or technical experience? Totally fine if none!">${userApplication.technical_experience || ''}</textarea>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2">Commitment</label>
-            <textarea name="commitment" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="How will you commit to this program?">${userApplication.commitment || ''}</textarea>
+            <label class="block text-sm font-medium mb-2">Can you commit to 10 weeks (Saturdays, 2.5 hours each)? *</label>
+            <select name="commitment" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select...</option>
+              <option ${userApplication.commitment === 'Yes, in-person in Bengaluru' ? 'selected' : ''}>Yes, in-person in Bengaluru</option>
+              <option ${userApplication.commitment === 'Yes, remote participation' ? 'selected' : ''}>Yes, remote participation</option>
+              <option ${userApplication.commitment === 'Need to discuss timing' ? 'selected' : ''}>Need to discuss timing</option>
+              <option ${userApplication.commitment === 'No, but interested in future cohorts' ? 'selected' : ''}>No, but interested in future cohorts</option>
+            </select>
           </div>
           <div>
             <label class="flex items-center gap-2 text-sm font-medium mb-2">
@@ -430,13 +480,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         // Accelerator-specific fields
         html += `
           <div>
-            <label class="block text-sm font-medium mb-2">Track</label>
+            <label class="block text-sm font-medium mb-2">Which track? *</label>
             <select name="track" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-              <option value="">Select track</option>
-              <option value="animal_advocacy" ${userApplication.track === 'animal_advocacy' ? 'selected' : ''}>Animal Advocacy</option>
-              <option value="climate" ${userApplication.track === 'climate' ? 'selected' : ''}>Climate Action</option>
-              <option value="ai_safety" ${userApplication.track === 'ai_safety' ? 'selected' : ''}>AI Safety</option>
+              <option value="">Select...</option>
+              <option ${userApplication.track === 'Animal Advocacy' ? 'selected' : ''}>Animal Advocacy</option>
+              <option ${userApplication.track === 'Climate Action' ? 'selected' : ''}>Climate Action</option>
+              <option ${userApplication.track === 'AI Safety & Security' ? 'selected' : ''}>AI Safety & Security</option>
+              <option ${userApplication.track === 'Hybrid (all three)' ? 'selected' : ''}>Hybrid (all three)</option>
             </select>
+            <p class="text-xs text-gray-500 mt-1">
+              Not sure which track fits your project?
+              <a href="/tracks" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                Learn more about each track
+              </a>
+            </p>
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Project Name</label>
@@ -463,25 +520,38 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <textarea name="productionNeeds" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="What do you need to take this to production?">${userApplication.production_needs || ''}</textarea>
           </div>
           <div>
+            <label class="block text-sm font-medium mb-2">Technical experience</label>
+            <textarea name="technicalExperience" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="What have you built? What languages/tools do you know?">${userApplication.technical_experience || ''}</textarea>
+          </div>
+          <div>
             <label class="block text-sm font-medium mb-2">Team Size</label>
             <input type="number" name="teamSize" value="${userApplication.team_size || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Number of team members" min="1">
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Current Stage</label>
             <select name="currentStage" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-              <option value="">Select stage</option>
-              <option value="Prototype/MVP" ${userApplication.current_stage === 'Prototype/MVP' ? 'selected' : ''}>Prototype/MVP</option>
-              <option value="Beta with users" ${userApplication.current_stage === 'Beta with users' ? 'selected' : ''}>Beta with users</option>
-              <option value="Live in production" ${userApplication.current_stage === 'Live in production' ? 'selected' : ''}>Live in production</option>
+              <option value="">Select...</option>
+              <option ${userApplication.current_stage === 'Prototype/MVP' ? 'selected' : ''}>Prototype/MVP</option>
+              <option ${userApplication.current_stage === 'Beta with users' ? 'selected' : ''}>Beta with users</option>
+              <option ${userApplication.current_stage === 'Live in production' ? 'selected' : ''}>Live in production</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Can you commit to the 10-week program (1 week in-person, 8 weeks remote, 1 week in-person in Bengaluru)? *</label>
+            <select name="commitment" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select...</option>
+              <option ${userApplication.commitment === 'Yes, I can commit to the full program' ? 'selected' : ''}>Yes, I can commit to the full program</option>
+              <option ${userApplication.commitment === 'Need to discuss timing' ? 'selected' : ''}>Need to discuss timing</option>
+              <option ${userApplication.commitment === 'No, but interested in future cohorts' ? 'selected' : ''}>No, but interested in future cohorts</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Funding Type</label>
             <select name="funding" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-              <option value="">Select type</option>
-              <option value="For-profit" ${userApplication.funding === 'For-profit' ? 'selected' : ''}>For-profit</option>
-              <option value="Non-profit" ${userApplication.funding === 'Non-profit' ? 'selected' : ''}>Non-profit</option>
-              <option value="Not sure yet" ${userApplication.funding === 'Not sure yet' ? 'selected' : ''}>Not sure yet</option>
+              <option value="">Select...</option>
+              <option ${userApplication.funding === 'For-profit' ? 'selected' : ''}>For-profit</option>
+              <option ${userApplication.funding === 'Non-profit' ? 'selected' : ''}>Non-profit</option>
+              <option ${userApplication.funding === 'Not sure yet' ? 'selected' : ''}>Not sure yet</option>
             </select>
           </div>
         `;
@@ -534,11 +604,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       };
 
       if (userApplication.program === 'bootcamp') {
-        // Parse interests from comma-separated string
-        const interestsStr = formData.get('interests') as string || '';
-        const interestsArray = interestsStr.split(',').map(i => i.trim()).filter(i => i.length > 0);
-        
-        updates.interests = interestsArray;
+        updates.track = formData.get('track');
         updates.motivation = formData.get('motivation');
         updates.technical_experience = formData.get('technicalExperience');
         updates.commitment = formData.get('commitment');
@@ -552,8 +618,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         updates.tech_stack = formData.get('techStack');
         updates.target_users = formData.get('targetUsers');
         updates.production_needs = formData.get('productionNeeds');
+        updates.technical_experience = formData.get('technicalExperience');
         updates.team_size = formData.get('teamSize') ? parseInt(formData.get('teamSize') as string) : null;
         updates.current_stage = formData.get('currentStage');
+        updates.commitment = formData.get('commitment');
         updates.funding = formData.get('funding');
       }
 
