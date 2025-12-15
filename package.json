@@ -71,7 +71,7 @@
     "qrcode": "^1.5.4",
     "react": "^19.2.0",
     "react-chartjs-2": "^5.3.1",
-    "react-dom": "^19.2.0",
+    "react-dom": "^19.2.3",
     "react-grid-layout": "^1.5.2",
     "resend": "^6.3.0",
     "sharp": "^0.34.4",
