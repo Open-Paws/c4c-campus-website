@@ -209,6 +209,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     let currentUser: any = null;
     let userApplication: any = null;
 
+    // Escape HTML to prevent XSS attacks
+    function escapeHtml(str: string | null | undefined): string {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     // Check authentication and load application
     async function checkAuthAndLoadApplication() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -296,59 +307,60 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="grid md:grid-cols-2 gap-4">
           <div>
             <label class="text-sm font-medium text-text-muted">Name</label>
-            <p class="mt-1">${userApplication.name}</p>
+            <p class="mt-1">${escapeHtml(userApplication.name)}</p>
           </div>
           <div>
             <label class="text-sm font-medium text-text-muted">Email</label>
-            <p class="mt-1">${userApplication.email}</p>
+            <p class="mt-1">${escapeHtml(userApplication.email)}</p>
           </div>
           <div>
             <label class="text-sm font-medium text-text-muted">WhatsApp</label>
-            <p class="mt-1">${userApplication.whatsapp || '-'}</p>
+            <p class="mt-1">${escapeHtml(userApplication.whatsapp) || '-'}</p>
           </div>
           <div>
             <label class="text-sm font-medium text-text-muted">Location</label>
-            <p class="mt-1">${userApplication.location || '-'}</p>
+            <p class="mt-1">${escapeHtml(userApplication.location) || '-'}</p>
           </div>
           <div>
             <label class="text-sm font-medium text-text-muted">Discord</label>
-            <p class="mt-1">${userApplication.discord || '-'}</p>
+            <p class="mt-1">${escapeHtml(userApplication.discord) || '-'}</p>
           </div>
         </div>
       `;
 
       if (userApplication.program === 'bootcamp') {
+        const interestsDisplay = userApplication.interests?.map((i: string) => escapeHtml(i)).join(', ') || '-';
         html += `
           <div class="mt-4">
             <label class="text-sm font-medium text-text-muted">Interests</label>
-            <p class="mt-1">${userApplication.interests?.join(', ') || '-'}</p>
+            <p class="mt-1">${interestsDisplay}</p>
           </div>
           <div class="mt-4">
             <label class="text-sm font-medium text-text-muted">Motivation</label>
-            <p class="mt-1 whitespace-pre-wrap">${userApplication.motivation || '-'}</p>
+            <p class="mt-1 whitespace-pre-wrap">${escapeHtml(userApplication.motivation) || '-'}</p>
           </div>
           <div class="mt-4">
             <label class="text-sm font-medium text-text-muted">Technical Experience</label>
-            <p class="mt-1 whitespace-pre-wrap">${userApplication.technical_experience || '-'}</p>
+            <p class="mt-1 whitespace-pre-wrap">${escapeHtml(userApplication.technical_experience) || '-'}</p>
           </div>
           <div class="mt-4">
             <label class="text-sm font-medium text-text-muted">Commitment</label>
-            <p class="mt-1 whitespace-pre-wrap">${userApplication.commitment || '-'}</p>
+            <p class="mt-1 whitespace-pre-wrap">${escapeHtml(userApplication.commitment) || '-'}</p>
           </div>
         `;
       } else if (userApplication.program === 'accelerator') {
         html += `
           <div class="mt-4">
             <label class="text-sm font-medium text-text-muted">Track</label>
-            <p class="mt-1 capitalize">${userApplication.track || '-'}</p>
+            <p class="mt-1 capitalize">${escapeHtml(userApplication.track) || '-'}</p>
           </div>
           <div class="mt-4">
             <label class="text-sm font-medium text-text-muted">Project Name</label>
-            <p class="mt-1">${userApplication.project_name || '-'}</p>
+            <p class="mt-1">${escapeHtml(userApplication.project_name) || '-'}</p>
           </div>
           <div class="mt-4">
             <label class="text-sm font-medium text-text-muted">Project Description</label>
-            <p class="mt-1 whitespace-pre-wrap">${userApplication.project_description || '-'}</p>
+            <p class="mt-1 whitespace-pre-wrap">${escapeHtml(userApplication.project_description) || '-'}</p>
           </div>
         `;
       }
@@ -369,27 +381,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       let html = `
         <div>
           <label class="block text-sm font-medium mb-2">Full Name</label>
-          <input type="text" name="name" value="${userApplication.name || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Your full name">
+          <input type="text" name="name" value="${escapeHtml(userApplication.name)}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Your full name">
         </div>
         <div>
           <label class="block text-sm font-medium mb-2">WhatsApp Number</label>
-          <input type="tel" name="whatsapp" value="${userApplication.whatsapp || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="+91-9876543210">
+          <input type="tel" name="whatsapp" value="${escapeHtml(userApplication.whatsapp)}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="+91-9876543210">
         </div>
         <div>
           <label class="block text-sm font-medium mb-2">Location</label>
-          <input type="text" name="location" value="${userApplication.location || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Mumbai, Maharashtra">
+          <input type="text" name="location" value="${escapeHtml(userApplication.location)}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Mumbai, Maharashtra">
         </div>
         <div>
           <label class="block text-sm font-medium mb-2">Discord Handle</label>
-          <input type="text" name="discord" value="${userApplication.discord || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="username#1234">
+          <input type="text" name="discord" value="${escapeHtml(userApplication.discord)}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="username#1234">
         </div>
       `;
 
       if (userApplication.program === 'bootcamp') {
         // Bootcamp-specific fields
         const interestsArray = userApplication.interests || [];
-        const interestsStr = Array.isArray(interestsArray) ? interestsArray.join(', ') : '';
-        
+        const interestsStr = Array.isArray(interestsArray) ? interestsArray.map((i: string) => escapeHtml(i)).join(', ') : '';
+
         html += `
           <div>
             <label class="block text-sm font-medium mb-2">Interests</label>
@@ -398,15 +410,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Motivation</label>
-            <textarea name="motivation" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Why do you want to join this bootcamp?">${userApplication.motivation || ''}</textarea>
+            <textarea name="motivation" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Why do you want to join this bootcamp?">${escapeHtml(userApplication.motivation)}</textarea>
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Technical Experience</label>
-            <textarea name="technicalExperience" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Describe your technical background">${userApplication.technical_experience || ''}</textarea>
+            <textarea name="technicalExperience" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Describe your technical background">${escapeHtml(userApplication.technical_experience)}</textarea>
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Commitment</label>
-            <textarea name="commitment" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="How will you commit to this program?">${userApplication.commitment || ''}</textarea>
+            <textarea name="commitment" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="How will you commit to this program?">${escapeHtml(userApplication.commitment)}</textarea>
           </div>
           <div>
             <label class="flex items-center gap-2 text-sm font-medium mb-2">
@@ -440,31 +452,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Project Name</label>
-            <input type="text" name="projectName" value="${userApplication.project_name || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Your project name">
+            <input type="text" name="projectName" value="${escapeHtml(userApplication.project_name)}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Your project name">
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Project Description</label>
-            <textarea name="projectDescription" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Describe your project and its impact">${userApplication.project_description || ''}</textarea>
+            <textarea name="projectDescription" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Describe your project and its impact">${escapeHtml(userApplication.project_description)}</textarea>
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Prototype Link</label>
-            <input type="url" name="prototypeLink" value="${userApplication.prototype_link || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="https://your-project.com">
+            <input type="url" name="prototypeLink" value="${escapeHtml(userApplication.prototype_link)}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="https://your-project.com">
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Tech Stack</label>
-            <input type="text" name="techStack" value="${userApplication.tech_stack || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="React, Node.js, PostgreSQL, etc.">
+            <input type="text" name="techStack" value="${escapeHtml(userApplication.tech_stack)}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="React, Node.js, PostgreSQL, etc.">
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Target Users</label>
-            <textarea name="targetUsers" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Who will use your product?">${userApplication.target_users || ''}</textarea>
+            <textarea name="targetUsers" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Who will use your product?">${escapeHtml(userApplication.target_users)}</textarea>
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Production Needs</label>
-            <textarea name="productionNeeds" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="What do you need to take this to production?">${userApplication.production_needs || ''}</textarea>
+            <textarea name="productionNeeds" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="What do you need to take this to production?">${escapeHtml(userApplication.production_needs)}</textarea>
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Team Size</label>
-            <input type="number" name="teamSize" value="${userApplication.team_size || ''}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Number of team members" min="1">
+            <input type="number" name="teamSize" value="${escapeHtml(userApplication.team_size)}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Number of team members" min="1">
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Current Stage</label>
