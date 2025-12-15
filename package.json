@@ -76,7 +76,7 @@
     "resend": "^6.3.0",
     "sharp": "^0.34.4",
     "stripe": "^19.2.0",
-    "tailwindcss": "^4.1.16",
+    "tailwindcss": "^4.1.18",
     "ua-parser-js": "^2.0.6"
   },
   "devDependencies": {
