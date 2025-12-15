@@ -80,7 +80,7 @@
     "ua-parser-js": "^2.0.6"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.4",
+    "@astrojs/check": "^0.9.6",
     "@axe-core/cli": "^4.11.0",
     "@axe-core/puppeteer": "^4.11.0",
     "@playwright/test": "^1.56.1",
