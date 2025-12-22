@@ -47,7 +47,7 @@
     "@supabase/storage-js": "^2.76.1",
     "@supabase/supabase-js": "^2.87.2",
     "@tailwindcss/vite": "^4.1.18",
-    "@tiptap/extension-link": "^3.9.0",
+    "@tiptap/extension-link": "^3.14.0",
     "@tiptap/extension-placeholder": "^3.9.0",
     "@tiptap/react": "^3.9.0",
     "@tiptap/starter-kit": "^3.9.0",
