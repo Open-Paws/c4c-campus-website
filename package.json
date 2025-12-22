@@ -43,7 +43,7 @@
     "@astrojs/node": "^9.5.0",
     "@astrojs/react": "^4.4.1",
     "@astrojs/vercel": "^9.0.2",
-    "@stripe/stripe-js": "^8.5.3",
+    "@stripe/stripe-js": "^8.6.0",
     "@supabase/storage-js": "^2.76.1",
     "@supabase/supabase-js": "^2.87.2",
     "@tailwindcss/vite": "^4.1.18",
