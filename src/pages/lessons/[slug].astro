@@ -14,12 +14,6 @@
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { createClient } from '@supabase/supabase-js';
-import { LessonDiscussionContainer } from '../../components/LessonDiscussionContainer';
-
-// Initialize Supabase for SSR (still needed for other potential future uses, or remove if unused)
-// But for now, we don't need to fetch lesson details for discussion here.
-const { slug } = Astro.params;
 
 
 export const prerender = false;
@@ -739,7 +733,7 @@ export const prerender = false;
     // This is a best-effort save on page close
     // Note: sendBeacon doesn't support custom headers, so this is limited
     try {
-      const url = `${supabaseUrl}/rest/v1/lesson_progress?on_conflict=user_id,lesson_id`;
+      const url = `${import.meta.env.PUBLIC_SUPABASE_URL}/rest/v1/lesson_progress?on_conflict=user_id,lesson_id`;
       const body = JSON.stringify(progressData);
       if (navigator.sendBeacon) {
         navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
