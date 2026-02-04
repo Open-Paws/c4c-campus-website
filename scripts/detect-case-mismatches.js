@@ -237,6 +237,20 @@ const NON_DATABASE_PATTERNS = [
   /onClick/,
   /onChange/,
   /onSubmit/,
+  // Supabase realtime channels use arbitrary names, not database fields
+  /\.channel\s*\(/,
+  // URL paths in fetch/API calls are not database fields
+  /fetch\s*\(\s*`/,
+  /fetch\s*\(\s*['"`]\/api\//,
+  // React dependency arrays at end of useEffect/useMemo/useCallback
+  /\],?\s*\[[\w\s,]*\]\s*\)\s*;?\s*$/,
+  // React dependency arrays (pattern: }, [varName, varName, ...]);)
+  /\}\s*,\s*\[[\w\s,]+\]\s*\)\s*;/,
+  // Function/constructor parameters
+  /constructor\s*\(/,
+  /=>\s*\{/,
+  // Template literal channel names
+  /channel.*\$\{/,
 ];
 
 /**
