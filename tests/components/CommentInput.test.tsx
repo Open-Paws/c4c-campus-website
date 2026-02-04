@@ -59,9 +59,9 @@ describe('CommentInput Component', () => {
   test('renders formatting toolbar buttons', () => {
     render(<CommentInput onSubmit={onSubmit} />);
 
-    // Check for bold, italic, lists, link buttons
+    // Check for bold, italic, lists buttons (Link button was removed)
     const buttons = screen.getAllByRole('button');
-    expect(buttons.length).toBeGreaterThan(5); // Submit + formatting buttons
+    expect(buttons.length).toBeGreaterThanOrEqual(5); // Submit + formatting buttons
   });
 
   test('calls onCancel when cancel button clicked', async () => {
