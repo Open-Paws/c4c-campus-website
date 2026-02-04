@@ -11,6 +11,11 @@ DROP POLICY IF EXISTS "cohorts_select_policy" ON cohorts;
 DROP POLICY IF EXISTS "cohorts_insert_policy" ON cohorts;
 DROP POLICY IF EXISTS "cohorts_update_policy" ON cohorts;
 DROP POLICY IF EXISTS "cohorts_delete_policy" ON cohorts;
+-- Also drop the new policies in case this migration is re-run
+DROP POLICY IF EXISTS "cohorts_select_all" ON cohorts;
+DROP POLICY IF EXISTS "cohorts_insert_teachers_admins" ON cohorts;
+DROP POLICY IF EXISTS "cohorts_update_creator_admin" ON cohorts;
+DROP POLICY IF EXISTS "cohorts_delete_creator_admin" ON cohorts;
 
 -- Enable RLS on cohorts table if not already enabled
 ALTER TABLE cohorts ENABLE ROW LEVEL SECURITY;

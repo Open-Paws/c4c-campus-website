@@ -109,7 +109,7 @@ export async function sendAssignmentSubmittedEmail(
           </table>
 
           <p>
-            <a href="${process.env.SITE_URL || 'https://c4ccampus.org'}/teacher"
+            <a href="${process.env.SITE_URL || 'https://codeforcompassion.com'}/teacher"
                style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
               Review Submission
             </a>
@@ -174,7 +174,7 @@ export async function sendAssignmentGradedEmail(
           <p style="color: #6b7280; font-size: 14px;">Graded on: ${gradedDate}</p>
 
           <p>
-            <a href="${process.env.SITE_URL || 'https://c4ccampus.org'}/dashboard"
+            <a href="${process.env.SITE_URL || 'https://codeforcompassion.com'}/dashboard"
                style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
               View Details
             </a>
@@ -223,7 +223,7 @@ export async function sendWelcomeEmail(data: WelcomeEmailData): Promise<void> {
           </ol>
 
           <p>
-            <a href="${process.env.SITE_URL || 'https://c4ccampus.org'}/dashboard"
+            <a href="${process.env.SITE_URL || 'https://codeforcompassion.com'}/dashboard"
                style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
               Go to Dashboard
             </a>
@@ -269,7 +269,7 @@ export async function sendEnrollmentEmail(data: EnrollmentEmailData): Promise<vo
           </div>
 
           <p>
-            <a href="${process.env.SITE_URL || 'https://c4ccampus.org'}/courses"
+            <a href="${process.env.SITE_URL || 'https://codeforcompassion.com'}/courses"
                style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
               Start Learning
             </a>
@@ -363,7 +363,7 @@ export async function sendApplicationReceivedEmail(data: ApplicationReceivedEmai
           ` : ''}
 
           <p>
-            <a href="${process.env.SITE_URL || 'https://c4ccampus.org'}/admin/applications-review"
+            <a href="${process.env.SITE_URL || 'https://codeforcompassion.com'}/admin/applications-review"
                style="display: inline-block; background: #FF00FF; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
               Review Application
             </a>

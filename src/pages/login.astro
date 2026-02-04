@@ -92,18 +92,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       // Check current session state
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      // If we were redirected due to session expiry, clear it and show message
-      if (params.get('error') === 'session-expired') {
-        // Always sign out to clear any stale cookies
+      // If we were redirected due to session expiry AND we don't have a valid session, clear it and show message
+      if (params.get('error') === 'session-expired' && (sessionError || !session)) {
         await supabase.auth.signOut();
         const errorDiv = document.getElementById('error-message');
         if (errorDiv) {
           errorDiv.textContent = 'Your session has expired. Please log in again.';
           errorDiv.classList.remove('hidden');
         }
-        // Clean up URL to prevent redirect loop
+        // Clean up URL
         window.history.replaceState({}, '', '/login');
-        // CRITICAL: Return here to prevent further session checks
         return;
       }
 

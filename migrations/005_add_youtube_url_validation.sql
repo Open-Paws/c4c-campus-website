@@ -8,11 +8,12 @@ DROP CONSTRAINT IF EXISTS valid_youtube_url;
 
 -- Add CHECK constraint to validate YouTube URLs
 -- Only allows NULL or valid YouTube URLs (youtube.com/watch?v= or youtu.be/)
+-- SECURITY: Anchored with $ to prevent malicious URL suffixes
 ALTER TABLE lessons
-ADD CONSTRAINT valid_youtube_url 
+ADD CONSTRAINT valid_youtube_url
 CHECK (
-    youtube_url IS NULL 
-    OR youtube_url ~* '^https:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w\-]{11}'
+    youtube_url IS NULL
+    OR youtube_url ~* '^https:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w\-]{11}$'
 );
 
 COMMENT ON CONSTRAINT valid_youtube_url ON lessons IS 'Validates YouTube URLs to prevent malicious URL injection';

@@ -8,13 +8,17 @@
 -- Now: USING (auth.role() = 'authenticated') - requires authentication
 -- ============================================================================
 
--- Drop the public SELECT policy
+-- Drop the public SELECT policy and any existing authenticated policy
 DROP POLICY IF EXISTS "cohorts_select_all" ON cohorts;
+DROP POLICY IF EXISTS "cohorts_select_authenticated" ON cohorts;
 
 -- Create new authenticated-only SELECT policy
+-- PERFORMANCE: Using TO clause instead of USING (auth.role() = 'authenticated')
+-- This skips policy evaluation entirely for anonymous users
 CREATE POLICY "cohorts_select_authenticated" ON cohorts
     FOR SELECT
-    USING (auth.role() = 'authenticated');
+    TO authenticated
+    USING (true);
 
 COMMENT ON POLICY "cohorts_select_authenticated" ON cohorts IS 
     'Restricts cohort viewing to authenticated users only (security fix for preventing training schedule exposure)';

@@ -58,7 +58,7 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'viewport',
   },
-  site: 'https://c4ccampus.org',
+  site: 'https://codeforcompassion.com',
   redirects: {
     '/admin': '/teacher/courses',
     '/teacher': '/teacher/courses',
