@@ -239,8 +239,7 @@ const defaultCohort = cohortsWithCounts?.[0];
 
     // Global state
     let currentCohortId: string | null = null; // UUID string, not number
-    // Date range state for future filtering (currently unused but set by DateRangeSelector)
-    let _currentDateRange = { start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), end: new Date() };
+    let currentDateRange = { start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), end: new Date() };
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
@@ -270,7 +269,7 @@ const defaultCohort = cohortsWithCounts?.[0];
         root.render(
           createElement(DateRangeSelector, {
             onChange: (range) => {
-              _currentDateRange = range;
+              currentDateRange = range;
               loadDashboardData();
             }
           })
@@ -444,8 +443,8 @@ const defaultCohort = cohortsWithCounts?.[0];
           const root = createRoot(div);
           root.render(createElement(D3HeatMap, {
             data: heatmapData,
-            onCellClick: (cell) => {
-              console.log('Clicked cell:', cell);
+            onCellClick: (_cell) => {
+              // Cell click handler - can be used for drill-down functionality
             }
           }));
         }

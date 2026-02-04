@@ -31,18 +31,42 @@ export const LessonDiscussionContainer: React.FC<LessonDiscussionContainerProps>
                     return;
                 }
 
-                // 2. Fetch Lesson and Course ID (using authenticated client)
-                const { data: lesson, error: lessonError } = await supabase
-                    .from('lessons')
-                    .select(`
-            id,
-            module_id,
-            modules (
-              course_id
-            )
-          `)
-                    .eq('slug', slug)
-                    .single();
+                // 2. Parallelize independent queries (lesson, application, cohort_enrollments)
+                const [lessonResult, applicationResult, cohortEnrollmentsResult] = await Promise.all([
+                    // Fetch Lesson and Course ID
+                    supabase
+                        .from('lessons')
+                        .select(`
+                            id,
+                            module_id,
+                            modules (
+                              course_id
+                            )
+                        `)
+                        .eq('slug', slug)
+                        .single(),
+                    // Check if teacher by role field
+                    supabase
+                        .from('applications')
+                        .select('email, role')
+                        .eq('user_id', user.id)
+                        .single(),
+                    // Get cohort enrollments
+                    supabase
+                        .from('cohort_enrollments')
+                        .select(`
+                            cohort_id,
+                            cohorts (
+                              course_id
+                            )
+                        `)
+                        .eq('user_id', user.id)
+                        .eq('status', 'active')
+                ]);
+
+                const { data: lesson, error: lessonError } = lessonResult;
+                const { data: application } = applicationResult;
+                const { data: allCohortEnrollments } = cohortEnrollmentsResult;
 
                 if (lessonError || !lesson) {
                     console.error('Error fetching lesson for discussion:', lessonError);
@@ -61,33 +85,13 @@ export const LessonDiscussionContainer: React.FC<LessonDiscussionContainerProps>
                     return;
                 }
 
-                // 3. User Role & Cohort Logic
-                // Check if teacher
-                const { data: application } = await supabase
-                    .from('applications')
-                    .select('email')
-                    .eq('user_id', user.id)
-                    .single();
+                const isTeacher = application?.role === 'teacher';
 
-                const isTeacher = application?.email?.startsWith('teacher@') || false;
-
-                // Get cohort ID
-                // Try Cohort Enrollments
-                const { data: allCohortEnrollments } = await supabase
-                    .from('cohort_enrollments')
-                    .select(`
-            cohort_id,
-            cohorts (
-              course_id
-            )
-          `)
-                    .eq('user_id', user.id)
-                    .eq('status', 'active');
-
+                // Find enrollment for this course
                 const enrollment = allCohortEnrollments?.find((e: any) => e.cohorts?.course_id === courseId);
                 let userCohortId = enrollment?.cohort_id;
 
-                // Fallback to Legacy Enrollments
+                // Fallback to Legacy Enrollments (only if needed)
                 if (!userCohortId) {
                     const { data: legacyEnrollment } = await supabase
                         .from('enrollments')

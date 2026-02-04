@@ -1,2 +1,0 @@
-
-Error updating lesson: new row for relation "lessons" violates check constraint "valid_youtube_url"

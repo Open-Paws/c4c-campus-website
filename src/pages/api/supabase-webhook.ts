@@ -30,7 +30,6 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Check if status changed to approved
     if (record.status === 'approved' && old_record.status !== 'approved') {
-      console.log(`Application approved for ${record.email}`);
       // TODO: Send welcome email to newly approved user
     }
 

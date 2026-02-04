@@ -136,14 +136,11 @@ export const prerender = false;
 
 <script>
   import { supabase } from '@/lib/supabase';
-  import Plyr from 'plyr';
-  import confetti from 'canvas-confetti';
   import { marked } from 'marked';
   import { showToast } from '@/lib/notifications';
   import { canAccessLesson } from '@/lib/time-gating';
 
   // State
-  let player: Plyr | null = null;
   let currentLesson: any = null;
   let currentUser: any = null;
   let currentModule: any = null;
@@ -158,7 +155,6 @@ export const prerender = false;
   let existingProgressData: any = null; // Cached progress data
   let localTimeSpentSeconds = 0; // Accumulator for time tracking
   let lastSaveTime = Date.now(); // Track when we last saved (for 10s interval)
-  let progressInterval: number | null = null;
 
   async function init() {
     // Get slug from URL
@@ -175,14 +171,14 @@ export const prerender = false;
 
     currentUser = user;
 
-    // Check if user is teacher
+    // Check if user is teacher by role field (not email prefix)
     const { data: application } = await supabase
       .from('applications')
-      .select('email')
+      .select('email, role')
       .eq('user_id', user.id)
       .single();
 
-    isTeacher = application?.email?.startsWith('teacher@') || false;
+    isTeacher = application?.role === 'teacher';
 
     // Load lesson
     await loadLesson(slug);
@@ -224,7 +220,7 @@ export const prerender = false;
 
     // Get user's cohort for this course
     // 1. Try Cohort Enrollments (Preferred) - Fetch all active and filter in JS for safety
-    const { data: allCohortEnrollments, error: cohortError } = await supabase
+    const { data: allCohortEnrollments } = await supabase
       .from('cohort_enrollments')
       .select(`
         cohort_id,
@@ -334,7 +330,7 @@ export const prerender = false;
         videoDiv.innerHTML = `
           <iframe
             class="w-full h-full"
-            src="https://www.youtube.com/embed/${youtubeId}?enablejsapi=1${startParam}"
+            src="https://www.youtube-nocookie.com/embed/${youtubeId}?enablejsapi=1${startParam}"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
@@ -353,7 +349,7 @@ export const prerender = false;
         videoDiv.innerHTML = `
           <iframe
             class="w-full h-full"
-            src="https://www.youtube.com/embed/${youtubeId}?enablejsapi=1${startParam}"
+            src="https://www.youtube-nocookie.com/embed/${youtubeId}?enablejsapi=1${startParam}"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
@@ -661,14 +657,28 @@ export const prerender = false;
       }
     });
 
-    // Save on page unload
+    // Save on page visibility change (more reliable than beforeunload for async operations)
+    let hasSavedOnHide = false;
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'hidden' && !hasSavedOnHide) {
+        hasSavedOnHide = true;
+        if (isPlaying) {
+          const elapsed = Math.floor((Date.now() - playStartTime) / 1000);
+          localTimeSpentSeconds += elapsed;
+        }
+        // Use authenticated Supabase client for reliable delivery
+        await saveVideoProgress(video.currentTime, false);
+      } else if (document.visibilityState === 'visible') {
+        hasSavedOnHide = false; // Reset flag when page becomes visible again
+      }
+    });
+
+    // Fallback for beforeunload - update local time spent
     window.addEventListener('beforeunload', () => {
       if (isPlaying) {
         const elapsed = Math.floor((Date.now() - playStartTime) / 1000);
         localTimeSpentSeconds += elapsed;
       }
-      // Use sendBeacon for reliable delivery on page close
-      saveVideoProgressSync(video.currentTime);
     });
   }
 
@@ -713,35 +723,6 @@ export const prerender = false;
     }
   }
 
-  // Synchronous save for beforeunload (uses sendBeacon fallback)
-  function saveVideoProgressSync(positionSeconds: number) {
-    if (!currentUser || !currentLesson) return;
-
-    const progressData: any = {
-      user_id: currentUser.id,
-      lesson_id: currentLesson.id,
-      video_position_seconds: Math.floor(positionSeconds),
-      time_spent_seconds: localTimeSpentSeconds,
-      last_accessed_at: new Date().toISOString(),
-    };
-
-    if (userCohortId) {
-      progressData.cohort_id = userCohortId;
-    }
-
-    // Attempt to use sendBeacon for reliable delivery
-    // This is a best-effort save on page close
-    // Note: sendBeacon doesn't support custom headers, so this is limited
-    try {
-      const url = `${import.meta.env.PUBLIC_SUPABASE_URL}/rest/v1/lesson_progress?on_conflict=user_id,lesson_id`;
-      const body = JSON.stringify(progressData);
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
-      }
-    } catch {
-      // Silently fail - best effort
-    }
-  }
 
   function setupEventListeners() {
     // Mark complete button - toggles between completed and not started
@@ -764,13 +745,16 @@ export const prerender = false;
         time_spent_seconds: localTimeSpentSeconds,
       };
 
-      // Set completed_at only when marking as complete
+      // Set completed_at when marking as complete, clear it when un-completing
       if (newCompletedState) {
         progressData.completed_at = new Date().toISOString();
         // Set video_position_seconds to lesson duration if available
         if (videoDuration > 0) {
           progressData.video_position_seconds = videoDuration;
         }
+      } else {
+        // Clear completed_at when un-completing to avoid stale timestamps
+        progressData.completed_at = null;
       }
 
       // Include cohort_id when user is in a cohort

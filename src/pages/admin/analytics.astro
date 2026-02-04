@@ -188,16 +188,27 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           .select('id', { count: 'exact', head: true })
           .eq('status', 'active');
 
-        // Get total lesson progress
+        // Get completion stats using COUNT queries (more efficient than fetching all rows)
+        const { count: totalProgressCount } = await supabase
+          .from('lesson_progress')
+          .select('id', { count: 'exact', head: true });
+
+        const { count: completedLessonsCount } = await supabase
+          .from('lesson_progress')
+          .select('id', { count: 'exact', head: true })
+          .eq('completed', true);
+
+        // Get total watch time (with limit for safety on large datasets)
         const { data: progressData } = await supabase
           .from('lesson_progress')
-          .select('completed, time_spent_seconds');
+          .select('time_spent_seconds')
+          .limit(10000);
 
         const responseTime = Date.now() - startTime;
 
-        // Calculate metrics
-        const completedLessons = progressData?.filter(p => p.completed).length || 0;
-        const totalLessons = progressData?.length || 1;
+        // Calculate metrics using counts instead of client-side filtering
+        const completedLessons = completedLessonsCount || 0;
+        const totalLessons = totalProgressCount || 1;
         const completionRate = Math.round((completedLessons / totalLessons) * 100);
 
         const totalSeconds = progressData?.reduce((sum, p) => sum + (p.time_spent_seconds || 0), 0) || 0;
@@ -283,7 +294,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       try {
         const { data: enrollments } = await supabase
           .from('enrollments')
-          .select('course_id, courses(title)');
+          .select('course_id, courses(title)')
+          .limit(10000);
 
         // Count enrollments per course
         const courseCounts: { [key: string]: number } = {};
@@ -345,7 +357,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         // Batch fetch: get courses and all enrollments in 2 queries instead of 2*N
         const [coursesResult, enrollmentsResult] = await Promise.all([
           supabase.from('courses').select('id, title').limit(10),
-          supabase.from('enrollments').select('course_id, status')
+          supabase.from('enrollments').select('course_id, status').limit(10000)
         ]);
 
         const courses = coursesResult.data;
@@ -396,7 +408,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       try {
         const { data: applications } = await supabase
           .from('applications')
-          .select('role');
+          .select('role')
+          .limit(10000);
 
         const roleCounts = {
           student: 0,

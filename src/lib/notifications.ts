@@ -5,13 +5,6 @@
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
-// Note: ToastOptions is defined for future expansion of the toast API
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface ToastOptions {
-  duration?: number;
-  dismissible?: boolean;
-}
-
 const TOAST_CONTAINER_ID = 'c4c-toast-container';
 const DEFAULT_DURATION = 5000;
 

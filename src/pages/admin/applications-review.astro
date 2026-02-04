@@ -141,16 +141,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <script>
     import { supabase } from '../../lib/supabase';
-
-    function escapeHTML(unsafe: unknown): string {
-      if (!unsafe) return '';
-      return String(unsafe)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
+    import { escapeHTML } from '../../lib/security';
 
     let currentUser: any = null;
     let allApplications: any[] = [];

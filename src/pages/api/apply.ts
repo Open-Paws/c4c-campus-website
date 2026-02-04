@@ -207,14 +207,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    // Log request details for debugging
-    console.log('[API /apply] Received POST request');
-    console.log('[API /apply] Content-Type:', request.headers.get('content-type'));
-
     const formData = await request.json();
-    console.log('[API /apply] Successfully parsed JSON');
-    console.log('[API /apply] Email:', formData.email);
-    console.log('[API /apply] Program:', formData.program);
 
     const { email, password, confirmPassword, program, ...applicationData } = formData;
 
@@ -307,10 +300,7 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    console.log('[API /apply] User account created:', authData.user.id);
-
     // Store application data in applications table (using admin client - bypasses RLS)
-    console.log('[API /apply] Saving application for user:', authData.user.id, 'program:', program);
     const { error: dbError } = await supabaseAdmin
       .from('applications')
       .insert({
@@ -360,8 +350,6 @@ export const POST: APIRoute = async ({ request }) => {
         { status: mappedError.status, headers: { 'Content-Type': 'application/json' } }
       );
     }
-
-    console.log('[API /apply] Application saved successfully for user:', authData.user.id);
 
     // Send admin notification email (non-blocking)
     sendApplicationReceivedEmail({

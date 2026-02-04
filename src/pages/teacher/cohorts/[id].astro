@@ -318,21 +318,11 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
 
   <script>
     import { createClient } from '@supabase/supabase-js';
+    import { escapeHTML } from '../../../lib/security';
 
     const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
-
-    // XSS protection helper
-    function escapeHTML(str: string): string {
-      if (!str) return '';
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
 
     let currentUser: any = null;
     let cohort: any = null;
@@ -640,9 +630,12 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
 
       // Formula: (completed lessons) / (enrolled students) / (total lessons) * 100
       // Example: 4 completed / 5 students / 4 lessons * 100 = 20%
-      const averageProgress = (totalCompletedLessons / enrolledStudents / totalLessons) * 100;
+      // Guard against division by zero
+      const averageProgress = (enrolledStudents === 0 || totalLessons === 0)
+        ? 0
+        : (totalCompletedLessons / enrolledStudents / totalLessons) * 100;
 
-      document.getElementById('stat-avg-progress')!.textContent = 
+      document.getElementById('stat-avg-progress')!.textContent =
         `${Math.round(averageProgress)}%`;
     }
 

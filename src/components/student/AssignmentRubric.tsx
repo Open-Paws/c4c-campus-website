@@ -55,11 +55,11 @@ export default function AssignmentRubric({ rubric, maxPoints }: AssignmentRubric
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-blue-500 h-2 rounded-full"
-                  style={{ width: `${(criterion.points / maxPoints) * 100}%` }}
+                  style={{ width: `${maxPoints > 0 ? (criterion.points / maxPoints) * 100 : 0}%` }}
                 />
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                {((criterion.points / maxPoints) * 100).toFixed(1)}% of total grade
+                {maxPoints > 0 ? ((criterion.points / maxPoints) * 100).toFixed(1) : '0.0'}% of total grade
               </p>
             </div>
           </div>

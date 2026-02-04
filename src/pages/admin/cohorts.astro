@@ -247,17 +247,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script>
     import { supabase } from '../../lib/supabase';
     import { showToast, showConfirm } from '../../lib/notifications';
-
-    // XSS protection helper
-    function escapeHTML(str: string): string {
-      if (!str) return '';
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
+    import { escapeHTML } from '../../lib/security';
 
     let currentUser: any = null;
     let allCohorts: any[] = [];
@@ -313,7 +303,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       const select = document.getElementById('cohort-course') as HTMLSelectElement;
       if (!select) return;
 
-      const options = courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+      const options = courses.map(c => `<option value="${c.id}">${escapeHTML(c.title)}</option>`).join('');
       select.innerHTML = '<option value="">Select a course</option>' + options;
     }
 
@@ -392,10 +382,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <div class="card hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
             <div class="flex justify-between items-start mb-4">
               <div class="flex-1">
-                <h3 class="text-xl font-bold mb-1">${cohort.name}</h3>
+                <h3 class="text-xl font-bold mb-1">${escapeHTML(cohort.name)}</h3>
                 <p class="text-sm text-text-muted flex items-center gap-1">
                   <span>📚</span>
-                  ${cohort.courses?.title || 'Unknown Course'}
+                  ${escapeHTML(cohort.courses?.title || 'Unknown Course')}
                 </p>
               </div>
               <span class="text-xs px-3 py-1 rounded-full font-semibold ${getCohortStatusColor(cohort.status)}">${cohort.status.toUpperCase()}</span>
@@ -666,9 +656,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         return;
       }
 
-      // 3. Join data
+      // 3. Join data using Map for O(1) lookups instead of O(N) find()
+      const appsMap = new Map(apps?.map(a => [a.user_id, a]) || []);
       const students = enrollments.map(enrollment => {
-        const studentApp = apps?.find(a => a.user_id === enrollment.user_id) || { name: 'Unknown', email: 'Unknown' };
+        const studentApp = appsMap.get(enrollment.user_id) || { name: 'Unknown', email: 'Unknown' };
         return {
           ...enrollment,
           applications: studentApp

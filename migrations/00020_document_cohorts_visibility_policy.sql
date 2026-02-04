@@ -1,0 +1,31 @@
+-- Migration: Document Cohorts Visibility Policy Decision
+-- Date: 2026-02-04
+-- Description: Documents the intentional design decision for cohorts SELECT policy
+
+-- ============================================================================
+-- DESIGN DECISION: All authenticated users can view all cohorts
+-- ============================================================================
+--
+-- The cohorts table uses USING (true) for SELECT policy, meaning any
+-- authenticated user can see all cohorts. This is INTENTIONAL because:
+--
+-- 1. Users need to browse available cohorts to find courses they can enroll in
+-- 2. Cohort metadata (name, dates, capacity) is not sensitive information
+-- 3. The actual student enrollment data and personal information are protected
+--    by separate RLS policies on cohort_enrollments, applications, and other tables
+-- 4. Teachers need to see cohorts to manage their courses
+-- 5. Students need to see cohorts to join discussions and track their progress
+--
+-- If cohort visibility needs to be restricted in the future (e.g., private cohorts),
+-- the policy should be updated to:
+--   USING (
+--     cohorts.is_public = true
+--     OR auth.uid() IN (SELECT user_id FROM cohort_enrollments WHERE cohort_id = cohorts.id)
+--     OR auth.uid() = cohorts.created_by
+--     OR is_admin(auth.uid())
+--   )
+--
+-- This migration is documentation only - no schema changes.
+-- ============================================================================
+
+SELECT 'Cohorts visibility policy documented' AS status;

@@ -353,7 +353,6 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
       // Auto-refresh every 5 minutes (300000ms)
       autoRefreshInterval = window.setInterval(() => {
         if (currentCohortId) {
-          console.log('Auto-refreshing dashboard data...');
           loadDashboardData(currentCohortId);
         }
       }, 300000);

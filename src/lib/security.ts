@@ -294,7 +294,7 @@ export function getSecurityHeaders(): Record<string, string> {
     'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
     'Content-Security-Policy': [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com",
+      "script-src 'self' 'unsafe-inline' https://translate.google.com",
       "style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://*.gstatic.com",
       "img-src 'self' data: https: blob:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co",

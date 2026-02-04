@@ -20,6 +20,7 @@ export function QuizProgress({
   showAll = false,
 }: QuizProgressProps) {
   const percentComplete = useMemo(() => {
+    if (totalQuestions === 0) return 0;
     return Math.round((answeredQuestions.size / totalQuestions) * 100);
   }, [answeredQuestions.size, totalQuestions]);
 

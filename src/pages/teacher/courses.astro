@@ -465,6 +465,7 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
 
   <script>
     import { createClient } from '@supabase/supabase-js';
+    import { escapeHTML } from '../../lib/security';
 
     const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -477,17 +478,6 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
     let editingModule: any = null;
     let currentModules: any[] = [];
     let activeTab = 'courses';
-
-    // XSS protection helper
-    function escapeHTML(str: string): string {
-      if (!str) return '';
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
 
     // Modal helper functions
     function showNotification(title: string, message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info', actions?: { label: string, onClick: () => void, primary?: boolean }[]) {
@@ -536,43 +526,6 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
         { label: 'Cancel', onClick: onCancel || (() => {}), primary: false },
         { label: 'Confirm', onClick: onConfirm, primary: true }
       ]);
-    }
-
-    // Reserved for future use - input prompt modal utility
-    function _showPrompt(title: string, onSubmit: (value: string) => void) {
-      const modal = document.getElementById('input-modal');
-      const titleEl = document.getElementById('input-title');
-      const inputField = document.getElementById('input-field') as HTMLInputElement;
-      const submitBtn = document.getElementById('input-submit');
-      const cancelBtn = document.getElementById('input-cancel');
-
-      if (titleEl) titleEl.textContent = title;
-      if (inputField) inputField.value = '';
-
-      const handleSubmit = () => {
-        const value = inputField?.value.trim();
-        if (value) {
-          modal?.classList.add('hidden');
-          onSubmit(value);
-        }
-      };
-
-      const handleCancel = () => {
-        modal?.classList.add('hidden');
-      };
-
-      submitBtn?.replaceWith(submitBtn.cloneNode(true));
-      cancelBtn?.replaceWith(cancelBtn.cloneNode(true));
-
-      document.getElementById('input-submit')?.addEventListener('click', handleSubmit);
-      document.getElementById('input-cancel')?.addEventListener('click', handleCancel);
-
-      inputField?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleSubmit();
-      });
-
-      modal?.classList.remove('hidden');
-      inputField?.focus();
     }
 
     async function init() {
@@ -1351,7 +1304,7 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
         if (!select) return;
 
         const currentValue = (select as HTMLSelectElement).value;
-        const options = courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+        const options = courses.map(c => `<option value="${c.id}">${escapeHTML(c.title)}</option>`).join('');
 
         if (select.id === 'cohort-course') {
           select.innerHTML = '<option value="">Select a course</option>' + options;

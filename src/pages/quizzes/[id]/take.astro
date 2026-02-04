@@ -178,7 +178,8 @@ export const prerender = false;
   window.addEventListener('beforeunload', (e) => {
     if (preventNavigation && hasStarted) {
       e.preventDefault();
-      e.returnValue = '';
+      // returnValue is deprecated but required for cross-browser compatibility
+      (e as any).returnValue = '';
       return '';
     }
   });

@@ -75,7 +75,7 @@ export const DiscussionThread: React.FC<DiscussionThreadProps> = ({
       // Fetch user profiles (from applications table for now)
       const { data: profiles, error: profilesError } = await supabase
         .from('applications')
-        .select('user_id, email')
+        .select('user_id, email, role')
         .in('user_id', userIds);
 
       if (profilesError) throw profilesError;
@@ -87,7 +87,7 @@ export const DiscussionThread: React.FC<DiscussionThreadProps> = ({
           {
             id: p.user_id,
             email: p.email,
-            is_teacher: p.email.startsWith('teacher@'),
+            is_teacher: p.role === 'teacher',
           },
         ]) || []
       );

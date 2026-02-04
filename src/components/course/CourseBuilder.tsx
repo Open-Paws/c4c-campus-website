@@ -88,7 +88,7 @@ export default function CourseBuilder({ course, onSave, onPublish }: CourseBuild
     return validationErrors.length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validate()) {

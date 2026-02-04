@@ -253,6 +253,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 <script>
   import { createClient } from '@supabase/supabase-js';
   import { showToast, setButtonLoading, dismissToast } from '@/lib/notifications';
+  import { escapeHTML } from '@/lib/security';
 
   const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -263,17 +264,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   let currentUser: any = null;
   let currentFilter = 'all';
   let currentTrack = 'all';
-
-  // XSS protection helper
-  function escapeHTML(str: string): string {
-    if (!str) return '';
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
 
   async function init() {
     // Check if user is logged in

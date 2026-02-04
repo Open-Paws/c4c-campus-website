@@ -5,12 +5,10 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe as _loadStripe } from '@stripe/stripe-js';
 
-// Note: stripePromise is loaded but reserved for future Stripe checkout integration
-const _stripePromise = loadStripe(
-  import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || ''
-);
+// Note: Stripe import retained for future checkout integration
+void _loadStripe;
 
 interface PricingTier {
   id: string;

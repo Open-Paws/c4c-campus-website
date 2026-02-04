@@ -103,7 +103,7 @@ export default function SearchBar({
     };
   }, [query]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (query.trim()) {
       window.location.href = `/search?q=${encodeURIComponent(query)}`;

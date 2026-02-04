@@ -373,14 +373,7 @@ export const prerender = false;
     // Show teacher actions only if user is the course creator AND is a verified teacher
     // At this point currentUser is guaranteed to be non-null (see init() check)
     const isCreator = course.created_by === currentUser.id;
-    console.log('[Course Edit Debug]', { 
-      courseCreatedBy: course.created_by, 
-      currentUserId: currentUser.id, 
-      isCreator, 
-      isTeacher,
-      courseId: course.id 
-    });
-    
+
     // Show Edit/Add Module buttons if user is both a teacher AND the creator
     if (isCreator && isTeacher) {
       document.getElementById('teacher-actions')!.style.display = 'flex';

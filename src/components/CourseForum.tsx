@@ -83,7 +83,7 @@ export const CourseForum: React.FC<CourseForumProps> = ({
       const userIds = [...new Set(forumPosts.map((p) => p.user_id))];
       const { data: profiles } = await supabase
         .from('applications')
-        .select('user_id, email')
+        .select('user_id, email, role')
         .in('user_id', userIds);
 
       const userMap = new Map<string, UserProfile>(
@@ -92,7 +92,7 @@ export const CourseForum: React.FC<CourseForumProps> = ({
           {
             id: p.user_id,
             email: p.email,
-            is_teacher: p.email.startsWith('teacher@'),
+            is_teacher: p.role === 'teacher',
           },
         ]) || []
       );
@@ -154,7 +154,7 @@ export const CourseForum: React.FC<CourseForumProps> = ({
       const userIds = [...new Set(replies.map((r) => r.user_id))];
       const { data: profiles } = await supabase
         .from('applications')
-        .select('user_id, email')
+        .select('user_id, email, role')
         .in('user_id', userIds);
 
       const userMap = new Map<string, UserProfile>(
@@ -163,7 +163,7 @@ export const CourseForum: React.FC<CourseForumProps> = ({
           {
             id: p.user_id,
             email: p.email,
-            is_teacher: p.email.startsWith('teacher@'),
+            is_teacher: p.role === 'teacher',
           },
         ]) || []
       );

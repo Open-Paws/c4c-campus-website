@@ -145,19 +145,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <script>
     import { supabase } from '../lib/supabase';
+    import { escapeHTML } from '../lib/security';
 
     let currentUser: any = null;
-
-    // XSS protection helper
-    function escapeHTML(str: string): string {
-      if (!str) return '';
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
 
     // Check authentication on page load
     async function checkAuth() {

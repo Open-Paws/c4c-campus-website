@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import Link from '@tiptap/extension-link';
+// Link extension import removed - not currently used
 
 interface CommentInputProps {
   onSubmit: (content: string) => void | Promise<void>;
@@ -97,21 +97,7 @@ export const CommentInput: React.FC<CommentInputProps> = ({
     }
   };
 
-  const setLink = () => {
-    if (!editor) return;
-
-    const previousUrl = editor.getAttributes('link').href;
-    const url = window.prompt('Enter URL:', previousUrl);
-
-    if (url === null) return;
-
-    if (url === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
-      return;
-    }
-
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-  };
+  // setLink function removed - Link extension is disabled
 
   if (!editor) {
     return <div className="animate-pulse bg-surface rounded-lg h-32" />;
@@ -199,25 +185,7 @@ export const CommentInput: React.FC<CommentInputProps> = ({
           </svg>
         </button>
 
-        <div className="w-px h-6 bg-border mx-1" />
-
-        {/* Link */}
-        <button
-          onClick={setLink}
-          className={`p-1.5 rounded hover:bg-surface-hover transition-colors ${editor.isActive('link') ? 'bg-primary/10 text-primary' : 'text-text-muted'
-            }`}
-          title="Insert Link"
-          type="button"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-            />
-          </svg>
-        </button>
+        {/* Link button removed - extension is disabled */}
 
         {/* Character Count */}
         <div className="flex-1" />
