@@ -5,8 +5,7 @@
  * and protection against common web vulnerabilities.
  */
 
-// Use a simple regex-based sanitizer for server-side to avoid jsdom ESM issues
-// DOMPurify is only used client-side where the DOM is available
+import DOMPurify from 'isomorphic-dompurify';
 
 // --- Input Validation ---
 
@@ -149,47 +148,38 @@ export function isStrongPassword(password: string): {
 
 // Default allowed tags for rich text
 const DEFAULT_ALLOWED_TAGS = ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a', 'code', 'pre'];
-// Note: DEFAULT_ALLOWED_ATTRS reserved for future attribute whitelist functionality
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const DEFAULT_ALLOWED_ATTRS = ['href', 'title', 'target'];
 
-// Server-safe HTML sanitizer that doesn't require jsdom
+/**
+ * Server-safe HTML sanitizer using isomorphic-dompurify
+ * @param html - The HTML string to sanitize
+ * @param allowedTags - Optional array of allowed tag names (defaults to DEFAULT_ALLOWED_TAGS)
+ * @returns Sanitized HTML string
+ */
 export function sanitizeHTML(html: string, allowedTags?: string[]): string {
   if (!html) return '';
 
   const tags = allowedTags || DEFAULT_ALLOWED_TAGS;
 
-  // Remove script tags and their contents
-  let sanitized = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  // If empty array passed, strip all HTML (return text only)
+  if (tags.length === 0) {
+    return DOMPurify.sanitize(html, { ALLOWED_TAGS: [] });
+  }
 
-  // Remove on* event handlers
-  sanitized = sanitized.replace(/\s*on\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi, '');
-
-  // Remove javascript: and data: URLs from href/src attributes
-  sanitized = sanitized.replace(/(href|src)\s*=\s*["']?\s*(javascript|data|vbscript):[^"'\s>]*/gi, '$1=""');
-
-  // Remove style tags
-  sanitized = sanitized.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
-
-  // Remove any tags not in allowed list
-  const tagPattern = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
-  sanitized = sanitized.replace(tagPattern, (match, tagName) => {
-    if (tags.includes(tagName.toLowerCase())) {
-      // Keep allowed tags but strip dangerous attributes
-      return match
-        .replace(/\s+style\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi, '')
-        .replace(/\s+class\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi, '');
-    }
-    return '';
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: tags,
+    ALLOWED_ATTR: DEFAULT_ALLOWED_ATTRS,
   });
-
-  return sanitized;
 }
 
+/**
+ * Strip all HTML tags from a string using DOMPurify
+ * @param html - The HTML string to strip
+ * @returns Plain text with all HTML removed
+ */
 export function stripHTML(html: string): string {
   if (!html) return '';
-  // Remove all HTML tags
-  return html.replace(/<[^>]*>/g, '');
+  return DOMPurify.sanitize(html, { ALLOWED_TAGS: [] });
 }
 
 export function escapeHTML(str: string): string {
