@@ -209,8 +209,18 @@ export async function canAccessLesson(
     };
   }
 
-  // Extract course_id from the joined modules (Supabase !inner returns single object)
-  const courseId = (lesson.modules as unknown as { course_id: number }).course_id;
+  // Extract course_id from the joined modules
+  // Handle both array and object cases for defensive coding
+  const moduleData = Array.isArray(lesson.modules) ? lesson.modules[0] : lesson.modules;
+  if (!moduleData || typeof moduleData !== 'object') {
+    return {
+      canAccess: false,
+      moduleUnlocked: false,
+      isEnrolled: false,
+      reason: 'not_enrolled'
+    };
+  }
+  const courseId = (moduleData as { course_id: number }).course_id;
 
   // 2. Check user's enrollment - first try cohort enrollment, then fall back to regular enrollment
   const { data: cohortEnrollment } = await supabase

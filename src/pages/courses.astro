@@ -264,6 +264,17 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   let currentFilter = 'all';
   let currentTrack = 'all';
 
+  // XSS protection helper
+  function escapeHTML(str: string): string {
+    if (!str) return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   async function init() {
     // Check if user is logged in
     const { data: { user } } = await supabase.auth.getUser();
@@ -370,19 +381,19 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       const thumbnailUrl = course.thumbnail_url;
 
       return `
-        <div class="course-card-wrapper" data-course-id="${course.id}" data-slug="${course.slug}">
-          ${thumbnailUrl && thumbnailUrl !== 'null' ? `<img src="${thumbnailUrl}" alt="${course.title}" class="course-thumbnail" />` : ''}
+        <div class="course-card-wrapper" data-course-id="${escapeHTML(String(course.id))}" data-slug="${escapeHTML(course.slug)}">
+          ${thumbnailUrl && thumbnailUrl !== 'null' ? `<img src="${escapeHTML(thumbnailUrl)}" alt="${escapeHTML(course.title)}" class="course-thumbnail" />` : ''}
           <div class="course-content">
-            <h3 class="course-title">${course.title}</h3>
-            ${course.description ? `<p class="course-description">${course.description}</p>` : ''}
+            <h3 class="course-title">${escapeHTML(course.title)}</h3>
+            ${course.description ? `<p class="course-description">${escapeHTML(course.description)}</p>` : ''}
             <div class="course-meta">
-              <span class="meta-tag">${formatTrack(course.track)}</span>
-              <span class="meta-tag">${formatDifficulty(course.difficulty)}</span>
+              <span class="meta-tag">${escapeHTML(formatTrack(course.track))}</span>
+              <span class="meta-tag">${escapeHTML(formatDifficulty(course.difficulty))}</span>
               ${course.default_duration_weeks ? `<span class="meta-tag">${course.default_duration_weeks} weeks</span>` : ''}
             </div>
             ${isEnrolled ?
               '<div class="enrolled-badge">✓ Enrolled</div>' :
-              '<button class="btn btn-primary btn-sm mt-3 w-full enroll-btn" data-course-id="' + course.id + '" onclick="event.stopPropagation()">Enroll Now</button>'
+              '<button class="btn btn-primary btn-sm mt-3 w-full enroll-btn" data-course-id="' + escapeHTML(String(course.id)) + '" onclick="event.stopPropagation()">Enroll Now</button>'
             }
             <div class="view-details-link">
               <span>View Course Details</span>
