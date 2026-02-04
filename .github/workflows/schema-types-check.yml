@@ -24,6 +24,11 @@ on:
       - 'scripts/scan-field-names.js'
       - 'scripts/detect-case-mismatches.js'
 
+# Explicit permissions for security hardening
+# Following the principle of least privilege
+permissions:
+  contents: read
+
 jobs:
   check-schema-types:
     name: Verify Schema-Types Sync
