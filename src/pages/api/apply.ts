@@ -351,17 +351,22 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Send admin notification email (non-blocking)
-    sendApplicationReceivedEmail({
-      name: applicationData.name,
-      email,
-      program,
-      location: applicationData.location,
-      discord: applicationData.discord,
-      motivation: applicationData.motivation,
-      projectName: applicationData.projectName,
-      projectDescription: applicationData.projectDescription,
-    }).catch(err => console.error('Failed to send admin notification:', err));
+    // Send admin notification email (await to ensure delivery in serverless)
+    try {
+      await sendApplicationReceivedEmail({
+        name: applicationData.name,
+        email,
+        program,
+        location: applicationData.location,
+        discord: applicationData.discord,
+        motivation: applicationData.motivation,
+        projectName: applicationData.projectName,
+        projectDescription: applicationData.projectDescription,
+      });
+    } catch (err) {
+      // Log but don't fail - application was already saved to database
+      console.error('Failed to send admin notification:', err);
+    }
 
     return new Response(
       JSON.stringify({
