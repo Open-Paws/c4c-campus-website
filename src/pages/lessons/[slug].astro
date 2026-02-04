@@ -141,47 +141,12 @@ export const prerender = false;
 </BaseLayout>
 
 <script>
-  import { createClient } from '@supabase/supabase-js';
-
+  import { supabase } from '@/lib/supabase';
   import Plyr from 'plyr';
   import confetti from 'canvas-confetti';
   import { marked } from 'marked';
   import { showToast } from '@/lib/notifications';
   import { canAccessLesson } from '@/lib/time-gating';
-
-  const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-
-  // Manually configure client with same storage logic as src/lib/supabase.ts
-  // to ensure session sharing and avoid "Multiple GoTrueClient" issues
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      storage: {
-        getItem: (key) => {
-          const localValue = localStorage.getItem(key);
-          if (localValue) return localValue;
-          const cookies = document.cookie.split(';');
-          const cookie = cookies.find(c => c.trim().startsWith(`${key}=`));
-          // Use substring to handle values containing '=' (e.g., base64 tokens)
-          return cookie ? decodeURIComponent(cookie.substring(cookie.indexOf('=') + 1)) : null;
-        },
-        setItem: (key, value) => {
-          localStorage.setItem(key, value);
-          const isSecure = window.location.protocol === 'https:';
-          const cookieValue = encodeURIComponent(value);
-          // 7 days (604800 seconds) - shorter session for security
-          document.cookie = `${key}=${cookieValue}; path=/; max-age=604800; SameSite=Lax${isSecure ? '; Secure' : ''}`;
-        },
-        removeItem: (key) => {
-          localStorage.removeItem(key);
-          document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-        }
-      },
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true
-    }
-  });
 
   // State
   let player: Plyr | null = null;
@@ -278,19 +243,11 @@ export const prerender = false;
 
     const enrollment = allCohortEnrollments?.find((e: any) => e.cohorts?.course_id === currentCourse.id);
 
-    console.log('[DEBUG] Lesson Page Enrollment Check:', {
-      userId: currentUser.id,
-      courseId: currentCourse.id,
-      cohortError,
-      allCohortEnrollmentsCount: allCohortEnrollments?.length,
-      enrollmentFound: !!enrollment
-    });
-
     if (enrollment) {
       userCohortId = enrollment.cohort_id;
     } else {
       // 2. Fallback to Legacy Enrollments
-      const { data: legacyEnrollment, error: legacyError } = await supabase
+      const { data: legacyEnrollment } = await supabase
         .from('enrollments')
         .select('cohort_id')
         .eq('user_id', currentUser.id)
@@ -298,11 +255,6 @@ export const prerender = false;
         .limit(1)
         .maybeSingle();
 
-      console.log('[DEBUG] Legacy Check:', {
-        legacyError,
-        legacyEnrollment
-      });
-        
       if (legacyEnrollment) {
         userCohortId = legacyEnrollment.cohort_id;
       }
@@ -827,11 +779,13 @@ export const prerender = false;
         progressData.cohort_id = userCohortId;
       }
 
-      // Handle watch_count
-      if (newCompletedState && existingProgressData?.completed) {
-        progressData.watch_count = (existingProgressData.watch_count || 1) + 1;
+      // Handle watch_count - increment when marking as complete
+      if (newCompletedState) {
+        // Completing the lesson - increment watch count
+        progressData.watch_count = (existingProgressData?.watch_count || 0) + 1;
       } else {
-        progressData.watch_count = existingProgressData?.watch_count || 1;
+        // Uncompleting - keep the current count
+        progressData.watch_count = existingProgressData?.watch_count || 0;
       }
 
       let error;

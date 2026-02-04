@@ -12,18 +12,27 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     // Use cookies for auth storage so server-side middleware can access the session
     storage: typeof window !== 'undefined' ? {
       getItem: (key: string) => {
-        // Try localStorage first, then cookies
-        const localValue = localStorage.getItem(key);
-        if (localValue) return localValue;
+        // Try localStorage first (with try-catch for private browsing mode)
+        try {
+          const localValue = localStorage.getItem(key);
+          if (localValue) return localValue;
+        } catch {
+          // localStorage not available (private browsing, etc.)
+        }
 
+        // Fall back to cookies
         const cookies = document.cookie.split(';');
         const cookie = cookies.find(c => c.trim().startsWith(`${key}=`));
         // Use substring to handle values containing '=' (e.g., base64 tokens)
         return cookie ? decodeURIComponent(cookie.substring(cookie.indexOf('=') + 1)) : null;
       },
       setItem: (key: string, value: string) => {
-        // Store in both localStorage and cookies
-        localStorage.setItem(key, value);
+        // Store in localStorage (with try-catch for private browsing mode)
+        try {
+          localStorage.setItem(key, value);
+        } catch {
+          // localStorage not available - cookies will still work
+        }
         // Set cookie with secure attributes for production
         // 7 days (604800 seconds) - shorter session for security
         const isSecure = window.location.protocol === 'https:';
@@ -31,7 +40,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
         document.cookie = `${key}=${cookieValue}; path=/; max-age=604800; SameSite=Lax${isSecure ? '; Secure' : ''}`;
       },
       removeItem: (key: string) => {
-        localStorage.removeItem(key);
+        try {
+          localStorage.removeItem(key);
+        } catch {
+          // localStorage not available
+        }
         document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
       }
     } : undefined,

@@ -342,31 +342,36 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
     async function loadCompletionRates() {
       try {
-        const { data: courses } = await supabase
-          .from('courses')
-          .select('id, title')
-          .limit(10);
+        // Batch fetch: get courses and all enrollments in 2 queries instead of 2*N
+        const [coursesResult, enrollmentsResult] = await Promise.all([
+          supabase.from('courses').select('id, title').limit(10),
+          supabase.from('enrollments').select('course_id, status')
+        ]);
+
+        const courses = coursesResult.data;
+        const enrollments = enrollmentsResult.data;
 
         if (!courses) return;
 
         const completionList = document.getElementById('completion-list')!;
-        const courseStats = [];
 
-        for (const course of courses) {
-          const { count: enrollments } = await supabase
-            .from('enrollments')
-            .select('id', { count: 'exact', head: true })
-            .eq('course_id', course.id);
+        // Process enrollments in memory
+        const courseEnrollments: Record<number, { total: number; completed: number }> = {};
+        enrollments?.forEach(e => {
+          if (!courseEnrollments[e.course_id]) {
+            courseEnrollments[e.course_id] = { total: 0, completed: 0 };
+          }
+          courseEnrollments[e.course_id].total++;
+          if (e.status === 'completed') {
+            courseEnrollments[e.course_id].completed++;
+          }
+        });
 
-          const { count: completed } = await supabase
-            .from('enrollments')
-            .select('id', { count: 'exact', head: true })
-            .eq('course_id', course.id)
-            .eq('status', 'completed');
-
-          const rate = enrollments && enrollments > 0 ? Math.round((completed || 0) / enrollments * 100) : 0;
-          courseStats.push({ name: course.title, rate });
-        }
+        const courseStats = courses.map(course => {
+          const stats = courseEnrollments[course.id] || { total: 0, completed: 0 };
+          const rate = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+          return { name: course.title, rate };
+        });
 
         completionList.innerHTML = courseStats
           .sort((a, b) => b.rate - a.rate)
@@ -452,41 +457,48 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           return;
         }
 
-        const cohortStats = await Promise.all(cohorts.map(async (cohort) => {
-          // Get student count
-          const { count: studentCount } = await supabase
-            .from('cohort_enrollments')
-            .select('id', { count: 'exact', head: true })
-            .eq('cohort_id', cohort.id);
+        // Batch fetch: get all enrollments and progress for all cohorts in 2 queries
+        const cohortIds = cohorts.map(c => c.id);
 
-          // Get all student user_ids in this cohort
-          const { data: enrollments } = await supabase
-            .from('cohort_enrollments')
-            .select('user_id')
-            .eq('cohort_id', cohort.id);
+        const [enrollmentsResult, progressResult] = await Promise.all([
+          supabase.from('cohort_enrollments').select('cohort_id, user_id').in('cohort_id', cohortIds),
+          supabase.from('lesson_progress').select('cohort_id, user_id, completed').in('cohort_id', cohortIds).eq('completed', true)
+        ]);
 
-          const studentIds = enrollments?.map(e => e.user_id) || [];
+        const allEnrollments = enrollmentsResult.data || [];
+        const allProgress = progressResult.data || [];
 
-          // Calculate avg completion: total completed lessons / number of students
-          let avgCompletion = 0;
-          if (studentIds.length > 0) {
-            // Get total completed lessons for all students in this cohort
-            const { count: completedCount } = await supabase
-              .from('lesson_progress')
-              .select('id', { count: 'exact', head: true })
-              .in('user_id', studentIds)
-              .eq('cohort_id', cohort.id)
-              .eq('completed', true);
-
-            avgCompletion = Math.round((completedCount || 0) / studentIds.length);
+        // Group enrollments by cohort_id
+        const enrollmentsByCohort: Record<string, string[]> = {};
+        allEnrollments.forEach(e => {
+          if (!enrollmentsByCohort[e.cohort_id]) {
+            enrollmentsByCohort[e.cohort_id] = [];
           }
+          enrollmentsByCohort[e.cohort_id].push(e.user_id);
+        });
+
+        // Count completed lessons by cohort_id
+        const completedByCohort: Record<string, number> = {};
+        allProgress.forEach(p => {
+          if (!completedByCohort[p.cohort_id]) {
+            completedByCohort[p.cohort_id] = 0;
+          }
+          completedByCohort[p.cohort_id]++;
+        });
+
+        // Calculate stats for each cohort
+        const cohortStats = cohorts.map(cohort => {
+          const studentIds = enrollmentsByCohort[cohort.id] || [];
+          const studentCount = studentIds.length;
+          const completedCount = completedByCohort[cohort.id] || 0;
+          const avgCompletion = studentCount > 0 ? Math.round(completedCount / studentCount) : 0;
 
           return {
             ...cohort,
-            studentCount: studentCount || 0,
+            studentCount,
             avgCompletion
           };
-        }));
+        });
 
         tbody.innerHTML = cohortStats.map(cohort => `
           <tr class="border-b border-border">
