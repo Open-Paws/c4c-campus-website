@@ -162,13 +162,15 @@ export const prerender = false;
           if (localValue) return localValue;
           const cookies = document.cookie.split(';');
           const cookie = cookies.find(c => c.trim().startsWith(`${key}=`));
-          return cookie ? decodeURIComponent(cookie.split('=')[1]) : null;
+          // Use substring to handle values containing '=' (e.g., base64 tokens)
+          return cookie ? decodeURIComponent(cookie.substring(cookie.indexOf('=') + 1)) : null;
         },
         setItem: (key, value) => {
           localStorage.setItem(key, value);
           const isSecure = window.location.protocol === 'https:';
           const cookieValue = encodeURIComponent(value);
-          document.cookie = `${key}=${cookieValue}; path=/; max-age=31536000; SameSite=Lax${isSecure ? '; Secure' : ''}`;
+          // 7 days (604800 seconds) - shorter session for security
+          document.cookie = `${key}=${cookieValue}; path=/; max-age=604800; SameSite=Lax${isSecure ? '; Secure' : ''}`;
         },
         removeItem: (key) => {
           localStorage.removeItem(key);

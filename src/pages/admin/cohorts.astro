@@ -248,6 +248,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     import { supabase } from '../../lib/supabase';
     import { showToast, showConfirm } from '../../lib/notifications';
 
+    // XSS protection helper
+    function escapeHTML(str: string): string {
+      if (!str) return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     let currentUser: any = null;
     let allCohorts: any[] = [];
     let filteredCohorts: any[] = [];
@@ -675,11 +686,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                 <span>👤</span>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="font-medium truncate">${student.name}</p>
-                <p class="text-xs text-text-muted truncate">${student.email}</p>
+                <p class="font-medium truncate">${escapeHTML(student.name)}</p>
+                <p class="text-xs text-text-muted truncate">${escapeHTML(student.email)}</p>
               </div>
             </div>
-            <button class="btn btn-sm btn-error remove-student-btn" data-enrollment-id="${enrollment.id}" data-name="${student.name}">
+            <button class="btn btn-sm btn-error remove-student-btn" data-enrollment-id="${escapeHTML(enrollment.id)}" data-name="${escapeHTML(student.name)}">
               Remove
             </button>
           </div>

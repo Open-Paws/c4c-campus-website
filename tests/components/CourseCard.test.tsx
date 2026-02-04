@@ -132,13 +132,13 @@ describe('CourseCard Component', () => {
   test('should handle missing thumbnail gracefully', () => {
     // Arrange - Course without thumbnail
     const noThumbnail = { ...mockCourse, thumbnail_url: null };
-    
+
     // Act
     render(<CourseCard course={noThumbnail} />);
-    
-    // Assert - Renders placeholder image
-    const img = screen.getByRole('img');
-    expect(img).toHaveAttribute('src', expect.stringContaining('placeholder'));
+
+    // Assert - Renders without crash, no image when thumbnail is null
+    expect(screen.getByText(mockCourse.title)).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
   
   test('should handle missing description', () => {

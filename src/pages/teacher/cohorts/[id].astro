@@ -323,6 +323,17 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
     const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
 
+    // XSS protection helper
+    function escapeHTML(str: string): string {
+      if (!str) return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     let currentUser: any = null;
     let cohort: any = null;
     let students: any[] = [];
@@ -529,8 +540,8 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
                   <span class="text-xl">👤</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <h4 class="font-semibold truncate">${student.name}</h4>
-                  <p class="text-sm text-text-muted truncate">${student.email}</p>
+                  <h4 class="font-semibold truncate">${escapeHTML(student.name)}</h4>
+                  <p class="text-sm text-text-muted truncate">${escapeHTML(student.email)}</p>
                   <div class="flex items-center gap-2 mt-1">
                     <span class="text-xs px-2 py-1 rounded ${getStatusBadge(enrollment.status).color}">
                       ${getStatusBadge(enrollment.status).text}
@@ -542,7 +553,7 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
                 </div>
               </div>
               <div class="flex gap-2">
-                <button class="btn btn-sm btn-error remove-student" data-id="${enrollment.id}" data-name="${student.name}">Remove</button>
+                <button class="btn btn-sm btn-error remove-student" data-id="${escapeHTML(enrollment.id)}" data-name="${escapeHTML(student.name)}">Remove</button>
               </div>
             </div>
           </div>

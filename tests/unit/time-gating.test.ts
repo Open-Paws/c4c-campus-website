@@ -396,14 +396,36 @@ describe('Time-Gating Utility Functions', () => {
         })
       });
 
-      // Mock enrollment query failure
+      // Mock cohort enrollment query failure (no cohort enrollment found)
       mockSupabase.from.mockReturnValueOnce({
         select: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
             eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: null,
-                error: { code: 'PGRST116' }
+              eq: vi.fn().mockReturnValue({
+                limit: vi.fn().mockReturnValue({
+                  single: vi.fn().mockResolvedValue({
+                    data: null,
+                    error: { code: 'PGRST116' }
+                  })
+                })
+              })
+            })
+          })
+        })
+      });
+
+      // Mock regular enrollment query failure (no regular enrollment either)
+      mockSupabase.from.mockReturnValueOnce({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                limit: vi.fn().mockReturnValue({
+                  single: vi.fn().mockResolvedValue({
+                    data: null,
+                    error: { code: 'PGRST116' }
+                  })
+                })
               })
             })
           })

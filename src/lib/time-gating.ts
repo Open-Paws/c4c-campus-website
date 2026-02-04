@@ -209,13 +209,16 @@ export async function canAccessLesson(
     };
   }
 
+  // Extract course_id from the joined modules (Supabase !inner returns single object)
+  const courseId = (lesson.modules as unknown as { course_id: number }).course_id;
+
   // 2. Check user's enrollment - first try cohort enrollment, then fall back to regular enrollment
   const { data: cohortEnrollment } = await supabase
     .from('cohort_enrollments')
     .select('cohort_id, cohorts!inner(course_id)')
     .eq('user_id', userId)
     .eq('status', 'active')
-    .eq('cohorts.course_id', lesson.modules.course_id)
+    .eq('cohorts.course_id', courseId)
     .limit(1)
     .single();
 
@@ -246,7 +249,7 @@ export async function canAccessLesson(
     .from('enrollments')
     .select('id')
     .eq('user_id', userId)
-    .eq('course_id', lesson.modules.course_id)
+    .eq('course_id', courseId)
     .eq('status', 'active')
     .limit(1)
     .single();
