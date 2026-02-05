@@ -20,6 +20,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="flex items-center gap-3">
             <!-- Navigation Links -->
             <a href="/courses" class="hidden sm:block btn btn-ghost btn-sm">Courses</a>
+            <a href="/assignments" class="hidden sm:block btn btn-ghost btn-sm">Assignments</a>
+            <a href="/certificates" class="hidden sm:block btn btn-ghost btn-sm">Certificates</a>
 
             <!-- Language Selector -->
             <select id="language-selector" class="notranslate hidden sm:block border border-border rounded-lg px-3 py-2 text-sm bg-background" translate="no">
@@ -43,6 +45,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <option value="ar">العربية</option>
             </select>
             <div id="google_translate_element" style="display: none;"></div>
+            <div id="notification-bell-root" class="hidden sm:block"></div>
             <button id="logout-btn" class="btn btn-ghost text-sm">
               Sign Out
             </button>
@@ -191,8 +194,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       document.getElementById('loading-state')?.classList.add('hidden');
       document.getElementById('dashboard-content')?.classList.remove('hidden');
 
+      // Mount notification bell
+      mountNotificationBell(session.user.id, session.access_token);
+
       // Load course data
       loadEnrollments();
+    }
+
+    async function mountNotificationBell(userId: string, accessToken: string) {
+      const root = document.getElementById('notification-bell-root');
+      if (!root) return;
+      try {
+        const { default: NotificationBell } = await import('../components/NotificationBell');
+        const { createRoot } = await import('react-dom/client');
+        const { createElement } = await import('react');
+        createRoot(root).render(createElement(NotificationBell, { userId, accessToken }));
+      } catch (err) {
+        console.error('Error mounting notification bell:', err);
+      }
     }
 
     // Load user's course enrollments with real progress data

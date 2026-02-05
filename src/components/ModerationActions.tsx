@@ -10,7 +10,7 @@
  * Reference: tests/integration/discussion-schema.test.ts
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type FC } from 'react';
 
 interface ModerationActionsProps {
   commentId?: string;
@@ -23,7 +23,7 @@ interface ModerationActionsProps {
   className?: string;
 }
 
-export const ModerationActions: React.FC<ModerationActionsProps> = ({
+export const ModerationActions: FC<ModerationActionsProps> = ({
   commentId,
   forumPostId,
   isPinned = false,

@@ -102,6 +102,11 @@ export const prerender = false;
           </button>
         </div>
       </div>
+
+      <!-- Course Forum Section -->
+      <div id="forum-section" class="hidden mt-6">
+        <div id="forum-root"></div>
+      </div>
     </div>
 
     <!-- Add/Edit Module Modal -->
@@ -281,6 +286,9 @@ export const prerender = false;
     if (!isTeacher && userCohortId && modules.length > 0) {
       showContinueLearningBanner();
     }
+
+    // Load forum for enrolled students and teachers
+    await loadForum();
 
     // Show content
     document.getElementById('loading-state')?.classList.add('hidden');
@@ -843,6 +851,34 @@ export const prerender = false;
       console.error('Enrollment error:', error);
       dismissToast(loadingId);
       showToast('Error enrolling in cohort. Please try again.', 'error');
+    }
+  }
+
+  async function loadForum() {
+    if (!currentCourse || !currentUser) return;
+    // Show forum for enrolled students (who have a cohort) or teachers
+    if (!userCohortId && !isTeacher) return;
+
+    const section = document.getElementById('forum-section');
+    const root = document.getElementById('forum-root');
+    if (!section || !root) return;
+
+    try {
+      const { CourseForum } = await import('../../components/CourseForum');
+      const { createRoot } = await import('react-dom/client');
+      const { createElement } = await import('react');
+
+      const reactRoot = createRoot(root);
+      reactRoot.render(createElement(CourseForum, {
+        courseId: currentCourse.id,
+        cohortId: userCohortId || '',
+        currentUserId: currentUser.id,
+        isTeacher
+      }));
+
+      section.classList.remove('hidden');
+    } catch (err) {
+      console.error('Error loading forum:', err);
     }
   }
 

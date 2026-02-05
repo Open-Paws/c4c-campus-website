@@ -68,6 +68,7 @@ const navItems = [
               <option value="ko">한국어</option>
               <option value="ar">العربية</option>
             </select>
+            <div id="notification-bell-root" class="hidden sm:block"></div>
             <button id="admin-logout-btn" class="btn btn-ghost btn-sm text-error">
               Sign Out
             </button>
@@ -146,7 +147,23 @@ const navItems = [
         return false;
       }
 
+      // Mount notification bell after auth succeeds
+      mountNotificationBell(session.user.id, session.access_token);
+
       return true;
+    }
+
+    async function mountNotificationBell(userId: string, accessToken: string) {
+      const root = document.getElementById('notification-bell-root');
+      if (!root) return;
+      try {
+        const { default: NotificationBell } = await import('../components/NotificationBell');
+        const { createRoot } = await import('react-dom/client');
+        const { createElement } = await import('react');
+        createRoot(root).render(createElement(NotificationBell, { userId, accessToken }));
+      } catch (err) {
+        console.error('Error mounting notification bell:', err);
+      }
     }
 
     // Logout handler

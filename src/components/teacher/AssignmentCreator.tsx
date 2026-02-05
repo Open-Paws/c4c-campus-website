@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 import type { Assignment } from '@/types/assignment';
 
 interface AssignmentCreatorProps {
@@ -66,7 +67,6 @@ export default function AssignmentCreator({
     setError('');
 
     try {
-      const supabase = (window as any).supabase;
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {

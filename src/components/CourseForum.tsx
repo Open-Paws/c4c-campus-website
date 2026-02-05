@@ -13,7 +13,7 @@
  * Reference: tests/integration/discussion-schema.test.ts
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type FC } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { CourseForumPost, ForumReply, UserProfile } from '../types';
 import { CommentInput } from './CommentInput';
@@ -37,7 +37,7 @@ interface ForumReplyWithAuthor extends ForumReply {
   author: UserProfile;
 }
 
-export const CourseForum: React.FC<CourseForumProps> = ({
+export const CourseForum: FC<CourseForumProps> = ({
   courseId,
   cohortId,
   currentUserId,

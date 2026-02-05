@@ -12,7 +12,7 @@
  * Reference: Tiptap documentation
  */
 
-import React, { useState } from 'react';
+import { useState, type FC } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -29,7 +29,7 @@ interface CommentInputProps {
   autoFocus?: boolean;
 }
 
-export const CommentInput: React.FC<CommentInputProps> = ({
+export const CommentInput: FC<CommentInputProps> = ({
   onSubmit,
   onCancel,
   placeholder = 'Write your comment...',

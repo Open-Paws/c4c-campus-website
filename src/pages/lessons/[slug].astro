@@ -14,7 +14,9 @@
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LessonDiscussionContainer } from '../../components/LessonDiscussionContainer';
 
+const { slug } = Astro.params;
 
 export const prerender = false;
 ---
@@ -106,16 +108,30 @@ export const prerender = false;
 
         <!-- Assignments -->
         <div id="assignments-container" class="hidden mb-8 card">
-          <h3 class="text-lg font-bold mb-4">Assignments</h3>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold">Assignments</h3>
+            <button id="create-assignment-btn" class="hidden btn btn-primary btn-sm">+ Create Assignment</button>
+          </div>
           <div id="assignments-list" class="space-y-3">
             <!-- Assignments will be listed here -->
           </div>
         </div>
 
+        <!-- Assignment Creator (teachers only) -->
+        <div id="assignment-creator-root"></div>
+
         <!-- Quiz Section -->
         <div id="quiz-container" class="hidden mb-8">
           <div id="quiz-root"></div>
         </div>
+
+        <!-- Teacher Quiz Actions -->
+        <div id="quiz-actions" class="hidden mb-8">
+          <button id="create-quiz-btn" class="btn btn-primary btn-sm">+ Create Quiz</button>
+        </div>
+
+        <!-- Quiz Creator (teachers only) -->
+        <div id="quiz-creator-root"></div>
 
         <!-- Lesson Completion Section (students only) -->
         <div id="completion-section" class="hidden mb-8 p-6 rounded-xl bg-white border border-gray-200 border-t-2" style="border-top-color: #E5E7EB;">
@@ -141,16 +157,15 @@ export const prerender = false;
           </button>
         </div>
 
-        <!-- Discussion Section - DISABLED FOR LAUNCH
+        <!-- Discussion Section -->
         {slug && (
-          <div class="card">
+          <div class="card" style="margin-top: 2rem;">
             <LessonDiscussionContainer
               client:only="react"
               slug={slug}
             />
           </div>
         )}
-        -->
       </div>
     </div>
   </div>
@@ -453,6 +468,14 @@ export const prerender = false;
     if (!isTeacher) {
       document.getElementById('completion-section')?.classList.remove('hidden');
       updateCompletionButton();
+    }
+
+    // Show teacher creation buttons if teacher owns this course
+    if (isTeacher && currentCourse && currentUser && currentCourse.created_by === currentUser.id) {
+      // Show the assignments container so teachers can always see it (even if empty) and add assignments
+      document.getElementById('assignments-container')?.classList.remove('hidden');
+      document.getElementById('create-assignment-btn')?.classList.remove('hidden');
+      document.getElementById('quiz-actions')?.classList.remove('hidden');
     }
   }
 
@@ -814,7 +837,55 @@ export const prerender = false;
     }
   }
 
+  async function showAssignmentCreator() {
+    const root = document.getElementById('assignment-creator-root');
+    if (!root || !currentLesson || !currentCourse) return;
+
+    const { default: AssignmentCreator } = await import('../../components/teacher/AssignmentCreator');
+    const { createRoot } = await import('react-dom/client');
+    const { createElement } = await import('react');
+
+    const reactRoot = createRoot(root);
+    reactRoot.render(createElement(AssignmentCreator, {
+      lessonId: currentLesson.id,
+      courseName: currentCourse.title,
+      lessonName: currentLesson.title,
+      onClose: () => reactRoot.unmount(),
+      onSuccess: () => {
+        reactRoot.unmount();
+        loadAssignments();
+      }
+    }));
+  }
+
+  async function showQuizCreator() {
+    const root = document.getElementById('quiz-creator-root');
+    if (!root || !currentLesson || !currentCourse) return;
+
+    const { default: QuizCreator } = await import('../../components/teacher/QuizCreator');
+    const { createRoot } = await import('react-dom/client');
+    const { createElement } = await import('react');
+
+    const reactRoot = createRoot(root);
+    reactRoot.render(createElement(QuizCreator, {
+      lessonId: currentLesson.id,
+      courseName: currentCourse.title,
+      lessonName: currentLesson.title,
+      onClose: () => reactRoot.unmount(),
+      onSuccess: () => {
+        reactRoot.unmount();
+        loadQuizzes();
+      }
+    }));
+  }
+
   function setupEventListeners() {
+    // Create Assignment button (teachers only)
+    document.getElementById('create-assignment-btn')?.addEventListener('click', showAssignmentCreator);
+
+    // Create Quiz button (teachers only)
+    document.getElementById('create-quiz-btn')?.addEventListener('click', showQuizCreator);
+
     // Mark complete button - toggles between completed and not started
     document.getElementById('mark-complete-btn')?.addEventListener('click', async () => {
       if (!currentUser || !currentLesson) return;
