@@ -24,6 +24,7 @@
  */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';
+import DOMPurify from 'dompurify';
 
 /**
  * ============================================================================
@@ -943,14 +944,8 @@ describe('Error Handling & Edge Cases', () => {
 
   test('should handle XSS attempts in comment content', () => {
     const maliciousComment = '<script>alert("XSS")</script>Hello';
-    // Use a loop to fully strip script tags (prevents nested/partial tag bypass)
-    let sanitized = maliciousComment;
-    let prev = '';
-    while (prev !== sanitized) {
-      prev = sanitized;
-      sanitized = sanitized.replace(/<script[\s\S]*?<\/script[\s]*>/gi, '');
-    }
-    sanitized = sanitized.replace(/<[^>]+>/g, '');
+    // Use DOMPurify for proper HTML sanitization (regex-based stripping is bypassable)
+    const sanitized = DOMPurify.sanitize(maliciousComment, { ALLOWED_TAGS: [] });
 
     expect(sanitized).not.toContain('<script>');
     expect(sanitized).toContain('Hello');

@@ -24,6 +24,7 @@
  */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';
+import DOMPurify from 'dompurify';
 
 /**
  * ============================================================================
@@ -1541,13 +1542,8 @@ describe('Teacher Dashboard - Edge Cases & Accessibility', () => {
     // Arrange
     const xssAttempt = '<script>alert("xss")</script>';
 
-    // Act - use a loop to fully strip script tags (prevents nested/partial tag bypass)
-    let sanitized = xssAttempt;
-    let prev = '';
-    while (prev !== sanitized) {
-      prev = sanitized;
-      sanitized = sanitized.replace(/<script[\s\S]*?<\/script[\s]*>/gi, '');
-    }
+    // Act - use DOMPurify for proper HTML sanitization (regex-based stripping is bypassable)
+    const sanitized = DOMPurify.sanitize(xssAttempt, { ALLOWED_TAGS: [] });
 
     // Assert
     expect(sanitized).not.toContain('<script>');
