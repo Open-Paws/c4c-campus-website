@@ -109,5 +109,9 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "overrides": {
+    "path-to-regexp": "6.3.0",
+    "lodash": "4.17.23"
   }
 }

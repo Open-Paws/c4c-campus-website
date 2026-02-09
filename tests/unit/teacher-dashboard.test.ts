@@ -1541,8 +1541,13 @@ describe('Teacher Dashboard - Edge Cases & Accessibility', () => {
     // Arrange
     const xssAttempt = '<script>alert("xss")</script>';
 
-    // Act
-    const sanitized = xssAttempt.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    // Act - use a loop to fully strip script tags (prevents nested/partial tag bypass)
+    let sanitized = xssAttempt;
+    let prev = '';
+    while (prev !== sanitized) {
+      prev = sanitized;
+      sanitized = sanitized.replace(/<script[\s\S]*?<\/script[\s]*>/gi, '');
+    }
 
     // Assert
     expect(sanitized).not.toContain('<script>');

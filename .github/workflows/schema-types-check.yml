@@ -24,6 +24,10 @@ on:
       - 'scripts/scan-field-names.js'
       - 'scripts/detect-case-mismatches.js'
 
+
+permissions:
+  contents: read
+
 jobs:
   check-schema-types:
     name: Verify Schema-Types Sync

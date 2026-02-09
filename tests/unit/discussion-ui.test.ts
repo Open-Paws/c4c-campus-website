@@ -943,9 +943,14 @@ describe('Error Handling & Edge Cases', () => {
 
   test('should handle XSS attempts in comment content', () => {
     const maliciousComment = '<script>alert("XSS")</script>Hello';
-    const sanitized = maliciousComment
-      .replace(/<script[^>]*>.*?<\/script>/gi, '')
-      .replace(/<[^>]+>/g, '');
+    // Use a loop to fully strip script tags (prevents nested/partial tag bypass)
+    let sanitized = maliciousComment;
+    let prev = '';
+    while (prev !== sanitized) {
+      prev = sanitized;
+      sanitized = sanitized.replace(/<script[\s\S]*?<\/script[\s]*>/gi, '');
+    }
+    sanitized = sanitized.replace(/<[^>]+>/g, '');
 
     expect(sanitized).not.toContain('<script>');
     expect(sanitized).toContain('Hello');
