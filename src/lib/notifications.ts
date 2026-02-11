@@ -6,6 +6,12 @@
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
 const TOAST_CONTAINER_ID = 'c4c-toast-container';
+
+function escapeHtml(str: string): string {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
 const DEFAULT_DURATION = 5000;
 
 /**
@@ -91,7 +97,7 @@ export function showToast(
   toast.style.cssText = getToastStyles(type);
   toast.innerHTML = `
     <span style="font-size: 18px;">${getToastIcon(type)}</span>
-    <span style="flex: 1;">${message}</span>
+    <span style="flex: 1;">${escapeHtml(message)}</span>
     <button onclick="this.parentElement.remove()" style="
       background: none;
       border: none;
@@ -167,7 +173,7 @@ export function showConfirm(
         width: 90%;
         box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       ">
-        <p style="margin: 0 0 20px; font-size: 16px; color: #1f2937;">${message}</p>
+        <p style="margin: 0 0 20px; font-size: 16px; color: #1f2937;">${escapeHtml(message)}</p>
         <div style="display: flex; gap: 12px; justify-content: flex-end;">
           <button id="confirm-cancel" style="
             padding: 10px 20px;
@@ -176,7 +182,7 @@ export function showConfirm(
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-          ">${cancelText}</button>
+          ">${escapeHtml(cancelText)}</button>
           <button id="confirm-ok" style="
             padding: 10px 20px;
             border: none;
@@ -185,7 +191,7 @@ export function showConfirm(
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-          ">${confirmText}</button>
+          ">${escapeHtml(confirmText)}</button>
         </div>
       </div>
     `;
@@ -235,7 +241,7 @@ export function setButtonLoading(
           border-radius: 50%;
           animation: spin 0.75s linear infinite;
         "></span>
-        ${loadingText}
+        ${escapeHtml(loadingText)}
       </span>
     `;
   } else {
@@ -275,7 +281,7 @@ export function showLoading(message: string = 'Loading...'): string {
       border-radius: 50%;
       animation: spin 1s linear infinite;
     "></div>
-    <p style="margin-top: 16px; color: #4b5563; font-size: 16px;">${message}</p>
+    <p style="margin-top: 16px; color: #4b5563; font-size: 16px;">${escapeHtml(message)}</p>
   `;
 
   document.body.appendChild(overlay);

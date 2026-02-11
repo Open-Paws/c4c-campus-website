@@ -1,7 +1,7 @@
 /**
  * SearchResults Component
  *
- * Displays search results with highlighting and metadata
+ * Displays search results with metadata
  */
 
 interface SearchResult {
@@ -9,7 +9,6 @@ interface SearchResult {
   type: 'course' | 'lesson' | 'discussion' | 'forum';
   title: string;
   description: string;
-  highlight?: string;
   url: string;
   relevance: number;
   metadata: Record<string, any>;
@@ -102,17 +101,10 @@ export default function SearchResults({ results, query, total }: SearchResultsPr
             </a>
           </h3>
 
-          {/* Description with highlights */}
-          {result.highlight ? (
-            <div
-              className="text-gray-600 text-sm mb-3 line-clamp-2"
-              dangerouslySetInnerHTML={{ __html: result.highlight }}
-            />
-          ) : (
-            <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-              {result.description}
-            </p>
-          )}
+          {/* Description */}
+          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+            {result.description}
+          </p>
 
           {/* Metadata */}
           <div className="flex flex-wrap gap-3 text-xs text-gray-500">
