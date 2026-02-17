@@ -30,12 +30,6 @@ export interface AssignmentGradedEmailData {
   gradedAt: string;
 }
 
-export interface WelcomeEmailData {
-  name: string;
-  email: string;
-  program: string;
-}
-
 export interface EnrollmentEmailData {
   studentName: string;
   studentEmail: string;
@@ -190,55 +184,6 @@ export async function sendAssignmentGradedEmail(
     });
   } catch (error) {
     console.error('Failed to send assignment graded email:', error);
-  }
-}
-
-/**
- * Send welcome email to newly approved applicant
- * @param data - Welcome email data
- */
-export async function sendWelcomeEmail(data: WelcomeEmailData): Promise<void> {
-  const { name, email, program } = data;
-
-  try {
-    await resend.emails.send({
-      from: FROM_EMAIL,
-      to: email,
-      subject: `Welcome to C4C Campus ${program}!`,
-      html: `
-        <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #10b981;">Welcome to C4C Campus!</h2>
-
-          <p>Hi ${name},</p>
-
-          <p>Congratulations! Your application to the <strong>${program}</strong> program has been approved.</p>
-
-          <p>You're now part of a community of builders using AI to accelerate animal liberation. Here's what to do next:</p>
-
-          <ol style="line-height: 1.8;">
-            <li>Log in to your dashboard</li>
-            <li>Complete your profile</li>
-            <li>Browse available courses</li>
-            <li>Join our community channels</li>
-          </ol>
-
-          <p>
-            <a href="${process.env.SITE_URL || 'https://codeforcompassion.com'}/dashboard"
-               style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
-              Go to Dashboard
-            </a>
-          </p>
-
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;" />
-
-          <p style="color: #9ca3af; font-size: 14px;">
-            C4C Campus - AI Development Accelerator for Animal Liberation
-          </p>
-        </div>
-      `,
-    });
-  } catch (error) {
-    console.error('Failed to send welcome email:', error);
   }
 }
 
