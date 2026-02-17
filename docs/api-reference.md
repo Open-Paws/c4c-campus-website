@@ -103,7 +103,6 @@ Built-in rate limiting with presets:
 | `/api/users/search` | GET | Search users by name/email |
 | `/api/content/media` | POST | Upload media files |
 | `/api/submissions/[id]/download` | GET | Download submission file |
-| `/api/supabase-webhook` | POST | Handle Supabase events |
 
 ## Endpoint Organization
 

@@ -225,7 +225,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSave, onCanc
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className={labelClass}>Category *</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
+          <select value={category} onChange={(e) => setCategory(e.target.value as typeof category)} className={inputClass}>
             {BLOG_CATEGORIES.map(cat => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
@@ -245,7 +245,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSave, onCanc
 
         <div>
           <label className={labelClass}>Status</label>
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className={inputClass}>
+          <select value={status} onChange={(e) => setStatus(e.target.value as typeof status)} className={inputClass}>
             <option value="draft">Draft</option>
             <option value="published">Published</option>
             <option value="archived">Archived</option>

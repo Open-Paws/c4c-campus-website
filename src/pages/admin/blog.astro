@@ -126,22 +126,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
 <script>
   import { supabase } from '../../lib/supabase';
-
-  interface BlogPost {
-    id: string;
-    title: string;
-    slug: string;
-    description: string | null;
-    content: string;
-    featured_image: string | null;
-    category: string;
-    tags: string[] | null;
-    author_name: string | null;
-    status: string;
-    published_at: string | null;
-    created_at: string;
-    updated_at: string;
-  }
+  import type { BlogPost } from '../../types/index';
 
   let allPosts: BlogPost[] = [];
   let currentFilter = 'all';

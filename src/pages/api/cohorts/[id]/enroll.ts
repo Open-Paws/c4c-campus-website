@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { sendEnrollmentEmail } from '../../../../lib/email-notifications';
 
 export const prerender = false;
 
@@ -139,7 +140,7 @@ export const POST: APIRoute = async ({ request, params }) => {
     // Check if course is published
     const { data: course, error: courseError } = await supabase
       .from('courses')
-      .select('id, is_published')
+      .select('id, title, is_published')
       .eq('id', cohort.course_id)
       .single();
 
@@ -231,6 +232,27 @@ export const POST: APIRoute = async ({ request, params }) => {
         console.error('Course enrollment error:', courseEnrollError);
         // Continue anyway - cohort enrollment is more important
       }
+    }
+
+    // Send enrollment confirmation email (non-blocking)
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', targetUserId)
+        .single();
+
+      if (profile?.email) {
+        sendEnrollmentEmail({
+          studentName: profile.full_name || 'Student',
+          studentEmail: profile.email,
+          courseName: course.title,
+          cohortName: cohort.name,
+          startDate: cohort.start_date,
+        }).catch(err => console.error('Enrollment email error:', err));
+      }
+    } catch (emailErr) {
+      console.error('Failed to send enrollment email:', emailErr);
     }
 
     return new Response(

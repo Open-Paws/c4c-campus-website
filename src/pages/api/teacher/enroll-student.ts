@@ -18,6 +18,7 @@ import {
   verifyTeacherOrAdminAccess,
   createServiceClient,
 } from '../../../lib/auth';
+import { sendEnrollmentEmail } from '../../../lib/email-notifications';
 
 export const prerender = false;
 
@@ -52,7 +53,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Verify teacher owns this course
     const { data: course, error: courseError } = await supabase
       .from('courses')
-      .select('id, created_by')
+      .select('id, title, created_by')
       .eq('id', courseId)
       .single();
 
@@ -161,6 +162,26 @@ export const POST: APIRoute = async ({ request }) => {
           });
         }
       }
+    }
+
+    // Send enrollment confirmation email (non-blocking)
+    try {
+      const [{ data: profile }, { data: cohort }] = await Promise.all([
+        supabase.from('profiles').select('full_name, email').eq('id', userId).single(),
+        supabase.from('cohorts').select('name, start_date').eq('id', cohortId).single(),
+      ]);
+
+      if (profile?.email) {
+        sendEnrollmentEmail({
+          studentName: profile.full_name || 'Student',
+          studentEmail: profile.email,
+          courseName: course.title,
+          cohortName: cohort?.name,
+          startDate: cohort?.start_date,
+        }).catch(err => console.error('Enrollment email error:', err));
+      }
+    } catch (emailErr) {
+      console.error('Failed to send enrollment email:', emailErr);
     }
 
     return new Response(JSON.stringify({ success: true }), {
