@@ -56,6 +56,7 @@
 --       │   └── ai_messages
 --       ├── certificates (→ certificate_templates)
 --       └── payments
+--   blog_posts (standalone, FK to auth.users)
 --
 -- ============================================================================
 
@@ -89,6 +90,7 @@ DROP TABLE IF EXISTS assignments CASCADE;
 DROP TABLE IF EXISTS ai_conversations CASCADE;
 DROP TABLE IF EXISTS media_library CASCADE;
 DROP TABLE IF EXISTS analytics_events CASCADE;
+DROP TABLE IF EXISTS blog_posts CASCADE;
 
 -- Level 4 - Module/cohort dependencies
 DROP TABLE IF EXISTS lessons CASCADE;
@@ -1284,6 +1286,35 @@ CREATE INDEX IF NOT EXISTS idx_media_library_uploaded_by ON media_library(upload
 CREATE INDEX IF NOT EXISTS idx_media_library_tags ON media_library USING GIN(tags);
 
 -- ============================================================================
+-- BLOG
+-- ============================================================================
+
+-- Blog posts table
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  content TEXT NOT NULL DEFAULT '',
+  featured_image TEXT,
+  category TEXT NOT NULL CHECK (category IN ('News', 'Community', 'Technical', 'Impact')),
+  tags TEXT[],
+  author_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  author_name TEXT,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_status ON blog_posts(status);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_category ON blog_posts(category);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_published_at ON blog_posts(published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_author ON blog_posts(author_id);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_tags ON blog_posts USING GIN(tags);
+
+-- ============================================================================
 -- ANALYTICS
 -- ============================================================================
 
@@ -1566,6 +1597,9 @@ CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON subscriptions
 CREATE TRIGGER update_media_library_updated_at BEFORE UPDATE ON media_library
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+CREATE TRIGGER update_blog_posts_updated_at BEFORE UPDATE ON blog_posts
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
 -- ============================================================================
 -- ROW LEVEL SECURITY (RLS)
 -- ============================================================================
@@ -1604,6 +1638,7 @@ ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE media_library ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 
 -- Applications policies
 CREATE POLICY "Users view own applications" ON applications FOR SELECT USING ((select auth.uid()) = user_id);
@@ -1797,6 +1832,10 @@ CREATE POLICY "Users update own media" ON media_library FOR UPDATE USING (upload
 CREATE POLICY "Users view own analytics" ON analytics_events FOR SELECT USING ((select auth.uid()) = user_id);
 CREATE POLICY "System creates events" ON analytics_events FOR INSERT WITH CHECK (true);
 CREATE POLICY "Admins view all analytics" ON analytics_events FOR SELECT USING (is_admin((select auth.uid())));
+
+-- Blog posts policies
+CREATE POLICY "Public view published blog posts" ON blog_posts FOR SELECT USING (status = 'published');
+CREATE POLICY "Admins manage all blog posts" ON blog_posts FOR ALL USING (is_admin((select auth.uid())));
 
 -- Auth logs policies (service role only)
 CREATE POLICY "Service role manages auth logs" ON auth_logs FOR ALL USING ((select auth.jwt()) ->> 'role' = 'service_role');

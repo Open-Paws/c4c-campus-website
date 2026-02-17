@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="Apply - C4C Campus"
-  description="Apply to the weekend bootcamp, hackathons, or full-time accelerator at Code for Compassion Campus. In-person in Bengaluru or remote from anywhere."
+  description="Apply to the bootcamp, hackathons, or full-time accelerator at Code for Compassion Campus."
 >
   <div class="section">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,8 +22,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="grid md:grid-cols-3 gap-6 mb-16">
         <button id="show-bootcamp" class="card border-2 border-primary hover:shadow-lg transition-all text-left program-selector">
           <div class="text-4xl mb-3">📚</div>
-          <h2 class="text-2xl font-bold mb-2">Weekend Bootcamp</h2>
-          <p class="text-text-muted mb-4">10 weeks, Saturdays, 2.5 hour classes. Remote and in-person options. No technical skills required.</p>
+          <h2 class="text-2xl font-bold mb-2">Bootcamp</h2>
+          <p class="text-text-muted mb-4">Free, self-paced 10-week course. New content released weekly. No technical skills required.</p>
           <p class="text-sm font-bold text-primary">→ Apply to Bootcamp</p>
         </button>
 
@@ -45,11 +45,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <!-- Bootcamp Application -->
       <div id="bootcamp" class="mb-16 hidden">
         <div class="card bg-surface">
-          <h2 class="text-3xl font-bold mb-6">Weekend Bootcamp Application</h2>
+          <h2 class="text-3xl font-bold mb-6">Bootcamp Application</h2>
 
           <div class="bg-primary/5 p-4 rounded-lg mb-6">
             <p class="text-sm text-text-muted mb-3">
-              <strong>10 weeks of weekend classes</strong> with a 2.5 hour class each Saturday. Options for both remote and in-person participation in Bengaluru.
+              <strong>Free, self-paced 10-week course.</strong> New content released weekly — complete it in your own time.
             </p>
             <p class="text-sm text-text-muted mb-3">
               <strong>What we're looking for:</strong> Curiosity about building compassionate AI.
@@ -62,7 +62,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
           <form id="bootcamp-form" class="space-y-6">
             <div id="bootcamp-start-notice" class="bg-primary/10 border-l-4 border-primary p-4 rounded-r-lg mb-6">
-              <p class="font-bold text-primary">Next bootcamp starts soon</p>
+              <p class="font-bold text-primary">The bootcamp is free and self-paced — start anytime</p>
             </div>
 
             <!-- Personal Info -->
@@ -168,11 +168,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
 
             <div>
-              <label for="bootcamp-commitment" class="block font-bold mb-2">Can you commit to 10 weeks (Saturdays, 2.5 hours each)? *</label>
+              <label for="bootcamp-commitment" class="block font-bold mb-2">Can you commit to the 10-week self-paced course? *</label>
               <select id="bootcamp-commitment" name="commitment" required class="w-full px-4 py-3 border border-border rounded-lg">
                 <option value="">Select...</option>
-                <option>Yes, in-person in Bengaluru</option>
-                <option>Yes, remote participation</option>
+                <option>Yes, I can commit to 10 weeks</option>
                 <option>Need to discuss timing</option>
                 <option>No, but interested in future cohorts</option>
               </select>
@@ -227,7 +226,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <strong>12-week program:</strong> In-person at C4C Campus in Bengaluru. Intensive development, mentorship, pitch preparation, and investor introductions.
             </p>
             <p class="text-sm text-text-muted mb-3">
-              <strong>Animal Advocacy Pre-Accelerator (AARC):</strong> Optional 4-week programme for animal protection projects. Teams arrive with prototypes, pitch to investors in week 1, and successful teams graduate to the main accelerator.
+              <strong>Animal Rights Coding Camp (ARCC):</strong> Optional 4-week programme for animal protection projects. Teams arrive with prototypes, pitch to investors in week 1, and successful teams graduate to the main accelerator.
             </p>
             <p class="text-sm text-text-muted">
               <strong>What we're looking for:</strong> Developers with an existing prototype or MVP.
@@ -364,7 +363,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <select name="commitment" required class="w-full px-4 py-3 border border-border rounded-lg">
                 <option value="">Select...</option>
                 <option>Yes, I can commit to the full 12-week accelerator</option>
-                <option>Yes, interested in 4-week animal advocacy pre-accelerator (AARC)</option>
+                <option>Yes, interested in 4-week Animal Rights Coding Camp (ARCC)</option>
                 <option>Yes, interested in both pre-accelerator and full accelerator</option>
                 <option>Need to discuss timing</option>
                 <option>No, but interested in future cohorts</option>

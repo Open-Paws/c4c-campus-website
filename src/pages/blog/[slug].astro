@@ -1,0 +1,206 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const { slug } = Astro.params;
+
+if (!slug || !supabaseUrl || !supabaseServiceKey) {
+  return Astro.redirect('/blog');
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+const { data: post } = await supabase
+  .from('blog_posts')
+  .select('*')
+  .eq('slug', slug)
+  .eq('status', 'published')
+  .single();
+
+if (!post) {
+  return Astro.redirect('/blog');
+}
+
+const date = post.published_at
+  ? new Date(post.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  : new Date(post.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+// Get prev/next posts
+const { data: allPosts } = await supabase
+  .from('blog_posts')
+  .select('slug, title, published_at')
+  .eq('status', 'published')
+  .not('published_at', 'is', null)
+  .order('published_at', { ascending: false });
+
+const postList = allPosts || [];
+const currentIndex = postList.findIndex(p => p.slug === slug);
+const prevPost = currentIndex < postList.length - 1 ? postList[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? postList[currentIndex - 1] : null;
+
+const pageImage = post.featured_image || '/logo.jpeg';
+const isoDate = post.published_at || post.created_at;
+---
+
+<BaseLayout title={`${post.title} - C4C Blog`} description={post.description || ''} image={pageImage}>
+  <!-- JSON-LD Article Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.description || '',
+    "image": pageImage.startsWith('http') ? pageImage : `https://codeforcompassion.com${pageImage}`,
+    "datePublished": isoDate,
+    "dateModified": post.updated_at,
+    "author": {
+      "@type": "Organization",
+      "name": post.author_name || "C4C Team",
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Code for Compassion Campus",
+      "logo": { "@type": "ImageObject", "url": "https://codeforcompassion.com/logo.jpeg" },
+    },
+  })} />
+
+  <div class="section">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <a href="/blog" class="btn btn-outline btn-sm mb-8 inline-block">&larr; Back to Blog</a>
+
+      <div class="card">
+        {post.featured_image && (
+          <img
+            src={post.featured_image}
+            alt={post.title}
+            class="w-full h-64 object-cover rounded-lg mb-6"
+            loading="eager"
+          />
+        )}
+
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-xs text-text-muted uppercase tracking-wide">{post.category}</span>
+          <span class="text-xs text-text-muted">{date}</span>
+          <span class="text-xs text-text-muted">By {post.author_name || 'C4C Team'}</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black mb-4 leading-tight">{post.title}</h1>
+        {post.description && <p class="text-lg text-text-muted mb-6">{post.description}</p>}
+
+        <hr class="mb-6" style="border-color: hsl(var(--border));" />
+
+        <div class="blog-content" set:html={post.content} />
+
+        {post.tags && post.tags.length > 0 && (
+          <div class="mt-8 pt-4 border-t" style="border-color: hsl(var(--border));">
+            <div class="flex flex-wrap gap-2">
+              {post.tags.map((tag: string) => (
+                <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-text-muted">{tag}</span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- Post Navigation -->
+      <div class="grid grid-cols-2 gap-4 mt-6">
+        {prevPost ? (
+          <a href={`/blog/${prevPost.slug}`} class="card">
+            <div class="text-xs text-text-muted mb-1">&larr; Older</div>
+            <div class="text-sm font-bold">{prevPost.title}</div>
+          </a>
+        ) : <div />}
+        {nextPost ? (
+          <a href={`/blog/${nextPost.slug}`} class="card text-right">
+            <div class="text-xs text-text-muted mb-1">Newer &rarr;</div>
+            <div class="text-sm font-bold">{nextPost.title}</div>
+          </a>
+        ) : <div />}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  .blog-content h2 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: hsl(var(--text));
+  }
+  .blog-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: hsl(var(--text));
+  }
+  .blog-content p {
+    margin-bottom: 1rem;
+    line-height: 1.75;
+    color: hsl(var(--text-muted));
+  }
+  .blog-content ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .blog-content ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .blog-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+    color: hsl(var(--text-muted));
+  }
+  .blog-content strong {
+    color: hsl(var(--text));
+    font-weight: 600;
+  }
+  .blog-content a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+  }
+  .blog-content a:hover {
+    color: hsl(var(--primary-dark));
+  }
+  .blog-content blockquote {
+    border-left: 3px solid hsl(var(--border));
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: hsl(var(--text-muted));
+  }
+  .blog-content pre {
+    background: hsl(var(--surface));
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+  .blog-content code {
+    background: hsl(var(--surface));
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+  .blog-content pre code {
+    background: none;
+    padding: 0;
+  }
+  .blog-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  .blog-content hr {
+    border-color: hsl(var(--border));
+    margin: 2rem 0;
+  }
+</style>

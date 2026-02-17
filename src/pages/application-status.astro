@@ -354,7 +354,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <p class="mt-1 whitespace-pre-wrap">${escapeHtml(userApplication.technical_experience) || '-'}</p>
           </div>
           <div class="mt-4">
-            <label class="text-sm font-medium text-text-muted">Can you commit to 10 weeks (Saturdays, 2.5 hours each)?</label>
+            <label class="text-sm font-medium text-text-muted">Can you commit to the 10-week self-paced course?</label>
             <p class="mt-1 whitespace-pre-wrap">${escapeHtml(userApplication.commitment) || '-'}</p>
           </div>
           <div class="mt-4">
@@ -487,11 +487,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <textarea name="technicalExperience" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Any coding, automation, or technical experience? Totally fine if none!">${escapeHtml(userApplication.technical_experience) || ''}</textarea>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2">Can you commit to 10 weeks (Saturdays, 2.5 hours each)? *</label>
+            <label class="block text-sm font-medium mb-2">Can you commit to the 10-week self-paced course? *</label>
             <select name="commitment" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
               <option value="">Select...</option>
-              <option ${userApplication.commitment === 'Yes, in-person in Bengaluru' ? 'selected' : ''}>Yes, in-person in Bengaluru</option>
-              <option ${userApplication.commitment === 'Yes, remote participation' ? 'selected' : ''}>Yes, remote participation</option>
+              <option ${userApplication.commitment === 'Yes, I can commit to 10 weeks' ? 'selected' : ''}>Yes, I can commit to 10 weeks</option>
               <option ${userApplication.commitment === 'Need to discuss timing' ? 'selected' : ''}>Need to discuss timing</option>
               <option ${userApplication.commitment === 'No, but interested in future cohorts' ? 'selected' : ''}>No, but interested in future cohorts</option>
             </select>

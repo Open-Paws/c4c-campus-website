@@ -43,7 +43,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     pathname.startsWith('/pricing') ||
     pathname.startsWith('/tracks') ||
     pathname.startsWith('/application-status') ||
-    pathname.startsWith('/aarc')
+    pathname.startsWith('/aarc') ||
+    pathname.startsWith('/blog')
   ) {
     return next();
   }

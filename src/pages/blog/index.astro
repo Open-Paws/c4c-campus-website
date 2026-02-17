@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { createClient } from '@supabase/supabase-js';
+import { BLOG_CATEGORIES } from '../../types/index';
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+
+let posts: any[] = [];
+if (supabaseUrl && supabaseServiceKey) {
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const { data } = await supabase
+    .from('blog_posts')
+    .select('id, title, slug, description, featured_image, category, author_name, published_at')
+    .eq('status', 'published')
+    .not('published_at', 'is', null)
+    .order('published_at', { ascending: false });
+
+  posts = data || [];
+}
+
+const categories = ['All Posts', ...BLOG_CATEGORIES];
+---
+
+<BaseLayout title="Blog - C4C Campus" description="Updates, stories, and insights from the Code for Compassion Campus community.">
+  <div class="section">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Hero -->
+      <div class="text-center mb-12">
+        <h1 class="text-5xl font-black mb-6">
+          <span class="text-gradient">Blog</span>
+        </h1>
+        <p class="text-xl text-text-muted max-w-3xl mx-auto">
+          Updates, stories, and insights from the C4C community
+        </p>
+      </div>
+
+      <!-- Category Filters -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8" id="blog-filters">
+        {categories.map((cat) => (
+          <button
+            class="blog-filter-btn btn btn-outline btn-sm"
+            data-category={cat}
+            data-active={cat === 'All Posts' ? 'true' : 'false'}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <!-- Blog Posts -->
+      <div class="space-y-4" id="blog-posts">
+        {posts.map((post) => {
+          const date = post.published_at
+            ? new Date(post.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+            : '';
+          return (
+            <a href={`/blog/${post.slug}`} class="blog-post-card card block hover:shadow-lg transition-shadow cursor-pointer" data-category={post.category}>
+              <div class="flex items-center gap-3 mb-2">
+                <span class="text-xs text-text-muted uppercase tracking-wide">{post.category}</span>
+                <span class="text-xs text-text-muted">{date}</span>
+              </div>
+              <h2 class="text-xl font-bold mb-2">{post.title}</h2>
+              {post.description && <p class="text-text-muted">{post.description}</p>}
+            </a>
+          );
+        })}
+      </div>
+
+      {posts.length === 0 && (
+        <div class="text-center py-16">
+          <p class="text-text-muted text-lg">No blog posts yet. Check back soon!</p>
+        </div>
+      )}
+
+      <!-- Empty State (for filtered) -->
+      <div id="blog-empty" class="hidden text-center py-16">
+        <p class="text-text-muted text-lg">No posts in this category yet.</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-filter-btn[data-active="true"] {
+    background: hsl(var(--primary));
+    color: white;
+    border-color: hsl(var(--primary));
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.blog-filter-btn');
+    const posts = document.querySelectorAll<HTMLElement>('.blog-post-card');
+    const emptyState = document.getElementById('blog-empty');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const category = btn.dataset.category;
+
+        buttons.forEach(b => b.dataset.active = 'false');
+        btn.dataset.active = 'true';
+
+        let visibleCount = 0;
+        posts.forEach(post => {
+          if (category === 'All Posts' || post.dataset.category === category) {
+            post.style.display = '';
+            visibleCount++;
+          } else {
+            post.style.display = 'none';
+          }
+        });
+
+        if (emptyState) {
+          emptyState.classList.toggle('hidden', visibleCount > 0);
+        }
+      });
+    });
+  });
+</script>
