@@ -133,4 +133,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </div>
 
+  <script>
+    // Detect Supabase auth error redirects in URL hash
+    // When password reset tokens expire, Supabase redirects to the Site URL (root /)
+    // with error info in the hash — redirect users to forgot-password with a helpful message
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const errorCode = hashParams.get('error_code');
+    const errorDesc = hashParams.get('error_description');
+
+    if (errorCode === 'otp_expired' || errorDesc?.includes('expired')) {
+      window.location.href = '/forgot-password?error=link-expired';
+    } else if (hashParams.get('error')) {
+      window.location.href = '/forgot-password?error=link-invalid';
+    }
+
+    // Hide bootcamp start notice on or after February 8, 2026
+    const bootcampStartHome = document.getElementById('bootcamp-start-home');
+    if (bootcampStartHome) {
+      const today = new Date();
+      const startDate = new Date('2026-02-08');
+      if (today >= startDate) {
+        bootcampStartHome.style.display = 'none';
+      }
+    }
+  </script>
 </BaseLayout>
