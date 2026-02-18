@@ -191,6 +191,35 @@ export function escapeHTML(str: string): string {
     .replace(/'/g, '&#039;');
 }
 
+// --- Blog Content Sanitization ---
+
+const BLOG_ALLOWED_TAGS = [
+  'p', 'br', 'strong', 'em', 'u',
+  'h2', 'h3',
+  'ul', 'ol', 'li',
+  'a', 'code', 'pre', 'blockquote', 'hr',
+  'img',
+];
+
+const BLOG_ALLOWED_ATTRS: Record<string, string[]> = {
+  'a': ['href', 'title', 'target', 'rel'],
+  'img': ['src', 'alt', 'width', 'height'],
+};
+
+/**
+ * Sanitize blog post HTML content
+ * Extended allowlist for blog rich text (headings, images, blockquotes, etc.)
+ */
+export function sanitizeBlogHTML(html: string): string {
+  if (!html) return '';
+
+  return sanitize(html, {
+    allowedTags: BLOG_ALLOWED_TAGS,
+    allowedAttributes: BLOG_ALLOWED_ATTRS,
+    allowedSchemes: ['http', 'https'],
+  });
+}
+
 // --- SQL Injection Detection ---
 
 export function containsSQLInjectionPatterns(input: string): boolean {

@@ -19,7 +19,7 @@ export default defineConfig({
           manualChunks: {
             // Vendor chunks for better caching
             'chart': ['chart.js', 'react-chartjs-2'],
-            'editor': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-link', '@tiptap/extension-placeholder'],
+            'editor': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-link', '@tiptap/extension-placeholder', '@tiptap/extension-image'],
             'supabase': ['@supabase/supabase-js', '@supabase/storage-js'],
           },
           // Optimize chunk naming for better caching

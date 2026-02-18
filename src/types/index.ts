@@ -299,3 +299,34 @@ export interface UserProfile {
   avatar_url?: string;
   is_teacher?: boolean;
 }
+
+/**
+ * Blog categories — single source of truth.
+ * Must match the CHECK constraint in schema.sql / migration 00022.
+ */
+export const BLOG_CATEGORIES = ['News', 'Community', 'Technical', 'Impact'] as const;
+export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
+
+/**
+ * BlogPost - Admin-managed blog content
+ * Reference: schema.sql blog_posts table
+ *
+ * Defined manually until migration is applied and types regenerated.
+ * After running migration + `npm run db:types`, replace with generated BlogPostRow.
+ */
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  content: string;
+  featured_image: string | null;
+  category: BlogCategory;
+  tags: string[] | null;
+  author_id: string | null;
+  author_name: string | null;
+  status: 'draft' | 'published' | 'archived';
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+}

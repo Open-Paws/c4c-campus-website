@@ -84,6 +84,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <script>
     import { supabase } from '../lib/supabase';
+    import { checkRateLimit, formatRetryAfter, RATE_LIMITS } from '../lib/rate-limit';
 
     // Check authentication and load application
     async function checkExistingSession() {
@@ -152,6 +153,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       submitButton.disabled = true;
       submitButton.textContent = 'Signing in...';
       errorDiv.classList.add('hidden');
+
+      // Client-side rate limit check (mirrors Supabase: 200 sign-ins / 5 min)
+      const rateCheck = checkRateLimit(RATE_LIMITS.signIn);
+      if (!rateCheck.allowed) {
+        errorDiv.textContent = `Too many sign-in attempts. Please try again in ${formatRetryAfter(rateCheck.retryAfterMs)}.`;
+        errorDiv.classList.remove('hidden');
+        submitButton.disabled = false;
+        submitButton.textContent = 'Sign In';
+        return;
+      }
 
       try {
         // Attempt to sign in with Supabase

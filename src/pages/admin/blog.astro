@@ -1,0 +1,351 @@
+---
+/**
+ * Admin Blog Management Page
+ * Full CRUD for blog posts: create, edit, publish, archive, delete
+ */
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Blog Management - Admin - C4C Campus" currentPage="blog">
+  <!-- Loading State -->
+  <div id="loading-state" class="container mx-auto px-4 py-12">
+    <div class="text-center">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+      <p class="mt-4 text-text-muted">Loading blog posts...</p>
+    </div>
+  </div>
+
+  <!-- Access Denied State -->
+  <div id="access-denied" class="hidden container mx-auto px-4 py-12">
+    <div class="max-w-md mx-auto text-center">
+      <div class="card">
+        <h2 class="text-2xl font-bold mb-4">Access Denied</h2>
+        <p class="text-text-muted mb-6">You need admin privileges to access this page.</p>
+        <a href="/admin/dashboard" class="btn btn-primary">Go to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="main-content" class="hidden container mx-auto px-4 py-8">
+    <!-- List View -->
+    <div id="list-view">
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="card">
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">📝</span></div>
+            <div>
+              <p class="text-sm text-text-muted">Total Posts</p>
+              <p class="text-2xl font-bold" id="stat-total">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">✅</span></div>
+            <div>
+              <p class="text-sm text-text-muted">Published</p>
+              <p class="text-2xl font-bold" id="stat-published">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-gray-100 rounded-lg"><span class="text-2xl">📋</span></div>
+            <div>
+              <p class="text-sm text-text-muted">Drafts</p>
+              <p class="text-2xl font-bold" id="stat-drafts">0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions and Filters -->
+      <div class="card mb-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3 flex-wrap">
+            <button class="filter-btn active" data-filter="all">All Posts</button>
+            <button class="filter-btn" data-filter="published">Published</button>
+            <button class="filter-btn" data-filter="draft">Drafts</button>
+            <button class="filter-btn" data-filter="archived">Archived</button>
+          </div>
+          <button id="btn-new-post" class="btn btn-primary btn-sm">+ New Post</button>
+        </div>
+      </div>
+
+      <!-- Posts List -->
+      <div id="posts-list" class="space-y-3"></div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden text-center py-16">
+        <p class="text-text-muted text-lg mb-4">No blog posts yet.</p>
+        <button id="btn-new-post-empty" class="btn btn-primary">Create Your First Post</button>
+      </div>
+    </div>
+
+    <!-- Editor View (React island) -->
+    <div id="editor-view" class="hidden">
+      <div id="blog-form-mount"></div>
+    </div>
+  </div>
+</AdminLayout>
+
+<style>
+  .filter-btn {
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: hsl(0 0% 45%);
+    background: hsl(0 0% 95%);
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover {
+    color: hsl(var(--primary));
+  }
+  .filter-btn.active {
+    background: hsl(var(--primary-dark));
+    color: white;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .status-published { background: #dcfce7; color: #166534; }
+  .status-draft { background: #fef9c3; color: #854d0e; }
+  .status-archived { background: #f3f4f6; color: #6b7280; }
+</style>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+  import type { BlogPost } from '../../types/index';
+
+  let allPosts: BlogPost[] = [];
+  let currentFilter = 'all';
+  // Track the post currently being edited (used by editor lifecycle)
+
+  // --- Auth & Init ---
+  async function init() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = '/login';
+      return;
+    }
+
+    const { data: application } = await supabase
+      .from('applications')
+      .select('role')
+      .eq('user_id', session.user.id)
+      .single();
+
+    if (!application || application.role !== 'admin') {
+      document.getElementById('loading-state')!.classList.add('hidden');
+      document.getElementById('access-denied')!.classList.remove('hidden');
+      return;
+    }
+
+    await loadPosts();
+    document.getElementById('loading-state')!.classList.add('hidden');
+    document.getElementById('main-content')!.classList.remove('hidden');
+  }
+
+  // --- Data Loading ---
+  async function loadPosts() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
+    // Use service-role-backed API for admin access to all posts
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Failed to load posts:', error);
+      return;
+    }
+
+    allPosts = data || [];
+    updateStats();
+    renderPosts();
+  }
+
+  function updateStats() {
+    const total = allPosts.length;
+    const published = allPosts.filter(p => p.status === 'published').length;
+    const drafts = allPosts.filter(p => p.status === 'draft').length;
+
+    document.getElementById('stat-total')!.textContent = String(total);
+    document.getElementById('stat-published')!.textContent = String(published);
+    document.getElementById('stat-drafts')!.textContent = String(drafts);
+  }
+
+  function escapeHTML(str: string): string {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderPosts() {
+    const container = document.getElementById('posts-list')!;
+    const emptyState = document.getElementById('empty-state')!;
+
+    const filtered = currentFilter === 'all'
+      ? allPosts
+      : allPosts.filter(p => p.status === currentFilter);
+
+    if (filtered.length === 0) {
+      container.innerHTML = '';
+      emptyState.classList.remove('hidden');
+      return;
+    }
+
+    emptyState.classList.add('hidden');
+
+    container.innerHTML = filtered.map(post => {
+      const date = post.published_at
+        ? new Date(post.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+        : new Date(post.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+      const statusClass = `status-${post.status}`;
+
+      return `
+        <div class="card" data-post-id="${post.id}">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="status-badge ${statusClass}">${escapeHTML(post.status)}</span>
+                <span class="text-xs text-text-muted">${escapeHTML(post.category)}</span>
+                <span class="text-xs text-text-muted">${date}</span>
+              </div>
+              <h3 class="text-lg font-bold truncate">${escapeHTML(post.title)}</h3>
+              ${post.description ? `<p class="text-sm text-text-muted mt-1 line-clamp-2">${escapeHTML(post.description)}</p>` : ''}
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <button class="btn btn-outline btn-sm btn-edit" data-id="${post.id}">Edit</button>
+              <button class="btn btn-ghost btn-sm text-error btn-delete" data-id="${post.id}">Delete</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Attach event listeners
+    container.querySelectorAll('.btn-edit').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = (btn as HTMLElement).dataset.id!;
+        editPost(id);
+      });
+    });
+
+    container.querySelectorAll('.btn-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = (btn as HTMLElement).dataset.id!;
+        deletePost(id);
+      });
+    });
+  }
+
+  // --- Actions ---
+  function showEditor(post: BlogPost | null) {
+    // currentEditPost = post; — reserved for future use
+    document.getElementById('list-view')!.classList.add('hidden');
+    document.getElementById('editor-view')!.classList.remove('hidden');
+
+    // Mount React form
+    mountBlogForm(post);
+  }
+
+  function hideEditor() {
+    document.getElementById('editor-view')!.classList.add('hidden');
+    document.getElementById('list-view')!.classList.remove('hidden');
+
+    // Unmount React form
+    const mount = document.getElementById('blog-form-mount')!;
+    mount.innerHTML = '';
+  }
+
+  async function mountBlogForm(post: BlogPost | null) {
+    const mount = document.getElementById('blog-form-mount')!;
+
+    // Dynamically import React and the form component
+    const [{ createRoot }, { BlogPostForm }] = await Promise.all([
+      import('react-dom/client'),
+      import('../../components/BlogPostForm'),
+    ]);
+    const React = await import('react');
+
+    const root = createRoot(mount);
+    root.render(
+      React.createElement(BlogPostForm, {
+        post,
+        onSave: async () => {
+          root.unmount();
+          hideEditor();
+          await loadPosts();
+        },
+        onCancel: () => {
+          root.unmount();
+          hideEditor();
+        },
+      })
+    );
+  }
+
+  async function editPost(id: string) {
+    const post = allPosts.find(p => p.id === id);
+    if (!post) return;
+    showEditor(post);
+  }
+
+  async function deletePost(id: string) {
+    const post = allPosts.find(p => p.id === id);
+    if (!post) return;
+
+    if (!confirm(`Delete "${post.title}"? This cannot be undone.`)) return;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
+    try {
+      const res = await fetch(`/api/blog/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${session.access_token}` },
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete post');
+        return;
+      }
+
+      await loadPosts();
+    } catch (err) {
+      console.error('Delete failed:', err);
+      alert('Failed to delete post');
+    }
+  }
+
+  // --- Event Listeners ---
+  document.getElementById('btn-new-post')?.addEventListener('click', () => showEditor(null));
+  document.getElementById('btn-new-post-empty')?.addEventListener('click', () => showEditor(null));
+
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = (btn as HTMLElement).dataset.filter || 'all';
+      renderPosts();
+    });
+  });
+
+  // Start
+  init();
+</script>
