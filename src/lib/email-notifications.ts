@@ -381,3 +381,62 @@ export async function sendApplicationReceivedEmail(data: ApplicationReceivedEmai
     console.error('Failed to send application received email:', error);
   }
 }
+
+export interface ModuleUnlockedEmailData {
+  studentName: string;
+  studentEmail: string;
+  courseName: string;
+  moduleName: string;
+  courseSlug: string;
+}
+
+/**
+ * Send email notification when a new module is unlocked for a student's cohort
+ * @param data - Module unlocked notification data
+ */
+export async function sendModuleUnlockedEmail(data: ModuleUnlockedEmailData): Promise<void> {
+  const { studentName, studentEmail, courseName, moduleName, courseSlug } = data;
+
+  const siteUrl = process.env.SITE_URL || 'https://codeforcompassion.com';
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: studentEmail,
+      subject: `New Module Available: ${moduleName}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="${siteUrl}/logo.jpeg" alt="C4C Campus" style="width: 60px; height: 60px; border-radius: 12px;" />
+          </div>
+
+          <h2 style="color: #10b981;">A new module is available in ${courseName}.</h2>
+
+          <p>Hi ${studentName},</p>
+
+          <p>Log into Code for Compassion to access the new lessons.</p>
+
+          <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3 style="margin: 0 0 10px 0;">${moduleName}</h3>
+            <p style="margin: 0; color: #6b7280;">${courseName}</p>
+          </div>
+
+          <p>
+            <a href="${siteUrl}/courses/${courseSlug}"
+               style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
+              Go to Module
+            </a>
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;" />
+
+          <p style="color: #9ca3af; font-size: 14px;">
+            C4C Campus - AI Development Accelerator for Animal Liberation
+          </p>
+        </div>
+      `,
+    });
+  } catch (error) {
+    console.error('Failed to send module unlocked email:', error);
+  }
+}

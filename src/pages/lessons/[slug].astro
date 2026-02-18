@@ -29,9 +29,9 @@ export const prerender = false;
             <a href="/dashboard" class="flex-shrink-0">
               <img src="/logo.jpeg" alt="C4C Campus" class="h-10 w-10 rounded-lg" />
             </a>
-            <div>
-              <h1 class="text-xl sm:text-2xl font-bold text-text" id="lesson-title">Lesson</h1>
-              <p class="text-text-muted text-sm" id="breadcrumb">Loading...</p>
+            <div class="min-w-0">
+              <h1 class="text-xl sm:text-2xl font-bold text-text truncate" id="lesson-title">Lesson</h1>
+              <p class="text-text-muted text-sm truncate" id="breadcrumb">Loading...</p>
             </div>
           </div>
           <div class="flex items-center gap-3">
@@ -415,6 +415,7 @@ export const prerender = false;
       const content = document.getElementById('text-content');
       if (container && content) {
         content.innerHTML = marked.parse(lesson.content) as string;
+        openLinksInNewTab('#text-content');
         container.classList.remove('hidden');
       }
     }
@@ -439,6 +440,7 @@ export const prerender = false;
             </div>
           </a>
         `).join('');
+        openLinksInNewTab('#resources-list');
         container.classList.remove('hidden');
       }
     }
@@ -643,6 +645,18 @@ export const prerender = false;
       return null;
     }
     return id;
+  }
+
+  function openLinksInNewTab(containerSelector: string) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+    container.querySelectorAll('a[href]').forEach((link) => {
+      const anchor = link as HTMLAnchorElement;
+      const href = anchor.getAttribute('href') || '';
+      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+      anchor.setAttribute('target', '_blank');
+      anchor.setAttribute('rel', 'noopener noreferrer');
+    });
   }
 
   function formatBytes(bytes: number): string {
