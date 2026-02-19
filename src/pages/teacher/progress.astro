@@ -113,6 +113,7 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
     import { createRoot } from 'react-dom/client';
 
     let currentUser: any = null;
+    let teacherName: string = '';
     let cohorts: any[] = [];
     let currentCohortId: string | null = null; // UUID string, not number
     let dashboardData: any = null;
@@ -143,6 +144,8 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
         .eq('user_id', user.id)
         .single();
 
+      teacherName = application?.name || '';
+
       if (!application?.role || (application.role !== 'teacher' && application.role !== 'admin')) {
         document.getElementById('loading-state')?.classList.add('hidden');
         document.getElementById('access-denied')?.classList.remove('hidden');
@@ -159,6 +162,10 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
       setupEventListeners();
       setupAutoRefresh();
       } catch (err) {
+        // AbortError from navigator.locks is expected when navigating between pages
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         console.error('Error initializing progress dashboard:', err);
         // Always hide loading state to prevent infinite spinner
         document.getElementById('loading-state')?.classList.add('hidden');
@@ -279,6 +286,9 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
         strugglingRoot.render(
           createElement(StrugglingStudents, {
             students: data?.struggling_students || [],
+            allStudents: data?.students || [],
+            cohortId: currentCohortId || undefined,
+            teacherName: teacherName,
             loading
           })
         );

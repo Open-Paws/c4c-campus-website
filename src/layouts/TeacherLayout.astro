@@ -157,6 +157,10 @@ const navItems = [
     });
 
     // Check access on load
-    checkTeacherAccess();
+    checkTeacherAccess().catch((err) => {
+      // AbortError from navigator.locks is expected when navigating between pages
+      if (err instanceof DOMException && err.name === 'AbortError') return;
+      console.error('Error checking teacher access:', err);
+    });
   </script>
 </BaseLayout>

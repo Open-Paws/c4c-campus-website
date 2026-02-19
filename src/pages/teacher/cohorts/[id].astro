@@ -129,9 +129,14 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
         <div class="card">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold">Enrolled Students</h3>
-            <button id="add-student-btn" class="btn btn-primary">
-              Add Student
-            </button>
+            <div class="flex gap-2">
+              <button id="email-all-btn" class="btn btn-secondary hidden">
+                📧 Email All
+              </button>
+              <button id="add-student-btn" class="btn btn-primary">
+                Add Student
+              </button>
+            </div>
           </div>
 
           <!-- Students List -->
@@ -331,16 +336,71 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
         </div>
       </div>
     </div>
+    <!-- Email Compose Modal -->
+    <div id="email-compose-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full my-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <h2 class="text-lg font-bold">Compose Email</h2>
+          <button id="close-email-modal" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+          <!-- Status banners -->
+          <div id="email-success-banner" class="hidden bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm"></div>
+          <div id="email-error-banner" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"></div>
+
+          <!-- Recipients -->
+          <div>
+            <label class="block text-sm font-medium mb-1">To</label>
+            <p id="email-recipients-summary" class="text-sm text-text-muted bg-gray-50 rounded-lg px-3 py-2"></p>
+          </div>
+
+          <!-- Subject -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Subject</label>
+            <input type="text" id="email-subject" value="Checking in on your course progress" maxlength="200"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+          </div>
+
+          <!-- Body -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Message</label>
+            <textarea id="email-body" rows="8" maxlength="5000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-y"></textarea>
+            <p class="text-xs text-text-muted mt-1"><span id="email-char-count">0</span>/5000</p>
+          </div>
+
+          <!-- Info -->
+          <p class="text-xs text-text-muted bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+            Emails are sent from C4C Campus with your name. Students can reply directly to your email address.
+          </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
+          <button id="cancel-email-btn" class="btn btn-ghost">Cancel</button>
+          <button id="send-email-btn" class="btn btn-primary">Send</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
     import { supabase } from '@/lib/supabase';
-    import { escapeHTML } from '../../../lib/security';
+    import { escapeHTML } from '../../../lib/escape-html';
 
     let currentUser: any = null;
     let cohort: any = null;
     let students: any[] = [];
     let activeTab = 'students';
+    let teacherName = '';
+    let emailRecipients: { user_id: string; name: string; email: string }[] = [];
 
     // Get cohort ID from URL (UUID string, not integer)
     const pathParts = window.location.pathname.split('/');
@@ -405,6 +465,14 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
       }
 
       currentUser = user;
+
+      // Get teacher name for emails
+      const { data: teacherApp } = await supabase
+        .from('applications')
+        .select('name')
+        .eq('user_id', user.id)
+        .single();
+      teacherName = teacherApp?.name || '';
 
       // Load cohort data
       await loadCohort();
@@ -556,6 +624,7 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
                 </div>
               </div>
               <div class="flex gap-2">
+                <button class="btn btn-sm btn-secondary email-student" data-user-id="${escapeHTML(enrollment.user_id)}" data-email="${escapeHTML(student.email)}" data-name="${escapeHTML(student.name)}">📧 Email</button>
                 <button class="btn btn-sm btn-error remove-student" data-id="${escapeHTML(enrollment.id)}" data-name="${escapeHTML(student.name)}">Remove</button>
               </div>
             </div>
@@ -565,7 +634,22 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
 
       list?.classList.remove('hidden');
 
+      // Show the "Email All" button when there are students
+      const emailAllBtn = document.getElementById('email-all-btn');
+      if (emailAllBtn && students.length > 0) {
+        emailAllBtn.classList.remove('hidden');
+      }
+
       // Add event listeners
+      list?.querySelectorAll('.email-student').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const userId = (btn as HTMLElement).getAttribute('data-user-id')!;
+          const email = (btn as HTMLElement).getAttribute('data-email')!;
+          const name = (btn as HTMLElement).getAttribute('data-name')!;
+          openEmailModal([{ user_id: userId, name, email }]);
+        });
+      });
+
       list?.querySelectorAll('.remove-student').forEach(btn => {
         btn.addEventListener('click', async () => {
           const enrollmentId = (btn as HTMLElement).getAttribute('data-id');
@@ -663,6 +747,16 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
 
       // Edit cohort button - open edit modal
       document.getElementById('edit-cohort-btn')?.addEventListener('click', openEditCohortModal);
+
+      // Email all students
+      document.getElementById('email-all-btn')?.addEventListener('click', () => {
+        const allRecipients = students
+          .filter(s => s.applications?.email)
+          .map(s => ({ user_id: s.user_id, name: s.applications.name, email: s.applications.email }));
+        if (allRecipients.length > 0) {
+          openEmailModal(allRecipients);
+        }
+      });
 
       // Add student
       document.getElementById('add-student-btn')?.addEventListener('click', showAddStudentModal);
@@ -1112,6 +1206,127 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
       };
       return badges[status] || { text: status, color: 'bg-gray-500/10 text-gray-600' };
     }
+
+    // --- Email Compose Modal ---
+
+    function openEmailModal(recipients: { user_id: string; name: string; email: string }[]) {
+      emailRecipients = recipients;
+
+      // Reset state
+      const modal = document.getElementById('email-compose-modal')!;
+      const successBanner = document.getElementById('email-success-banner')!;
+      const errorBanner = document.getElementById('email-error-banner')!;
+      const subjectInput = document.getElementById('email-subject') as HTMLInputElement;
+      const bodyInput = document.getElementById('email-body') as HTMLTextAreaElement;
+      const sendBtn = document.getElementById('send-email-btn') as HTMLButtonElement;
+      const summary = document.getElementById('email-recipients-summary')!;
+      const charCount = document.getElementById('email-char-count')!;
+
+      successBanner.classList.add('hidden');
+      errorBanner.classList.add('hidden');
+      subjectInput.value = 'Checking in on your course progress';
+      subjectInput.disabled = false;
+      sendBtn.disabled = false;
+      sendBtn.textContent = `Send to ${recipients.length} student${recipients.length !== 1 ? 's' : ''}`;
+
+      const defaultBody = `Hi there,\n\nI noticed you haven't been active in the course recently. Is everything okay? Let me know if there's anything I can do to help you get back on track.\n\nBest regards,\n${teacherName}`;
+      bodyInput.value = defaultBody;
+      bodyInput.disabled = false;
+      charCount.textContent = defaultBody.length.toString();
+
+      if (recipients.length <= 3) {
+        summary.textContent = recipients.map(r => `${r.name} (${r.email})`).join(', ');
+      } else {
+        summary.textContent = `${recipients[0].name} and ${recipients.length - 1} other${recipients.length - 1 !== 1 ? 's' : ''}`;
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeEmailModal() {
+      document.getElementById('email-compose-modal')?.classList.add('hidden');
+    }
+
+    async function sendEmail() {
+      const subjectInput = document.getElementById('email-subject') as HTMLInputElement;
+      const bodyInput = document.getElementById('email-body') as HTMLTextAreaElement;
+      const sendBtn = document.getElementById('send-email-btn') as HTMLButtonElement;
+      const errorBanner = document.getElementById('email-error-banner')!;
+      const successBanner = document.getElementById('email-success-banner')!;
+
+      const subject = subjectInput.value.trim();
+      const body = bodyInput.value.trim();
+
+      if (!subject) {
+        errorBanner.textContent = 'Subject is required';
+        errorBanner.classList.remove('hidden');
+        return;
+      }
+      if (!body) {
+        errorBanner.textContent = 'Message body is required';
+        errorBanner.classList.remove('hidden');
+        return;
+      }
+
+      errorBanner.classList.add('hidden');
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>Sending...';
+      subjectInput.disabled = true;
+      bodyInput.disabled = true;
+
+      try {
+        const response = await fetch('/api/teacher/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cohort_id: cohortId,
+            subject,
+            body,
+            recipient_user_ids: emailRecipients.map(r => r.user_id),
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          errorBanner.textContent = result.error || 'Failed to send emails';
+          errorBanner.classList.remove('hidden');
+          sendBtn.disabled = false;
+          sendBtn.textContent = `Send to ${emailRecipients.length} student${emailRecipients.length !== 1 ? 's' : ''}`;
+          subjectInput.disabled = false;
+          bodyInput.disabled = false;
+          return;
+        }
+
+        successBanner.textContent = `Successfully sent to ${result.sent_count} student${result.sent_count !== 1 ? 's' : ''}.`;
+        successBanner.classList.remove('hidden');
+        sendBtn.textContent = 'Sent';
+
+        setTimeout(() => closeEmailModal(), 2000);
+      } catch {
+        errorBanner.textContent = 'Network error. Please try again.';
+        errorBanner.classList.remove('hidden');
+        sendBtn.disabled = false;
+        sendBtn.textContent = `Send to ${emailRecipients.length} student${emailRecipients.length !== 1 ? 's' : ''}`;
+        subjectInput.disabled = false;
+        bodyInput.disabled = false;
+      }
+    }
+
+    // Email modal event listeners
+    document.getElementById('close-email-modal')?.addEventListener('click', closeEmailModal);
+    document.getElementById('cancel-email-btn')?.addEventListener('click', closeEmailModal);
+    document.getElementById('send-email-btn')?.addEventListener('click', sendEmail);
+    document.getElementById('email-body')?.addEventListener('input', () => {
+      const body = (document.getElementById('email-body') as HTMLTextAreaElement).value;
+      document.getElementById('email-char-count')!.textContent = body.length.toString();
+    });
+    // Close on overlay click
+    document.getElementById('email-compose-modal')?.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('email-compose-modal')) {
+        closeEmailModal();
+      }
+    });
 
     // Initialize
     init();

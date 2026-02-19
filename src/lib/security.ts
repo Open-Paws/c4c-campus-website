@@ -182,14 +182,8 @@ export function stripHTML(html: string): string {
   return sanitize(html, { allowedTags: [], allowedAttributes: {} });
 }
 
-export function escapeHTML(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
+// Re-export from browser-safe module for backward compatibility
+export { escapeHTML } from './escape-html';
 
 // --- Blog Content Sanitization ---
 

@@ -10,14 +10,20 @@
 
 import { useState } from 'react';
 import type { StudentWithProgress } from '../types';
+import EmailComposeModal from './EmailComposeModal';
 
 interface StrugglingStudentsProps {
   students: StudentWithProgress[];
+  allStudents?: StudentWithProgress[];
+  cohortId?: string;
+  teacherName?: string;
   loading?: boolean;
 }
 
-export default function StrugglingStudents({ students, loading = false }: StrugglingStudentsProps) {
+export default function StrugglingStudents({ students, allStudents, cohortId, teacherName, loading = false }: StrugglingStudentsProps) {
   const [sortBy, setSortBy] = useState<'completion' | 'activity'>('completion');
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailRecipients, setEmailRecipients] = useState<StudentWithProgress[]>([]);
 
   if (loading) {
     return (
@@ -77,10 +83,16 @@ export default function StrugglingStudents({ students, loading = false }: Strugg
     return 'bg-yellow-500';
   };
 
-  const handleEmailStudent = (email: string, name: string) => {
-    const subject = encodeURIComponent(`Checking in on your course progress`);
-    const body = encodeURIComponent(`Hi ${name},\n\nI noticed you haven't been active in the course recently. Is everything okay? Let me know if there's anything I can do to help you get back on track.\n\nBest regards`);
-    window.open(`mailto:${email}?subject=${subject}&body=${body}`, '_blank');
+  const handleEmailStudent = (student: StudentWithProgress) => {
+    if (cohortId) {
+      setEmailRecipients([student]);
+      setShowEmailModal(true);
+    } else {
+      // Fallback to mailto if cohortId not available
+      const subject = encodeURIComponent(`Checking in on your course progress`);
+      const body = encodeURIComponent(`Hi ${student.name},\n\nI noticed you haven't been active in the course recently. Is everything okay? Let me know if there's anything I can do to help you get back on track.\n\nBest regards`);
+      window.open(`mailto:${student.email}?subject=${subject}&body=${body}`, '_blank');
+    }
   };
 
   return (
@@ -191,19 +203,21 @@ export default function StrugglingStudents({ students, loading = false }: Strugg
                 {/* Actions */}
                 <div className="flex flex-col gap-2 flex-shrink-0">
                   <button
-                    onClick={() => handleEmailStudent(student.email, student.name)}
+                    onClick={() => handleEmailStudent(student)}
                     className="btn btn-sm btn-primary whitespace-nowrap"
                     title="Send email"
                   >
                     📧 Email
                   </button>
-                  <a
-                    href={`/teacher/students/${student.user_id}`}
-                    className="btn btn-sm btn-ghost text-center whitespace-nowrap"
-                    title="View details"
-                  >
-                    👁️ View
-                  </a>
+                  {cohortId && (
+                    <a
+                      href={`/teacher/cohorts/${cohortId}`}
+                      className="btn btn-sm btn-ghost text-center whitespace-nowrap"
+                      title="View in cohort"
+                    >
+                      👁️ View
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -216,15 +230,31 @@ export default function StrugglingStudents({ students, loading = false }: Strugg
         <div className="mt-4 pt-4 border-t border-gray-200">
           <button
             onClick={() => {
-              const emails = students.map(s => s.email).join(',');
-              const subject = encodeURIComponent('Checking in on your course progress');
-              window.open(`mailto:${emails}?subject=${subject}`, '_blank');
+              if (cohortId) {
+                setEmailRecipients(students);
+                setShowEmailModal(true);
+              } else {
+                const emails = students.map(s => s.email).join(',');
+                const subject = encodeURIComponent('Checking in on your course progress');
+                window.open(`mailto:${emails}?subject=${subject}`, '_blank');
+              }
             }}
             className="btn btn-secondary w-full"
           >
             📧 Email All Students
           </button>
         </div>
+      )}
+
+      {showEmailModal && cohortId && (
+        <EmailComposeModal
+          recipients={emailRecipients.map(s => ({ user_id: s.user_id, name: s.name, email: s.email }))}
+          allStudents={allStudents?.map(s => ({ user_id: s.user_id, name: s.name, email: s.email }))}
+          cohortId={cohortId}
+          teacherName={teacherName || 'Your Teacher'}
+          onClose={() => setShowEmailModal(false)}
+          onSuccess={() => setShowEmailModal(false)}
+        />
       )}
     </div>
   );
