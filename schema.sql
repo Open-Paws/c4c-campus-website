@@ -475,6 +475,9 @@ CREATE TABLE IF NOT EXISTS applications (
   motivation TEXT,
   technical_experience TEXT,
   commitment TEXT,
+  -- Diversity and career fields (both programs)
+  protected_class TEXT,
+  career_goals TEXT,
   -- Scholarship fields (bootcamp only)
   scholarship_requested BOOLEAN DEFAULT FALSE,
   scholarship_category TEXT CHECK (scholarship_category IS NULL OR scholarship_category IN ('SC', 'OBC', 'EWS', 'DNT', 'Transgender')),
@@ -494,6 +497,7 @@ CREATE TABLE IF NOT EXISTS applications (
   assignment_date TIMESTAMPTZ,
   reviewed_by UUID REFERENCES auth.users(id),
   reviewed_at TIMESTAMPTZ,
+  decision_note TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -584,6 +588,7 @@ CREATE TABLE IF NOT EXISTS lessons (
   slug TEXT NOT NULL,
   content TEXT,
   video_url TEXT,
+  youtube_url TEXT,
   duration_minutes INTEGER,
   order_index INTEGER NOT NULL,
   is_preview BOOLEAN DEFAULT FALSE,

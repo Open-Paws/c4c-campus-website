@@ -209,15 +209,13 @@ export default function StrugglingStudents({ students, allStudents, cohortId, te
                   >
                     📧 Email
                   </button>
-                  {cohortId && (
-                    <a
-                      href={`/teacher/cohorts/${cohortId}`}
-                      className="btn btn-sm btn-ghost text-center whitespace-nowrap"
-                      title="View in cohort"
-                    >
-                      👁️ View
-                    </a>
-                  )}
+                  <a
+                    href={cohortId ? `/teacher/cohorts/${cohortId}` : `/teacher/progress`}
+                    className="btn btn-sm btn-ghost text-center whitespace-nowrap"
+                    title={cohortId ? "View in cohort" : "View progress"}
+                  >
+                    👁️ View
+                  </a>
                 </div>
               </div>
             </div>

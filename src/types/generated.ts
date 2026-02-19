@@ -7,7 +7,7 @@
  *   npm run db:types
  *
  * Which executes:
- *   npx supabase gen types typescript --local > src/types/generated.ts
+ *   npx supabase gen types typescript --project-id <project-ref> > src/types/generated.ts
  *
  * The CI workflow will fail if this file is out of sync with schema.sql.
  * After modifying schema.sql, regenerate this file and commit both together.
@@ -21,1553 +21,2023 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "13.0.5"
+  }
   public: {
     Tables: {
-      // ======================================================================
-      // AUTHENTICATION & USER MANAGEMENT
-      // ======================================================================
-      applications: {
-        Row: {
-          id: string; // UUID
-          user_id: string | null;
-          program: 'bootcamp' | 'accelerator' | 'hackathon';
-          status: 'pending' | 'approved' | 'rejected' | 'waitlisted';
-          role: 'student' | 'teacher' | 'admin' | null;
-          name: string;
-          email: string;
-          whatsapp: string | null;
-          location: string | null;
-          discord: string | null;
-          interests: string[] | null;
-          motivation: string | null;
-          technical_experience: string | null;
-          commitment: string | null;
-          scholarship_requested: boolean | null;
-          scholarship_category: 'SC' | 'OBC' | 'EWS' | 'DNT' | 'Transgender' | null;
-          track: string | null;
-          project_name: string | null;
-          project_description: string | null;
-          prototype_link: string | null;
-          tech_stack: string | null;
-          target_users: string | null;
-          production_needs: string | null;
-          team_size: number | null;
-          current_stage: 'Prototype/MVP' | 'Beta with users' | 'Live in production' | null;
-          funding: 'For-profit' | 'Non-profit' | 'Not sure yet' | null;
-          assigned_reviewer_id: string | null;
-          assignment_date: string | null;
-          reviewed_by: string | null;
-          reviewed_at: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id?: string | null;
-          program: 'bootcamp' | 'accelerator' | 'hackathon';
-          status?: 'pending' | 'approved' | 'rejected' | 'waitlisted';
-          role?: 'student' | 'teacher' | 'admin' | null;
-          name: string;
-          email: string;
-          whatsapp?: string | null;
-          location?: string | null;
-          discord?: string | null;
-          interests?: string[] | null;
-          motivation?: string | null;
-          technical_experience?: string | null;
-          commitment?: string | null;
-          scholarship_requested?: boolean | null;
-          scholarship_category?: 'SC' | 'OBC' | 'EWS' | 'DNT' | 'Transgender' | null;
-          track?: string | null;
-          project_name?: string | null;
-          project_description?: string | null;
-          prototype_link?: string | null;
-          tech_stack?: string | null;
-          target_users?: string | null;
-          production_needs?: string | null;
-          team_size?: number | null;
-          current_stage?: 'Prototype/MVP' | 'Beta with users' | 'Live in production' | null;
-          funding?: 'For-profit' | 'Non-profit' | 'Not sure yet' | null;
-          assigned_reviewer_id?: string | null;
-          assignment_date?: string | null;
-          reviewed_by?: string | null;
-          reviewed_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string | null;
-          program?: 'bootcamp' | 'accelerator' | 'hackathon';
-          status?: 'pending' | 'approved' | 'rejected' | 'waitlisted';
-          role?: 'student' | 'teacher' | 'admin' | null;
-          name?: string;
-          email?: string;
-          whatsapp?: string | null;
-          location?: string | null;
-          discord?: string | null;
-          interests?: string[] | null;
-          motivation?: string | null;
-          technical_experience?: string | null;
-          commitment?: string | null;
-          scholarship_requested?: boolean | null;
-          scholarship_category?: 'SC' | 'OBC' | 'EWS' | 'DNT' | 'Transgender' | null;
-          track?: string | null;
-          project_name?: string | null;
-          project_description?: string | null;
-          prototype_link?: string | null;
-          tech_stack?: string | null;
-          target_users?: string | null;
-          production_needs?: string | null;
-          team_size?: number | null;
-          current_stage?: 'Prototype/MVP' | 'Beta with users' | 'Live in production' | null;
-          funding?: 'For-profit' | 'Non-profit' | 'Not sure yet' | null;
-          assigned_reviewer_id?: string | null;
-          assignment_date?: string | null;
-          reviewed_by?: string | null;
-          reviewed_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      profiles: {
-        Row: {
-          id: string; // UUID (references auth.users)
-          email: string | null;
-          full_name: string | null;
-          display_name: string | null;
-          avatar_url: string | null;
-          bio: string | null;
-          role: 'student' | 'teacher' | 'admin';
-          timezone: string;
-          preferences: Json;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id: string;
-          email?: string | null;
-          full_name?: string | null;
-          display_name?: string | null;
-          avatar_url?: string | null;
-          bio?: string | null;
-          role?: 'student' | 'teacher' | 'admin';
-          timezone?: string;
-          preferences?: Json;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          email?: string | null;
-          full_name?: string | null;
-          display_name?: string | null;
-          avatar_url?: string | null;
-          bio?: string | null;
-          role?: 'student' | 'teacher' | 'admin';
-          timezone?: string;
-          preferences?: Json;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      auth_logs: {
-        Row: {
-          id: string; // UUID
-          user_id: string | null;
-          event_type: string;
-          ip_address: string | null;
-          user_agent: string | null;
-          details: Json | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id?: string | null;
-          event_type: string;
-          ip_address?: string | null;
-          user_agent?: string | null;
-          details?: Json | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string | null;
-          event_type?: string;
-          ip_address?: string | null;
-          user_agent?: string | null;
-          details?: Json | null;
-          created_at?: string;
-        };
-      };
-
-      // ======================================================================
-      // COURSE STRUCTURE TABLES
-      // ======================================================================
-      courses: {
-        Row: {
-          id: number;
-          slug: string;
-          title: string;
-          description: string | null;
-          thumbnail_url: string | null;
-          track: 'animal_advocacy' | 'climate' | 'ai_safety' | 'general' | null;
-          difficulty: 'beginner' | 'intermediate' | 'advanced' | null;
-          is_published: boolean;
-          is_cohort_based: boolean;
-          default_duration_weeks: number;
-          enrollment_type: 'open' | 'cohort_only' | 'hybrid';
-          created_by: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: number;
-          slug: string;
-          title: string;
-          description?: string | null;
-          thumbnail_url?: string | null;
-          track?: 'animal_advocacy' | 'climate' | 'ai_safety' | 'general' | null;
-          difficulty?: 'beginner' | 'intermediate' | 'advanced' | null;
-          is_published?: boolean;
-          is_cohort_based?: boolean;
-          default_duration_weeks?: number;
-          enrollment_type?: 'open' | 'cohort_only' | 'hybrid';
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: number;
-          slug?: string;
-          title?: string;
-          description?: string | null;
-          thumbnail_url?: string | null;
-          track?: 'animal_advocacy' | 'climate' | 'ai_safety' | 'general' | null;
-          difficulty?: 'beginner' | 'intermediate' | 'advanced' | null;
-          is_published?: boolean;
-          is_cohort_based?: boolean;
-          default_duration_weeks?: number;
-          enrollment_type?: 'open' | 'cohort_only' | 'hybrid';
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      modules: {
-        Row: {
-          id: number;
-          course_id: number;
-          title: string;
-          description: string | null;
-          order_index: number;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: number;
-          course_id: number;
-          title: string;
-          description?: string | null;
-          order_index: number;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: number;
-          course_id?: number;
-          title?: string;
-          description?: string | null;
-          order_index?: number;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      lessons: {
-        Row: {
-          id: number;
-          module_id: number;
-          title: string;
-          slug: string;
-          content: string | null;
-          video_url: string | null;
-          duration_minutes: number | null;
-          order_index: number;
-          is_preview: boolean;
-          resources: Json;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: number;
-          module_id: number;
-          title: string;
-          slug: string;
-          content?: string | null;
-          video_url?: string | null;
-          duration_minutes?: number | null;
-          order_index: number;
-          is_preview?: boolean;
-          resources?: Json;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: number;
-          module_id?: number;
-          title?: string;
-          slug?: string;
-          content?: string | null;
-          video_url?: string | null;
-          duration_minutes?: number | null;
-          order_index?: number;
-          is_preview?: boolean;
-          resources?: Json;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      // ======================================================================
-      // COHORT SYSTEM TABLES
-      // ======================================================================
-      cohorts: {
-        Row: {
-          id: string; // UUID
-          course_id: number;
-          name: string;
-          start_date: string;
-          end_date: string | null;
-          status: 'upcoming' | 'active' | 'completed' | 'archived';
-          max_students: number | null;
-          created_by: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          course_id: number;
-          name: string;
-          start_date: string;
-          end_date?: string | null;
-          status?: 'upcoming' | 'active' | 'completed' | 'archived';
-          max_students?: number | null;
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          course_id?: number;
-          name?: string;
-          start_date?: string;
-          end_date?: string | null;
-          status?: 'upcoming' | 'active' | 'completed' | 'archived';
-          max_students?: number | null;
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      cohort_enrollments: {
-        Row: {
-          id: string; // UUID
-          cohort_id: string; // UUID - NOT NULL (CASCADE delete)
-          user_id: string;
-          enrolled_at: string;
-          status: 'active' | 'completed' | 'dropped' | 'paused';
-          completed_lessons: number;
-          progress: Json;
-          last_activity_at: string;
-        };
-        Insert: {
-          id?: string;
-          cohort_id: string;
-          user_id: string;
-          enrolled_at?: string;
-          status?: 'active' | 'completed' | 'dropped' | 'paused';
-          completed_lessons?: number;
-          progress?: Json;
-          last_activity_at?: string;
-        };
-        Update: {
-          id?: string;
-          cohort_id?: string;
-          user_id?: string;
-          enrolled_at?: string;
-          status?: 'active' | 'completed' | 'dropped' | 'paused';
-          completed_lessons?: number;
-          progress?: Json;
-          last_activity_at?: string;
-        };
-      };
-      cohort_schedules: {
-        Row: {
-          id: string; // UUID
-          cohort_id: string; // UUID - NOT NULL (CASCADE delete)
-          module_id: number;
-          unlock_date: string;
-          lock_date: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          cohort_id: string;
-          module_id: number;
-          unlock_date: string;
-          lock_date?: string | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          cohort_id?: string;
-          module_id?: number;
-          unlock_date?: string;
-          lock_date?: string | null;
-          created_at?: string;
-        };
-      };
-      lesson_progress: {
-        Row: {
-          id: number;
-          user_id: string;
-          lesson_id: number;
-          cohort_id: string | null; // UUID - nullable (SET NULL on delete)
-          completed: boolean;
-          completed_at: string | null;
-          video_position_seconds: number;
-          time_spent_seconds: number;
-          watch_count: number;
-          last_accessed_at: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: number;
-          user_id: string;
-          lesson_id: number;
-          cohort_id?: string | null;
-          completed?: boolean;
-          completed_at?: string | null;
-          video_position_seconds?: number;
-          time_spent_seconds?: number;
-          watch_count?: number;
-          last_accessed_at?: string;
-          created_at?: string;
-        };
-        Update: {
-          id?: number;
-          user_id?: string;
-          lesson_id?: number;
-          cohort_id?: string | null;
-          completed?: boolean;
-          completed_at?: string | null;
-          video_position_seconds?: number;
-          time_spent_seconds?: number;
-          watch_count?: number;
-          last_accessed_at?: string;
-          created_at?: string;
-        };
-      };
-      enrollments: {
-        Row: {
-          id: number;
-          user_id: string;
-          course_id: number;
-          cohort_id: string | null; // UUID - nullable (SET NULL on delete)
-          enrolled_at: string;
-          completed_at: string | null;
-          status: 'active' | 'completed' | 'dropped' | 'paused';
-          progress_percentage: number;
-        };
-        Insert: {
-          id?: number;
-          user_id: string;
-          course_id: number;
-          cohort_id?: string | null;
-          enrolled_at?: string;
-          completed_at?: string | null;
-          status?: 'active' | 'completed' | 'dropped' | 'paused';
-          progress_percentage?: number;
-        };
-        Update: {
-          id?: number;
-          user_id?: string;
-          course_id?: number;
-          cohort_id?: string | null;
-          enrolled_at?: string;
-          completed_at?: string | null;
-          status?: 'active' | 'completed' | 'dropped' | 'paused';
-          progress_percentage?: number;
-        };
-      };
-
-      // ======================================================================
-      // DISCUSSIONS & FORUMS TABLES
-      // ======================================================================
-      lesson_discussions: {
-        Row: {
-          id: string; // UUID
-          lesson_id: number;
-          cohort_id: string; // UUID - NOT NULL (CASCADE delete)
-          user_id: string;
-          parent_id: string | null; // UUID - self-reference for threading
-          content: string;
-          is_teacher_response: boolean;
-          is_pinned: boolean;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          lesson_id: number;
-          cohort_id: string;
-          user_id: string;
-          parent_id?: string | null;
-          content: string;
-          is_teacher_response?: boolean;
-          is_pinned?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          lesson_id?: number;
-          cohort_id?: string;
-          user_id?: string;
-          parent_id?: string | null;
-          content?: string;
-          is_teacher_response?: boolean;
-          is_pinned?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      course_forums: {
-        Row: {
-          id: string; // UUID
-          course_id: number;
-          cohort_id: string; // UUID - NOT NULL (CASCADE delete)
-          user_id: string;
-          title: string;
-          content: string;
-          is_pinned: boolean;
-          is_locked: boolean;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          course_id: number;
-          cohort_id: string;
-          user_id: string;
-          title: string;
-          content: string;
-          is_pinned?: boolean;
-          is_locked?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          course_id?: number;
-          cohort_id?: string;
-          user_id?: string;
-          title?: string;
-          content?: string;
-          is_pinned?: boolean;
-          is_locked?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      forum_replies: {
-        Row: {
-          id: string; // UUID
-          forum_post_id: string;
-          user_id: string;
-          content: string;
-          is_teacher_response: boolean;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          forum_post_id: string;
-          user_id: string;
-          content: string;
-          is_teacher_response?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          forum_post_id?: string;
-          user_id?: string;
-          content?: string;
-          is_teacher_response?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      // ======================================================================
-      // QUIZ TABLES
-      // ======================================================================
-      quizzes: {
-        Row: {
-          id: string; // UUID
-          course_id: number;
-          module_id: number | null;
-          lesson_id: number | null;
-          title: string;
-          description: string | null;
-          time_limit_minutes: number | null;
-          passing_score: number;
-          max_attempts: number;
-          randomize_questions: boolean;
-          show_correct_answers: boolean;
-          show_results_immediately: boolean;
-          is_published: boolean;
-          available_from: string | null;
-          available_until: string | null;
-          created_by: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          course_id: number;
-          module_id?: number | null;
-          lesson_id?: number | null;
-          title: string;
-          description?: string | null;
-          time_limit_minutes?: number | null;
-          passing_score?: number;
-          max_attempts?: number;
-          randomize_questions?: boolean;
-          show_correct_answers?: boolean;
-          show_results_immediately?: boolean;
-          is_published?: boolean;
-          available_from?: string | null;
-          available_until?: string | null;
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          course_id?: number;
-          module_id?: number | null;
-          lesson_id?: number | null;
-          title?: string;
-          description?: string | null;
-          time_limit_minutes?: number | null;
-          passing_score?: number;
-          max_attempts?: number;
-          randomize_questions?: boolean;
-          show_correct_answers?: boolean;
-          show_results_immediately?: boolean;
-          is_published?: boolean;
-          available_from?: string | null;
-          available_until?: string | null;
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      quiz_questions: {
-        Row: {
-          id: string; // UUID
-          quiz_id: string;
-          question_type: 'multiple_choice' | 'true_false' | 'short_answer' | 'essay' | 'multiple_select';
-          question_text: string;
-          points: number;
-          order_index: number;
-          options: Json | null;
-          correct_answer: string | null;
-          answer_explanation: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          quiz_id: string;
-          question_type: 'multiple_choice' | 'true_false' | 'short_answer' | 'essay' | 'multiple_select';
-          question_text: string;
-          points?: number;
-          order_index: number;
-          options?: Json | null;
-          correct_answer?: string | null;
-          answer_explanation?: string | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          quiz_id?: string;
-          question_type?: 'multiple_choice' | 'true_false' | 'short_answer' | 'essay' | 'multiple_select';
-          question_text?: string;
-          points?: number;
-          order_index?: number;
-          options?: Json | null;
-          correct_answer?: string | null;
-          answer_explanation?: string | null;
-          created_at?: string;
-        };
-      };
-      quiz_attempts: {
-        Row: {
-          id: string; // UUID
-          quiz_id: string;
-          user_id: string;
-          cohort_id: string | null; // UUID - nullable (SET NULL on delete)
-          attempt_number: number;
-          started_at: string;
-          submitted_at: string | null;
-          time_taken_seconds: number | null;
-          score: number | null;
-          total_points: number | null;
-          points_earned: number | null;
-          passed: boolean | null;
-          answers_json: Json;
-          grading_status: 'pending' | 'auto_graded' | 'needs_review';
-          graded_by: string | null;
-          graded_at: string | null;
-        };
-        Insert: {
-          id?: string;
-          quiz_id: string;
-          user_id: string;
-          cohort_id?: string | null;
-          attempt_number: number;
-          started_at?: string;
-          submitted_at?: string | null;
-          time_taken_seconds?: number | null;
-          score?: number | null;
-          total_points?: number | null;
-          points_earned?: number | null;
-          passed?: boolean | null;
-          answers_json?: Json;
-          grading_status?: 'pending' | 'auto_graded' | 'needs_review';
-          graded_by?: string | null;
-          graded_at?: string | null;
-        };
-        Update: {
-          id?: string;
-          quiz_id?: string;
-          user_id?: string;
-          cohort_id?: string | null;
-          attempt_number?: number;
-          started_at?: string;
-          submitted_at?: string | null;
-          time_taken_seconds?: number | null;
-          score?: number | null;
-          total_points?: number | null;
-          points_earned?: number | null;
-          passed?: boolean | null;
-          answers_json?: Json;
-          grading_status?: 'pending' | 'auto_graded' | 'needs_review';
-          graded_by?: string | null;
-          graded_at?: string | null;
-        };
-      };
-
-      // ======================================================================
-      // ASSIGNMENT TABLES
-      // ======================================================================
-      assignments: {
-        Row: {
-          id: string; // UUID
-          course_id: number;
-          module_id: number | null;
-          lesson_id: number | null;
-          title: string;
-          description: string | null;
-          instructions: string | null;
-          max_points: number;
-          due_date: string | null;
-          allow_late_submissions: boolean;
-          late_penalty_percent: number;
-          allow_resubmission: boolean;
-          max_submissions: number;
-          max_file_size_mb: number;
-          allowed_file_types: string[];
-          is_published: boolean;
-          created_by: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          course_id: number;
-          module_id?: number | null;
-          lesson_id?: number | null;
-          title: string;
-          description?: string | null;
-          instructions?: string | null;
-          max_points?: number;
-          due_date?: string | null;
-          allow_late_submissions?: boolean;
-          late_penalty_percent?: number;
-          allow_resubmission?: boolean;
-          max_submissions?: number;
-          max_file_size_mb?: number;
-          allowed_file_types?: string[];
-          is_published?: boolean;
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          course_id?: number;
-          module_id?: number | null;
-          lesson_id?: number | null;
-          title?: string;
-          description?: string | null;
-          instructions?: string | null;
-          max_points?: number;
-          due_date?: string | null;
-          allow_late_submissions?: boolean;
-          late_penalty_percent?: number;
-          allow_resubmission?: boolean;
-          max_submissions?: number;
-          max_file_size_mb?: number;
-          allowed_file_types?: string[];
-          is_published?: boolean;
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      assignment_submissions: {
-        Row: {
-          id: string; // UUID
-          assignment_id: string;
-          user_id: string;
-          submission_number: number;
-          submission_text: string | null;
-          file_url: string | null;
-          file_name: string | null;
-          file_size_bytes: number | null;
-          file_type: string | null;
-          file_urls: string[] | null;
-          submitted_at: string;
-          is_late: boolean;
-          status: 'draft' | 'submitted' | 'graded' | 'returned';
-          score: number | null;
-          feedback: string | null;
-          graded_by: string | null;
-          graded_at: string | null;
-          rubric_scores: Json | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          assignment_id: string;
-          user_id: string;
-          submission_number?: number;
-          submission_text?: string | null;
-          file_url?: string | null;
-          file_name?: string | null;
-          file_size_bytes?: number | null;
-          file_type?: string | null;
-          file_urls?: string[] | null;
-          submitted_at?: string;
-          is_late?: boolean;
-          status?: 'draft' | 'submitted' | 'graded' | 'returned';
-          score?: number | null;
-          feedback?: string | null;
-          graded_by?: string | null;
-          graded_at?: string | null;
-          rubric_scores?: Json | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          assignment_id?: string;
-          user_id?: string;
-          submission_number?: number;
-          submission_text?: string | null;
-          file_url?: string | null;
-          file_name?: string | null;
-          file_size_bytes?: number | null;
-          file_type?: string | null;
-          file_urls?: string[] | null;
-          submitted_at?: string;
-          is_late?: boolean;
-          status?: 'draft' | 'submitted' | 'graded' | 'returned';
-          score?: number | null;
-          feedback?: string | null;
-          graded_by?: string | null;
-          graded_at?: string | null;
-          rubric_scores?: Json | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      assignment_rubrics: {
-        Row: {
-          id: string; // UUID
-          assignment_id: string;
-          criterion: string;
-          description: string | null;
-          max_points: number;
-          order_index: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          assignment_id: string;
-          criterion: string;
-          description?: string | null;
-          max_points: number;
-          order_index: number;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          assignment_id?: string;
-          criterion?: string;
-          description?: string | null;
-          max_points?: number;
-          order_index?: number;
-          created_at?: string;
-        };
-      };
-
-      // ======================================================================
-      // MESSAGING & NOTIFICATIONS TABLES
-      // ======================================================================
-      message_threads: {
-        Row: {
-          id: string; // UUID
-          participant_ids: string[];
-          subject: string | null;
-          last_message_at: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          participant_ids: string[];
-          subject?: string | null;
-          last_message_at?: string;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          participant_ids?: string[];
-          subject?: string | null;
-          last_message_at?: string;
-          created_at?: string;
-        };
-      };
-      messages: {
-        Row: {
-          id: string; // UUID
-          thread_id: string;
-          sender_id: string;
-          content: string;
-          attachments: string[] | null;
-          read_by: string[];
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          thread_id: string;
-          sender_id: string;
-          content: string;
-          attachments?: string[] | null;
-          read_by?: string[];
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          thread_id?: string;
-          sender_id?: string;
-          content?: string;
-          attachments?: string[] | null;
-          read_by?: string[];
-          created_at?: string;
-        };
-      };
-      notifications: {
-        Row: {
-          id: string; // UUID
-          user_id: string;
-          type: string;
-          title: string;
-          content: string | null;
-          link: string | null;
-          is_read: boolean;
-          metadata: Json | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          type: string;
-          title: string;
-          content?: string | null;
-          link?: string | null;
-          is_read?: boolean;
-          metadata?: Json | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          type?: string;
-          title?: string;
-          content?: string | null;
-          link?: string | null;
-          is_read?: boolean;
-          metadata?: Json | null;
-          created_at?: string;
-        };
-      };
-      announcements: {
-        Row: {
-          id: string; // UUID
-          title: string;
-          content: string;
-          scope: 'platform' | 'course' | 'cohort';
-          target_id: string | null;
-          priority: 'low' | 'normal' | 'high' | 'urgent';
-          published: boolean;
-          publish_at: string | null;
-          expires_at: string | null;
-          created_by: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          title: string;
-          content: string;
-          scope: 'platform' | 'course' | 'cohort';
-          target_id?: string | null;
-          priority?: 'low' | 'normal' | 'high' | 'urgent';
-          published?: boolean;
-          publish_at?: string | null;
-          expires_at?: string | null;
-          created_by?: string | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          title?: string;
-          content?: string;
-          scope?: 'platform' | 'course' | 'cohort';
-          target_id?: string | null;
-          priority?: 'low' | 'normal' | 'high' | 'urgent';
-          published?: boolean;
-          publish_at?: string | null;
-          expires_at?: string | null;
-          created_by?: string | null;
-          created_at?: string;
-        };
-      };
-
-      // ======================================================================
-      // AI TEACHING ASSISTANT TABLES
-      // ======================================================================
       ai_conversations: {
         Row: {
-          id: string; // UUID
-          user_id: string;
-          course_id: number | null;
-          lesson_id: number | null;
-          title: string | null;
-          model: string;
-          status: 'active' | 'archived';
-          created_at: string;
-          updated_at: string;
-        };
+          course_id: number | null
+          created_at: string | null
+          id: string
+          lesson_id: number | null
+          model: string | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
         Insert: {
-          id?: string;
-          user_id: string;
-          course_id?: number | null;
-          lesson_id?: number | null;
-          title?: string | null;
-          model?: string;
-          status?: 'active' | 'archived';
-          created_at?: string;
-          updated_at?: string;
-        };
+          course_id?: number | null
+          created_at?: string | null
+          id?: string
+          lesson_id?: number | null
+          model?: string | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
         Update: {
-          id?: string;
-          user_id?: string;
-          course_id?: number | null;
-          lesson_id?: number | null;
-          title?: string | null;
-          model?: string;
-          status?: 'active' | 'archived';
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
+          course_id?: number | null
+          created_at?: string | null
+          id?: string
+          lesson_id?: number | null
+          model?: string | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_conversations_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_conversations_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_messages: {
         Row: {
-          id: string; // UUID
-          conversation_id: string;
-          role: 'user' | 'assistant' | 'system';
-          content: string;
-          tokens_used: number;
-          cost: number;
-          metadata: Json | null;
-          created_at: string;
-        };
+          content: string
+          conversation_id: string | null
+          cost: number | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          role: string
+          tokens_used: number | null
+        }
         Insert: {
-          id?: string;
-          conversation_id: string;
-          role: 'user' | 'assistant' | 'system';
-          content: string;
-          tokens_used?: number;
-          cost?: number;
-          metadata?: Json | null;
-          created_at?: string;
-        };
+          content: string
+          conversation_id?: string | null
+          cost?: number | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          role: string
+          tokens_used?: number | null
+        }
         Update: {
-          id?: string;
-          conversation_id?: string;
-          role?: 'user' | 'assistant' | 'system';
-          content?: string;
-          tokens_used?: number;
-          cost?: number;
-          metadata?: Json | null;
-          created_at?: string;
-        };
-      };
+          content?: string
+          conversation_id?: string | null
+          cost?: number | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          role?: string
+          tokens_used?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_usage_logs: {
         Row: {
-          id: string; // UUID
-          user_id: string | null;
-          model: string;
-          tokens_used: number;
-          cost: number;
-          operation: string | null;
-          metadata: Json | null;
-          created_at: string;
-        };
+          cost: number
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          model: string
+          operation: string | null
+          tokens_used: number
+          user_id: string | null
+        }
         Insert: {
-          id?: string;
-          user_id?: string | null;
-          model: string;
-          tokens_used: number;
-          cost: number;
-          operation?: string | null;
-          metadata?: Json | null;
-          created_at?: string;
-        };
+          cost: number
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          model: string
+          operation?: string | null
+          tokens_used: number
+          user_id?: string | null
+        }
         Update: {
-          id?: string;
-          user_id?: string | null;
-          model?: string;
-          tokens_used?: number;
-          cost?: number;
-          operation?: string | null;
-          metadata?: Json | null;
-          created_at?: string;
-        };
-      };
-
-      // ======================================================================
-      // CERTIFICATE TABLES
-      // ======================================================================
-      certificate_templates: {
-        Row: {
-          id: string; // UUID
-          name: string;
-          description: string | null;
-          template_html: string;
-          template_variables: string[] | null;
-          is_default: boolean;
-          created_by: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          description?: string | null;
-          template_html: string;
-          template_variables?: string[] | null;
-          is_default?: boolean;
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          name?: string;
-          description?: string | null;
-          template_html?: string;
-          template_variables?: string[] | null;
-          is_default?: boolean;
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      certificates: {
-        Row: {
-          id: string; // UUID
-          user_id: string;
-          course_id: number | null;
-          template_id: string | null;
-          certificate_code: string;
-          issued_date: string;
-          expiry_date: string | null;
-          student_name: string;
-          course_title: string;
-          completion_date: string | null;
-          final_grade: string | null;
-          pdf_url: string | null;
-          metadata: Json | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          course_id?: number | null;
-          template_id?: string | null;
-          certificate_code: string;
-          issued_date?: string;
-          expiry_date?: string | null;
-          student_name: string;
-          course_title: string;
-          completion_date?: string | null;
-          final_grade?: string | null;
-          pdf_url?: string | null;
-          metadata?: Json | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          course_id?: number | null;
-          template_id?: string | null;
-          certificate_code?: string;
-          issued_date?: string;
-          expiry_date?: string | null;
-          student_name?: string;
-          course_title?: string;
-          completion_date?: string | null;
-          final_grade?: string | null;
-          pdf_url?: string | null;
-          metadata?: Json | null;
-          created_at?: string;
-        };
-      };
-
-      // ======================================================================
-      // PAYMENT TABLES
-      // ======================================================================
-      payments: {
-        Row: {
-          id: string; // UUID
-          user_id: string | null;
-          stripe_payment_id: string;
-          stripe_customer_id: string | null;
-          amount: number;
-          currency: string;
-          status: 'pending' | 'succeeded' | 'failed' | 'refunded';
-          payment_type: 'one_time' | 'subscription' | 'course_fee' | null;
-          course_id: number | null;
-          description: string | null;
-          metadata: Json | null;
-          paid_at: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id?: string | null;
-          stripe_payment_id: string;
-          stripe_customer_id?: string | null;
-          amount: number;
-          currency?: string;
-          status: 'pending' | 'succeeded' | 'failed' | 'refunded';
-          payment_type?: 'one_time' | 'subscription' | 'course_fee' | null;
-          course_id?: number | null;
-          description?: string | null;
-          metadata?: Json | null;
-          paid_at?: string | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string | null;
-          stripe_payment_id?: string;
-          stripe_customer_id?: string | null;
-          amount?: number;
-          currency?: string;
-          status?: 'pending' | 'succeeded' | 'failed' | 'refunded';
-          payment_type?: 'one_time' | 'subscription' | 'course_fee' | null;
-          course_id?: number | null;
-          description?: string | null;
-          metadata?: Json | null;
-          paid_at?: string | null;
-          created_at?: string;
-        };
-      };
-      subscriptions: {
-        Row: {
-          id: string; // UUID
-          user_id: string;
-          stripe_subscription_id: string;
-          stripe_customer_id: string;
-          plan: 'free' | 'pro_monthly' | 'pro_yearly' | 'enterprise';
-          status: 'active' | 'canceled' | 'past_due' | 'unpaid';
-          current_period_start: string;
-          current_period_end: string;
-          cancel_at_period_end: boolean;
-          canceled_at: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          stripe_subscription_id: string;
-          stripe_customer_id: string;
-          plan: 'free' | 'pro_monthly' | 'pro_yearly' | 'enterprise';
-          status: 'active' | 'canceled' | 'past_due' | 'unpaid';
-          current_period_start: string;
-          current_period_end: string;
-          cancel_at_period_end?: boolean;
-          canceled_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          stripe_subscription_id?: string;
-          stripe_customer_id?: string;
-          plan?: 'free' | 'pro_monthly' | 'pro_yearly' | 'enterprise';
-          status?: 'active' | 'canceled' | 'past_due' | 'unpaid';
-          current_period_start?: string;
-          current_period_end?: string;
-          cancel_at_period_end?: boolean;
-          canceled_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      // ======================================================================
-      // MEDIA LIBRARY TABLE
-      // ======================================================================
-      media_library: {
-        Row: {
-          id: string; // UUID
-          file_name: string;
-          file_path: string;
-          file_type: string;
-          mime_type: string | null;
-          file_size_bytes: number;
-          folder: string;
-          uploaded_by: string | null;
-          alt_text: string | null;
-          caption: string | null;
-          tags: string[] | null;
-          is_public: boolean;
-          usage_count: number;
-          is_in_use: boolean;
-          malware_scan_status: 'pending' | 'clean' | 'infected' | 'failed';
-          malware_scan_at: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          file_name: string;
-          file_path: string;
-          file_type: string;
-          mime_type?: string | null;
-          file_size_bytes: number;
-          folder?: string;
-          uploaded_by?: string | null;
-          alt_text?: string | null;
-          caption?: string | null;
-          tags?: string[] | null;
-          is_public?: boolean;
-          usage_count?: number;
-          is_in_use?: boolean;
-          malware_scan_status?: 'pending' | 'clean' | 'infected' | 'failed';
-          malware_scan_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          file_name?: string;
-          file_path?: string;
-          file_type?: string;
-          mime_type?: string | null;
-          file_size_bytes?: number;
-          folder?: string;
-          uploaded_by?: string | null;
-          alt_text?: string | null;
-          caption?: string | null;
-          tags?: string[] | null;
-          is_public?: boolean;
-          usage_count?: number;
-          is_in_use?: boolean;
-          malware_scan_status?: 'pending' | 'clean' | 'infected' | 'failed';
-          malware_scan_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-
-      // ======================================================================
-      // ANALYTICS TABLE
-      // ======================================================================
+          cost?: number
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          model?: string
+          operation?: string | null
+          tokens_used?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       analytics_events: {
         Row: {
-          id: string; // UUID
-          user_id: string | null;
-          event_type: string;
-          event_data: Json | null;
-          session_id: string | null;
-          ip_address: string | null;
-          user_agent: string | null;
-          created_at: string;
-        };
+          created_at: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          ip_address: unknown
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
         Insert: {
-          id?: string;
-          user_id?: string | null;
-          event_type: string;
-          event_data?: Json | null;
-          session_id?: string | null;
-          ip_address?: string | null;
-          user_agent?: string | null;
-          created_at?: string;
-        };
+          created_at?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: unknown
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
         Update: {
-          id?: string;
-          user_id?: string | null;
-          event_type?: string;
-          event_data?: Json | null;
-          session_id?: string | null;
-          ip_address?: string | null;
-          user_agent?: string | null;
-          created_at?: string;
-        };
-      };
-    };
-
-    // ========================================================================
-    // VIEWS (Materialized Views)
-    // ========================================================================
+          created_at?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      announcements: {
+        Row: {
+          content: string
+          created_at: string | null
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          priority: string | null
+          publish_at: string | null
+          published: boolean | null
+          scope: string
+          target_id: string | null
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          priority?: string | null
+          publish_at?: string | null
+          published?: boolean | null
+          scope: string
+          target_id?: string | null
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          priority?: string | null
+          publish_at?: string | null
+          published?: boolean | null
+          scope?: string
+          target_id?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      applications: {
+        Row: {
+          assigned_reviewer_id: string | null
+          assignment_date: string | null
+          career_goals: string | null
+          commitment: string | null
+          created_at: string | null
+          current_stage: string | null
+          decision_note: string | null
+          discord: string | null
+          email: string
+          funding: string | null
+          id: string
+          interests: string[] | null
+          location: string | null
+          motivation: string | null
+          name: string
+          production_needs: string | null
+          program: string
+          project_description: string | null
+          project_name: string | null
+          protected_class: string | null
+          prototype_link: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          role: string | null
+          scholarship_category: string | null
+          scholarship_requested: boolean | null
+          status: string
+          target_users: string | null
+          team_size: number | null
+          tech_stack: string | null
+          technical_experience: string | null
+          track: string | null
+          updated_at: string | null
+          user_id: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          assigned_reviewer_id?: string | null
+          assignment_date?: string | null
+          career_goals?: string | null
+          commitment?: string | null
+          created_at?: string | null
+          current_stage?: string | null
+          decision_note?: string | null
+          discord?: string | null
+          email: string
+          funding?: string | null
+          id?: string
+          interests?: string[] | null
+          location?: string | null
+          motivation?: string | null
+          name: string
+          production_needs?: string | null
+          program: string
+          project_description?: string | null
+          project_name?: string | null
+          protected_class?: string | null
+          prototype_link?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role?: string | null
+          scholarship_category?: string | null
+          scholarship_requested?: boolean | null
+          status?: string
+          target_users?: string | null
+          team_size?: number | null
+          tech_stack?: string | null
+          technical_experience?: string | null
+          track?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          assigned_reviewer_id?: string | null
+          assignment_date?: string | null
+          career_goals?: string | null
+          commitment?: string | null
+          created_at?: string | null
+          current_stage?: string | null
+          decision_note?: string | null
+          discord?: string | null
+          email?: string
+          funding?: string | null
+          id?: string
+          interests?: string[] | null
+          location?: string | null
+          motivation?: string | null
+          name?: string
+          production_needs?: string | null
+          program?: string
+          project_description?: string | null
+          project_name?: string | null
+          protected_class?: string | null
+          prototype_link?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role?: string | null
+          scholarship_category?: string | null
+          scholarship_requested?: boolean | null
+          status?: string
+          target_users?: string | null
+          team_size?: number | null
+          tech_stack?: string | null
+          technical_experience?: string | null
+          track?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      assignment_rubrics: {
+        Row: {
+          assignment_id: string | null
+          created_at: string | null
+          criterion: string
+          description: string | null
+          id: string
+          max_points: number
+          order_index: number
+        }
+        Insert: {
+          assignment_id?: string | null
+          created_at?: string | null
+          criterion: string
+          description?: string | null
+          id?: string
+          max_points: number
+          order_index: number
+        }
+        Update: {
+          assignment_id?: string | null
+          created_at?: string | null
+          criterion?: string
+          description?: string | null
+          id?: string
+          max_points?: number
+          order_index?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignment_rubrics_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assignment_submissions: {
+        Row: {
+          assignment_id: string | null
+          created_at: string | null
+          feedback: string | null
+          file_name: string | null
+          file_size_bytes: number | null
+          file_type: string | null
+          file_url: string | null
+          file_urls: string[] | null
+          graded_at: string | null
+          graded_by: string | null
+          id: string
+          is_late: boolean | null
+          rubric_scores: Json | null
+          score: number | null
+          status: string | null
+          submission_number: number | null
+          submission_text: string | null
+          submitted_at: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          assignment_id?: string | null
+          created_at?: string | null
+          feedback?: string | null
+          file_name?: string | null
+          file_size_bytes?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          file_urls?: string[] | null
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          is_late?: boolean | null
+          rubric_scores?: Json | null
+          score?: number | null
+          status?: string | null
+          submission_number?: number | null
+          submission_text?: string | null
+          submitted_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          assignment_id?: string | null
+          created_at?: string | null
+          feedback?: string | null
+          file_name?: string | null
+          file_size_bytes?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          file_urls?: string[] | null
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          is_late?: boolean | null
+          rubric_scores?: Json | null
+          score?: number | null
+          status?: string | null
+          submission_number?: number | null
+          submission_text?: string | null
+          submitted_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignment_submissions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assignments: {
+        Row: {
+          allow_late_submissions: boolean | null
+          allow_resubmission: boolean | null
+          allowed_file_types: string[] | null
+          course_id: number | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          instructions: string | null
+          is_published: boolean | null
+          late_penalty_percent: number | null
+          lesson_id: number | null
+          max_file_size_mb: number | null
+          max_points: number | null
+          max_submissions: number | null
+          module_id: number | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          allow_late_submissions?: boolean | null
+          allow_resubmission?: boolean | null
+          allowed_file_types?: string[] | null
+          course_id?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          is_published?: boolean | null
+          late_penalty_percent?: number | null
+          lesson_id?: number | null
+          max_file_size_mb?: number | null
+          max_points?: number | null
+          max_submissions?: number | null
+          module_id?: number | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          allow_late_submissions?: boolean | null
+          allow_resubmission?: boolean | null
+          allowed_file_types?: string[] | null
+          course_id?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          is_published?: boolean | null
+          late_penalty_percent?: number | null
+          lesson_id?: number | null
+          max_file_size_mb?: number | null
+          max_points?: number | null
+          max_submissions?: number | null
+          module_id?: number | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assignments_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assignments_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auth_logs: {
+        Row: {
+          created_at: string | null
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: unknown
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: unknown
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          author_name: string | null
+          category: string
+          content: string
+          created_at: string | null
+          description: string | null
+          featured_image: string | null
+          id: string
+          published_at: string | null
+          slug: string
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          author_name?: string | null
+          category: string
+          content?: string
+          created_at?: string | null
+          description?: string | null
+          featured_image?: string | null
+          id?: string
+          published_at?: string | null
+          slug: string
+          status?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string | null
+          category?: string
+          content?: string
+          created_at?: string | null
+          description?: string | null
+          featured_image?: string | null
+          id?: string
+          published_at?: string | null
+          slug?: string
+          status?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      certificate_templates: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_default: boolean | null
+          name: string
+          template_html: string
+          template_variables: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean | null
+          name: string
+          template_html: string
+          template_variables?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          template_html?: string
+          template_variables?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      certificates: {
+        Row: {
+          certificate_code: string
+          completion_date: string | null
+          course_id: number | null
+          course_title: string
+          created_at: string | null
+          expiry_date: string | null
+          final_grade: string | null
+          id: string
+          issued_date: string
+          metadata: Json | null
+          pdf_url: string | null
+          student_name: string
+          template_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          certificate_code: string
+          completion_date?: string | null
+          course_id?: number | null
+          course_title: string
+          created_at?: string | null
+          expiry_date?: string | null
+          final_grade?: string | null
+          id?: string
+          issued_date?: string
+          metadata?: Json | null
+          pdf_url?: string | null
+          student_name: string
+          template_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          certificate_code?: string
+          completion_date?: string | null
+          course_id?: number | null
+          course_title?: string
+          created_at?: string | null
+          expiry_date?: string | null
+          final_grade?: string | null
+          id?: string
+          issued_date?: string
+          metadata?: Json | null
+          pdf_url?: string | null
+          student_name?: string
+          template_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cohort_enrollments: {
+        Row: {
+          cohort_id: string | null
+          completed_lessons: number | null
+          enrolled_at: string | null
+          id: string
+          last_activity_at: string | null
+          progress: Json | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          cohort_id?: string | null
+          completed_lessons?: number | null
+          enrolled_at?: string | null
+          id?: string
+          last_activity_at?: string | null
+          progress?: Json | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          cohort_id?: string | null
+          completed_lessons?: number | null
+          enrolled_at?: string | null
+          id?: string
+          last_activity_at?: string | null
+          progress?: Json | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohort_enrollments_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cohort_schedules: {
+        Row: {
+          cohort_id: string | null
+          created_at: string | null
+          id: string
+          lock_date: string | null
+          module_id: number | null
+          unlock_date: string
+        }
+        Insert: {
+          cohort_id?: string | null
+          created_at?: string | null
+          id?: string
+          lock_date?: string | null
+          module_id?: number | null
+          unlock_date: string
+        }
+        Update: {
+          cohort_id?: string | null
+          created_at?: string | null
+          id?: string
+          lock_date?: string | null
+          module_id?: number | null
+          unlock_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohort_schedules_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cohort_schedules_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cohorts: {
+        Row: {
+          course_id: number | null
+          created_at: string | null
+          created_by: string | null
+          end_date: string | null
+          id: string
+          max_students: number | null
+          name: string
+          start_date: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          course_id?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          max_students?: number | null
+          name: string
+          start_date: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          course_id?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          max_students?: number | null
+          name?: string
+          start_date?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohorts_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_forums: {
+        Row: {
+          cohort_id: string | null
+          content: string
+          course_id: number | null
+          created_at: string | null
+          id: string
+          is_locked: boolean | null
+          is_pinned: boolean | null
+          title: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          cohort_id?: string | null
+          content: string
+          course_id?: number | null
+          created_at?: string | null
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          title: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          cohort_id?: string | null
+          content?: string
+          course_id?: number | null
+          created_at?: string | null
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_forums_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_forums_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          default_duration_weeks: number | null
+          description: string | null
+          difficulty: string | null
+          enrollment_type: string | null
+          id: number
+          is_cohort_based: boolean | null
+          is_published: boolean | null
+          slug: string
+          thumbnail_url: string | null
+          title: string
+          track: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          default_duration_weeks?: number | null
+          description?: string | null
+          difficulty?: string | null
+          enrollment_type?: string | null
+          id?: number
+          is_cohort_based?: boolean | null
+          is_published?: boolean | null
+          slug: string
+          thumbnail_url?: string | null
+          title: string
+          track?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          default_duration_weeks?: number | null
+          description?: string | null
+          difficulty?: string | null
+          enrollment_type?: string | null
+          id?: number
+          is_cohort_based?: boolean | null
+          is_published?: boolean | null
+          slug?: string
+          thumbnail_url?: string | null
+          title?: string
+          track?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      enrollments: {
+        Row: {
+          cohort_id: string | null
+          completed_at: string | null
+          course_id: number | null
+          enrolled_at: string | null
+          id: number
+          progress_percentage: number | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          cohort_id?: string | null
+          completed_at?: string | null
+          course_id?: number | null
+          enrolled_at?: string | null
+          id?: number
+          progress_percentage?: number | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          cohort_id?: string | null
+          completed_at?: string | null
+          course_id?: number | null
+          enrolled_at?: string | null
+          id?: number
+          progress_percentage?: number | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_replies: {
+        Row: {
+          content: string
+          created_at: string | null
+          forum_post_id: string | null
+          id: string
+          is_teacher_response: boolean | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          forum_post_id?: string | null
+          id?: string
+          is_teacher_response?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          forum_post_id?: string | null
+          id?: string
+          is_teacher_response?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_replies_forum_post_id_fkey"
+            columns: ["forum_post_id"]
+            isOneToOne: false
+            referencedRelation: "course_forums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lesson_discussions: {
+        Row: {
+          cohort_id: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_pinned: boolean | null
+          is_teacher_response: boolean | null
+          lesson_id: number | null
+          parent_id: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          cohort_id?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_pinned?: boolean | null
+          is_teacher_response?: boolean | null
+          lesson_id?: number | null
+          parent_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          cohort_id?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_pinned?: boolean | null
+          is_teacher_response?: boolean | null
+          lesson_id?: number | null
+          parent_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_discussions_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_discussions_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_discussions_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "lesson_discussions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lesson_progress: {
+        Row: {
+          cohort_id: string | null
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          id: number
+          last_accessed_at: string | null
+          lesson_id: number | null
+          time_spent_seconds: number | null
+          user_id: string | null
+          video_position_seconds: number | null
+          watch_count: number | null
+        }
+        Insert: {
+          cohort_id?: string | null
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: number
+          last_accessed_at?: string | null
+          lesson_id?: number | null
+          time_spent_seconds?: number | null
+          user_id?: string | null
+          video_position_seconds?: number | null
+          watch_count?: number | null
+        }
+        Update: {
+          cohort_id?: string | null
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: number
+          last_accessed_at?: string | null
+          lesson_id?: number | null
+          time_spent_seconds?: number | null
+          user_id?: string | null
+          video_position_seconds?: number | null
+          watch_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_progress_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lessons: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          duration_minutes: number | null
+          id: number
+          is_preview: boolean | null
+          module_id: number | null
+          order_index: number
+          resources: Json | null
+          slug: string
+          title: string
+          updated_at: string | null
+          video_url: string | null
+          youtube_url: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: number
+          is_preview?: boolean | null
+          module_id?: number | null
+          order_index: number
+          resources?: Json | null
+          slug: string
+          title: string
+          updated_at?: string | null
+          video_url?: string | null
+          youtube_url?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: number
+          is_preview?: boolean | null
+          module_id?: number | null
+          order_index?: number
+          resources?: Json | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+          video_url?: string | null
+          youtube_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_library: {
+        Row: {
+          alt_text: string | null
+          caption: string | null
+          created_at: string | null
+          file_name: string
+          file_path: string
+          file_size_bytes: number
+          file_type: string
+          folder: string | null
+          id: string
+          is_in_use: boolean | null
+          is_public: boolean | null
+          malware_scan_at: string | null
+          malware_scan_status: string | null
+          mime_type: string | null
+          tags: string[] | null
+          updated_at: string | null
+          uploaded_by: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string | null
+          file_name: string
+          file_path: string
+          file_size_bytes: number
+          file_type: string
+          folder?: string | null
+          id?: string
+          is_in_use?: boolean | null
+          is_public?: boolean | null
+          malware_scan_at?: string | null
+          malware_scan_status?: string | null
+          mime_type?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+          uploaded_by?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string | null
+          file_name?: string
+          file_path?: string
+          file_size_bytes?: number
+          file_type?: string
+          folder?: string | null
+          id?: string
+          is_in_use?: boolean | null
+          is_public?: boolean | null
+          malware_scan_at?: string | null
+          malware_scan_status?: string | null
+          mime_type?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+          uploaded_by?: string | null
+          usage_count?: number | null
+        }
+        Relationships: []
+      }
+      message_threads: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_message_at: string | null
+          participant_ids: string[]
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_message_at?: string | null
+          participant_ids: string[]
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_message_at?: string | null
+          participant_ids?: string[]
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          attachments: string[] | null
+          content: string
+          created_at: string | null
+          id: string
+          read_by: string[] | null
+          sender_id: string | null
+          thread_id: string | null
+        }
+        Insert: {
+          attachments?: string[] | null
+          content: string
+          created_at?: string | null
+          id?: string
+          read_by?: string[] | null
+          sender_id?: string | null
+          thread_id?: string | null
+        }
+        Update: {
+          attachments?: string[] | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          read_by?: string[] | null
+          sender_id?: string | null
+          thread_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "message_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      modules: {
+        Row: {
+          course_id: number | null
+          created_at: string | null
+          description: string | null
+          id: number
+          order_index: number
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          course_id?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          order_index: number
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          course_id?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          order_index?: number
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "modules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          link: string | null
+          metadata: Json | null
+          title: string
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          link?: string | null
+          metadata?: Json | null
+          title: string
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          link?: string | null
+          metadata?: Json | null
+          title?: string
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          course_id: number | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          paid_at: string | null
+          payment_type: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_payment_id: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          course_id?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          paid_at?: string | null
+          payment_type?: string | null
+          status: string
+          stripe_customer_id?: string | null
+          stripe_payment_id: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          course_id?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          paid_at?: string | null
+          payment_type?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_payment_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          display_name: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          preferences: Json | null
+          role: string | null
+          timezone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          preferences?: Json | null
+          role?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          preferences?: Json | null
+          role?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      quiz_attempts: {
+        Row: {
+          answers_json: Json | null
+          attempt_number: number
+          cohort_id: string | null
+          graded_at: string | null
+          graded_by: string | null
+          grading_status: string | null
+          id: string
+          passed: boolean | null
+          points_earned: number | null
+          quiz_id: string | null
+          score: number | null
+          started_at: string | null
+          submitted_at: string | null
+          time_taken_seconds: number | null
+          total_points: number | null
+          user_id: string | null
+        }
+        Insert: {
+          answers_json?: Json | null
+          attempt_number: number
+          cohort_id?: string | null
+          graded_at?: string | null
+          graded_by?: string | null
+          grading_status?: string | null
+          id?: string
+          passed?: boolean | null
+          points_earned?: number | null
+          quiz_id?: string | null
+          score?: number | null
+          started_at?: string | null
+          submitted_at?: string | null
+          time_taken_seconds?: number | null
+          total_points?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          answers_json?: Json | null
+          attempt_number?: number
+          cohort_id?: string | null
+          graded_at?: string | null
+          graded_by?: string | null
+          grading_status?: string | null
+          id?: string
+          passed?: boolean | null
+          points_earned?: number | null
+          quiz_id?: string | null
+          score?: number | null
+          started_at?: string | null
+          submitted_at?: string | null
+          time_taken_seconds?: number | null
+          total_points?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_questions: {
+        Row: {
+          answer_explanation: string | null
+          correct_answer: string | null
+          created_at: string | null
+          id: string
+          options: Json | null
+          order_index: number
+          points: number | null
+          question_text: string
+          question_type: string
+          quiz_id: string | null
+        }
+        Insert: {
+          answer_explanation?: string | null
+          correct_answer?: string | null
+          created_at?: string | null
+          id?: string
+          options?: Json | null
+          order_index: number
+          points?: number | null
+          question_text: string
+          question_type: string
+          quiz_id?: string | null
+        }
+        Update: {
+          answer_explanation?: string | null
+          correct_answer?: string | null
+          created_at?: string | null
+          id?: string
+          options?: Json | null
+          order_index?: number
+          points?: number | null
+          question_text?: string
+          question_type?: string
+          quiz_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          available_from: string | null
+          available_until: string | null
+          course_id: number | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_published: boolean | null
+          lesson_id: number | null
+          max_attempts: number | null
+          module_id: number | null
+          passing_score: number | null
+          randomize_questions: boolean | null
+          show_correct_answers: boolean | null
+          show_results_immediately: boolean | null
+          time_limit_minutes: number | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          available_from?: string | null
+          available_until?: string | null
+          course_id?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          lesson_id?: number | null
+          max_attempts?: number | null
+          module_id?: number | null
+          passing_score?: number | null
+          randomize_questions?: boolean | null
+          show_correct_answers?: boolean | null
+          show_results_immediately?: boolean | null
+          time_limit_minutes?: number | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          available_from?: string | null
+          available_until?: string | null
+          course_id?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          lesson_id?: number | null
+          max_attempts?: number | null
+          module_id?: number | null
+          passing_score?: number | null
+          randomize_questions?: boolean | null
+          show_correct_answers?: boolean | null
+          show_results_immediately?: boolean | null
+          time_limit_minutes?: number | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quizzes_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quizzes_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          canceled_at: string | null
+          created_at: string | null
+          current_period_end: string
+          current_period_start: string
+          id: string
+          plan: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created_at?: string | null
+          current_period_end: string
+          current_period_start: string
+          id?: string
+          plan: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created_at?: string | null
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          plan?: string
+          status?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+    }
     Views: {
       student_roster_view: {
         Row: {
-          cohort_id: string | null;
-          user_id: string | null;
-          name: string | null;
-          email: string | null;
-          enrolled_at: string | null;
-          status: string | null;
-          last_activity_at: string | null;
-          completed_lessons: number | null;
-          discussion_posts: number | null;
-          forum_posts: number | null;
-        };
-      };
-    };
-
-    // ========================================================================
-    // FUNCTIONS
-    // ========================================================================
+          cohort_id: string | null
+          completed_lessons: number | null
+          discussion_posts: number | null
+          email: string | null
+          enrolled_at: string | null
+          forum_posts: number | null
+          last_activity_at: string | null
+          name: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohort_enrollments_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
     Functions: {
-      is_admin: {
-        Args: { user_uuid?: string };
-        Returns: boolean;
-      };
-      is_teacher: {
-        Args: { user_uuid?: string };
-        Returns: boolean;
-      };
-      get_user_role: {
-        Args: { check_user_id: string };
-        Returns: string;
-      };
-      is_course_completed: {
-        Args: { check_user_id: string; check_course_id: number };
-        Returns: boolean;
-      };
-      get_course_completion_date: {
-        Args: { check_user_id: string; check_course_id: number };
-        Returns: string;
-      };
-      generate_certificate_number: {
-        Args: Record<string, never>;
-        Returns: string;
-      };
-      generate_verification_code: {
-        Args: Record<string, never>;
-        Returns: string;
-      };
-      enroll_in_cohort: {
-        Args: { p_cohort_id: string; p_user_id: string };
-        Returns: Database['public']['Tables']['cohort_enrollments']['Row'];
-      };
       approve_application: {
-        Args: { application_id: string };
-        Returns: undefined;
-      };
-      reject_application: {
-        Args: { application_id: string };
-        Returns: undefined;
-      };
-      waitlist_application: {
-        Args: { application_id: string };
-        Returns: undefined;
-      };
+        Args: { application_id: string }
+        Returns: undefined
+      }
       can_user_submit: {
-        Args: { assignment_id_param: string; user_id_param: string };
-        Returns: boolean;
-      };
+        Args: { assignment_id_param: string; user_id_param: string }
+        Returns: boolean
+      }
       create_assignment_submission: {
         Args: {
-          p_assignment_id: string;
-          p_user_id: string;
-          p_file_url: string;
-          p_file_name: string;
-          p_file_size_bytes: number;
-          p_file_type: string;
-        };
-        Returns: Database['public']['Tables']['assignment_submissions']['Row'];
-      };
-      get_assignment_stats: {
-        Args: { assignment_id_param: string };
+          p_assignment_id: string
+          p_file_name: string
+          p_file_size_bytes: number
+          p_file_type: string
+          p_file_url: string
+          p_user_id: string
+        }
         Returns: {
-          total_submissions: number;
-          graded_submissions: number;
-          average_score: number;
-          late_submissions: number;
-          on_time_submissions: number;
-        }[];
-      };
-      refresh_student_roster_view: {
-        Args: Record<string, never>;
-        Returns: undefined;
-      };
-    };
-
+          assignment_id: string | null
+          created_at: string | null
+          feedback: string | null
+          file_name: string | null
+          file_size_bytes: number | null
+          file_type: string | null
+          file_url: string | null
+          file_urls: string[] | null
+          graded_at: string | null
+          graded_by: string | null
+          id: string
+          is_late: boolean | null
+          rubric_scores: Json | null
+          score: number | null
+          status: string | null
+          submission_number: number | null
+          submission_text: string | null
+          submitted_at: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "assignment_submissions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      enroll_in_cohort: {
+        Args: { p_cohort_id: string; p_user_id: string }
+        Returns: {
+          cohort_id: string | null
+          completed_lessons: number | null
+          enrolled_at: string | null
+          id: string
+          last_activity_at: string | null
+          progress: Json | null
+          status: string
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "cohort_enrollments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      generate_certificate_number: { Args: never; Returns: string }
+      generate_verification_code: { Args: never; Returns: string }
+      get_assignment_stats: {
+        Args: { assignment_id_param: string }
+        Returns: {
+          average_score: number
+          graded_submissions: number
+          late_submissions: number
+          on_time_submissions: number
+          total_submissions: number
+        }[]
+      }
+      get_course_completion_date: {
+        Args: { check_course_id: number; check_user_id: string }
+        Returns: string
+      }
+      get_user_role: { Args: { check_user_id: string }; Returns: string }
+      is_admin:
+        | { Args: never; Returns: boolean }
+        | { Args: { user_uuid: string }; Returns: boolean }
+      is_course_completed: {
+        Args: { check_course_id: number; check_user_id: string }
+        Returns: boolean
+      }
+      is_student_in_teacher_cohort: {
+        Args: { student_id: string; teacher_id: string }
+        Returns: boolean
+      }
+      is_teacher:
+        | { Args: never; Returns: boolean }
+        | { Args: { user_uuid: string }; Returns: boolean }
+      refresh_student_roster_view: { Args: never; Returns: undefined }
+      reject_application: {
+        Args: { application_id: string }
+        Returns: undefined
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
+      waitlist_application: {
+        Args: { application_id: string }
+        Returns: undefined
+      }
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const
 
 // ============================================================================
 // HELPER TYPES - Convenience aliases for common table types
@@ -1749,6 +2219,12 @@ export type MediaLibraryUpdate = Database['public']['Tables']['media_library']['
 export type AnalyticsEventRow = Database['public']['Tables']['analytics_events']['Row'];
 export type AnalyticsEventInsert = Database['public']['Tables']['analytics_events']['Insert'];
 export type AnalyticsEventUpdate = Database['public']['Tables']['analytics_events']['Update'];
+
+// Blog
+/** Row type for blog_posts table */
+export type BlogPostRow = Database['public']['Tables']['blog_posts']['Row'];
+export type BlogPostInsert = Database['public']['Tables']['blog_posts']['Insert'];
+export type BlogPostUpdate = Database['public']['Tables']['blog_posts']['Update'];
 
 // Views
 /** Row type for student_roster_view materialized view */

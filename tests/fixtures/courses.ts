@@ -35,6 +35,7 @@ export interface Lesson {
   title: string;
   slug: string;
   video_url: string;
+  youtube_url: string | null;
   duration_minutes: number;
   content: string;
   resources: Array<{
@@ -111,6 +112,7 @@ export const mockLesson: Lesson = {
   title: 'What is n8n?',
   slug: 'what-is-n8n',
   video_url: 'videos/course-1/lesson-1.mp4',
+  youtube_url: null,
   duration_minutes: 7,
   content: '# Introduction to n8n\n\nn8n is a **workflow automation tool** that helps activists build powerful automations without code.\n\n## Why n8n for advocacy?\n\n- Free and open source\n- 400+ integrations\n- Visual workflow builder\n- Self-hostable',
   resources: [
@@ -138,6 +140,7 @@ export const mockLesson2: Lesson = {
   title: 'Installing n8n',
   slug: 'installing-n8n',
   video_url: 'videos/course-1/lesson-2.mp4',
+  youtube_url: null,
   duration_minutes: 10,
   content: '# Installing n8n\n\nLearn how to set up n8n locally using Docker.',
   resources: [
@@ -160,6 +163,7 @@ export const mockLesson3: Lesson = {
   title: 'Your First Workflow',
   slug: 'first-workflow',
   video_url: 'videos/course-1/lesson-3.mp4',
+  youtube_url: null,
   duration_minutes: 15,
   content: '# Building Your First Workflow\n\nCreate a simple email automation.',
   resources: [],

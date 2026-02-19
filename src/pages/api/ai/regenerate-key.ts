@@ -1,11 +1,16 @@
 import type { APIRoute } from 'astro';
 import { authenticateRequest, createServiceClient } from '../../../lib/auth';
 import { createStudentKey, deleteKey } from '../../../lib/openrouter';
+import { rateLimit, RateLimitPresets } from '../../../lib/rate-limiter';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    // Rate limit: 10 regenerations per hour
+    const rateLimitResponse = await rateLimit(request, RateLimitPresets.expensive);
+    if (rateLimitResponse) return rateLimitResponse;
+
     if (!import.meta.env.OPENROUTER_MANAGEMENT_KEY) {
       return new Response(
         JSON.stringify({ error: 'AI features not configured' }),

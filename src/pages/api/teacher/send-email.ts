@@ -14,22 +14,15 @@ import {
   verifyTeacherOrAdminAccess,
   createServiceClient,
 } from '../../../lib/auth';
+import { escapeHTML } from '../../../lib/escape-html';
+import { rateLimit, RateLimitPresets } from '../../../lib/rate-limiter';
 
 export const prerender = false;
 
-const resend = new Resend(import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY);
 const FROM_EMAIL = 'C4C Campus <notifications@updates.codeforcompassion.com>';
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
 function buildEmailHtml(studentName: string, bodyHtml: string, teacherName: string): string {
-  const siteUrl = process.env.SITE_URL || import.meta.env.SITE_URL || 'https://codeforcompassion.com';
+  const siteUrl = import.meta.env.SITE_URL || 'https://codeforcompassion.com';
 
   return `
     <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -37,7 +30,7 @@ function buildEmailHtml(studentName: string, bodyHtml: string, teacherName: stri
         <img src="${siteUrl}/logo.jpeg" alt="C4C Campus" style="width: 60px; height: 60px; border-radius: 12px;" />
       </div>
 
-      <p>Hi ${escapeHtml(studentName)},</p>
+      <p>Hi ${escapeHTML(studentName)},</p>
 
       <div style="margin: 20px 0; line-height: 1.6;">
         ${bodyHtml}
@@ -46,7 +39,7 @@ function buildEmailHtml(studentName: string, bodyHtml: string, teacherName: stri
       <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;" />
 
       <p style="color: #6b7280; font-size: 14px;">
-        Sent by ${escapeHtml(teacherName)} via C4C Campus
+        Sent by ${escapeHTML(teacherName)} via C4C Campus
       </p>
       <p style="color: #9ca3af; font-size: 14px;">
         C4C Campus - AI Development Accelerator for Animal Liberation
@@ -57,6 +50,20 @@ function buildEmailHtml(studentName: string, bodyHtml: string, teacherName: stri
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    // Rate limit: 5 sends per minute
+    const rateLimitResponse = await rateLimit(request, RateLimitPresets.forms);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Lazy-initialize Resend — fail early if key not configured
+    const resendApiKey = import.meta.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      return new Response(JSON.stringify({ error: 'Email service not configured' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    const resend = new Resend(resendApiKey);
+
     // Authenticate
     const authResult = await authenticateRequest(request);
     if (authResult instanceof Response) return authResult;
@@ -188,7 +195,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Build the HTML body from teacher's text
-    const bodyHtml = escapeHtml(emailBody).replace(/\n/g, '<br>');
+    const bodyHtml = escapeHTML(emailBody).replace(/\n/g, '<br>');
 
     // Build individual emails
     const emails = recipients.map(recipient => ({
@@ -221,8 +228,7 @@ export const POST: APIRoute = async ({ request }) => {
   } catch (error) {
     console.error('Error in send-email API:', error);
     return new Response(JSON.stringify({
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      error: 'Internal server error'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

@@ -19,7 +19,7 @@ interface KeyStatus {
 
 export default function AIKeyWidget() {
   const [state, setState] = useState<WidgetState>('loading');
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [keyStatus, setKeyStatus] = useState<KeyStatus | null>(null);
   const [revealKey, setRevealKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -28,11 +28,11 @@ export default function AIKeyWidget() {
   const [regenerating, setRegenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  // Fetch session on mount
+  // Check authentication on mount
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        setAccessToken(session.access_token);
+        setIsAuthenticated(true);
       } else {
         setState('error');
         setErrorMessage('Not authenticated');
@@ -40,58 +40,9 @@ export default function AIKeyWidget() {
     });
   }, []);
 
-  // Once we have a token, provision the key
-  useEffect(() => {
-    if (!accessToken) return;
-
-    async function provision() {
-      setState('provisioning');
-      try {
-        const res = await fetch('/api/ai/provision-key', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
-          },
-        });
-
-        if (res.status === 503) {
-          setState('no_config');
-          return;
-        }
-
-        if (!res.ok) {
-          throw new Error(`Provision failed: ${res.status}`);
-        }
-
-        const data = await res.json();
-
-        // Show the key if newly provisioned
-        if (data.provisioned && data.fullKey) {
-          setRevealKey(data.fullKey);
-        }
-
-        // Now fetch usage status
-        await fetchStatus();
-      } catch (err) {
-        console.error('[AIKeyWidget] Provision error:', err);
-        setState('error');
-        setErrorMessage('Failed to set up AI key');
-      }
-    }
-
-    provision();
-  }, [accessToken]);
-
   const fetchStatus = useCallback(async () => {
-    if (!accessToken) return;
-
     try {
-      const res = await fetch('/api/ai/key-status', {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      });
+      const res = await fetch('/api/ai/key-status');
 
       if (res.status === 503) {
         setState('no_config');
@@ -121,7 +72,49 @@ export default function AIKeyWidget() {
       setState('error');
       setErrorMessage('Failed to load usage data');
     }
-  }, [accessToken]);
+  }, []);
+
+  // Once authenticated, provision the key
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    async function provision() {
+      setState('provisioning');
+      try {
+        const res = await fetch('/api/ai/provision-key', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (res.status === 503) {
+          setState('no_config');
+          return;
+        }
+
+        if (!res.ok) {
+          throw new Error(`Provision failed: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        // Show the key if newly provisioned
+        if (data.provisioned && data.fullKey) {
+          setRevealKey(data.fullKey);
+        }
+
+        // Now fetch usage status
+        await fetchStatus();
+      } catch (err) {
+        console.error('[AIKeyWidget] Provision error:', err);
+        setState('error');
+        setErrorMessage('Failed to set up AI key');
+      }
+    }
+
+    provision();
+  }, [isAuthenticated, fetchStatus]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -143,7 +136,6 @@ export default function AIKeyWidget() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
         },
       });
 

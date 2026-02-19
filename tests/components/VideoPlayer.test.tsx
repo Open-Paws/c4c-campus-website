@@ -21,6 +21,7 @@ const mockLesson: Lesson = {
   title: 'Introduction to n8n',
   slug: 'intro-to-n8n',
   video_url: 'videos/course-1/lesson-1.mp4',
+  youtube_url: null,
   duration_minutes: 7,
   content: '# Introduction\n\nWelcome to n8n!',
   resources: [
