@@ -43,6 +43,17 @@ export const GET: APIRoute = async ({ request }) => {
       );
     }
 
+    // Compute regen cooldown
+    const cooldownHours = Number(import.meta.env.OPENROUTER_REGEN_COOLDOWN_HOURS) || 24;
+    const lastRegen = prefs.last_key_regenerated_at as string | undefined;
+    let regenAvailableAt: string | null = null;
+    if (lastRegen) {
+      const msLeft = (cooldownHours * 60 * 60 * 1000) - (Date.now() - new Date(lastRegen).getTime());
+      if (msLeft > 0) {
+        regenAvailableAt = new Date(Date.now() + msLeft).toISOString();
+      }
+    }
+
     try {
       const info = await getKeyInfo(keyHash);
 
@@ -53,6 +64,7 @@ export const GET: APIRoute = async ({ request }) => {
           limitRemaining: info.limit_remaining,
           usageWeekly: info.usage_weekly,
           disabled: info.disabled,
+          regenAvailableAt,
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );

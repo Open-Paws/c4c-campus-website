@@ -275,7 +275,7 @@ export const prerender = false;
             if (!b.due_date) return -1;
             return new Date(b.due_date).getTime() - new Date(a.due_date).getTime();
           case 'created_desc':
-            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+            return (b.created_at ? new Date(b.created_at).getTime() : 0) - (a.created_at ? new Date(a.created_at).getTime() : 0);
           case 'title_asc':
             return a.title.localeCompare(b.title);
           default:
@@ -334,7 +334,7 @@ export const prerender = false;
                 ` : '<span class="text-gray-500">No due date</span>'}
 
                 <div class="text-gray-600">
-                  <span class="font-medium">${assignment.max_points}</span> points
+                  <span class="font-medium">${assignment.max_points ?? 0}</span> points
                 </div>
               </div>
 

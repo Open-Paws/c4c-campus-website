@@ -194,7 +194,7 @@ export const prerender = false;
           const root = createRoot(rubricContainer);
           root.render(createElement(AssignmentRubric, {
             rubric: assignment.grading_rubric,
-            maxPoints: assignment.max_points
+            maxPoints: assignment.max_points ?? 0
           }));
         }
       }
@@ -206,7 +206,7 @@ export const prerender = false;
           const root = createRoot(countdownContainer);
           root.render(createElement(DueDateCountdown, {
             dueDate: assignment.due_date,
-            lateAllowed: assignment.allow_late_submissions
+            lateAllowed: assignment.allow_late_submissions ?? false
           }));
         }
       }
@@ -217,9 +217,9 @@ export const prerender = false;
         const root = createRoot(statusContainer);
         root.render(createElement(SubmissionStatus, {
           submission: assignment.user_submission,
-          maxPoints: assignment.max_points,
+          maxPoints: assignment.max_points ?? 0,
           isPastDue: assignmentStatus.isPastDue,
-          lateAllowed: assignment.allow_late_submissions
+          lateAllowed: assignment.allow_late_submissions ?? false
         }));
       }
 
@@ -277,8 +277,8 @@ export const prerender = false;
           createElement(FileUploader, {
             key: 'uploader',
             assignmentId: assignment.id,
-            allowedTypes: assignment.allowed_file_types,
-            maxSizeMB: assignment.max_file_size_mb,
+            allowedTypes: assignment.allowed_file_types ?? [],
+            maxSizeMB: assignment.max_file_size_mb ?? 0,
             onSuccess: () => {
               window.location.reload();
             },
@@ -292,7 +292,7 @@ export const prerender = false;
         if (isLateButAllowed && !hasSubmission) {
           const warning = document.createElement('div');
           warning.className = 'mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg text-sm text-orange-700';
-          warning.innerHTML = `<strong>⚠️ Late Submission:</strong> A ${assignment.late_penalty_percent}% penalty will be applied to your grade.`;
+          warning.innerHTML = `<strong>⚠️ Late Submission:</strong> A ${assignment.late_penalty_percent ?? 0}% penalty will be applied to your grade.`;
           formContainer.appendChild(warning);
         }
       } else if (hasSubmission) {
@@ -315,7 +315,7 @@ export const prerender = false;
       detailsEl.innerHTML = `
         <div class="flex justify-between py-2 border-b border-gray-200">
           <span class="text-gray-600">Maximum Points:</span>
-          <span class="font-medium">${assignment.max_points}</span>
+          <span class="font-medium">${assignment.max_points ?? 0}</span>
         </div>
 
         ${assignment.due_date ? `
@@ -333,31 +333,31 @@ export const prerender = false;
 
         <div class="flex justify-between py-2 border-b border-gray-200">
           <span class="text-gray-600">File Types:</span>
-          <span class="font-medium text-xs">${assignment.allowed_file_types.slice(0, 3).join(', ')}${assignment.allowed_file_types.length > 3 ? ` +${assignment.allowed_file_types.length - 3}` : ''}</span>
+          <span class="font-medium text-xs">${(assignment.allowed_file_types ?? []).slice(0, 3).join(', ')}${(assignment.allowed_file_types ?? []).length > 3 ? ` +${(assignment.allowed_file_types ?? []).length - 3}` : ''}</span>
         </div>
 
         <div class="flex justify-between py-2 border-b border-gray-200">
           <span class="text-gray-600">Max File Size:</span>
-          <span class="font-medium">${assignment.max_file_size_mb}MB</span>
+          <span class="font-medium">${assignment.max_file_size_mb ?? 0}MB</span>
         </div>
 
         <div class="flex justify-between py-2 border-b border-gray-200">
           <span class="text-gray-600">Late Submissions:</span>
-          <span class="font-medium">${assignment.allow_late_submissions ? `Allowed (${assignment.late_penalty_percent}% penalty)` : 'Not Allowed'}</span>
+          <span class="font-medium">${assignment.allow_late_submissions ? `Allowed (${assignment.late_penalty_percent ?? 0}% penalty)` : 'Not Allowed'}</span>
         </div>
 
         <div class="flex justify-between py-2 border-b border-gray-200">
           <span class="text-gray-600">Resubmissions:</span>
-          <span class="font-medium">${assignment.allow_resubmission ? `Allowed (max ${assignment.max_submissions})` : 'Not Allowed'}</span>
+          <span class="font-medium">${assignment.allow_resubmission ? `Allowed (max ${assignment.max_submissions ?? 1})` : 'Not Allowed'}</span>
         </div>
 
         <div class="flex justify-between py-2">
           <span class="text-gray-600">Created:</span>
-          <span class="font-medium">${new Date(assignment.created_at).toLocaleDateString('en-US', {
+          <span class="font-medium">${assignment.created_at ? new Date(assignment.created_at).toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
-          })}</span>
+          }) : 'Unknown'}</span>
         </div>
       `;
     }

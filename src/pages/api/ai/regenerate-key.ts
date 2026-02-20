@@ -34,9 +34,14 @@ export const POST: APIRoute = async ({ request }) => {
     if (lastRegen) {
       const elapsedHours = (Date.now() - new Date(lastRegen).getTime()) / (1000 * 60 * 60);
       if (elapsedHours < cooldownHours) {
-        const hoursLeft = Math.ceil(cooldownHours - elapsedHours);
+        const msLeft = (cooldownHours * 60 * 60 * 1000) - (Date.now() - new Date(lastRegen).getTime());
+        const availableAt = new Date(Date.now() + msLeft).toISOString();
         return new Response(
-          JSON.stringify({ error: `Please wait ${hoursLeft}h before regenerating again` }),
+          JSON.stringify({
+            error: 'Cooldown active',
+            cooldownActive: true,
+            availableAt,
+          }),
           { status: 429, headers: { 'Content-Type': 'application/json' } }
         );
       }

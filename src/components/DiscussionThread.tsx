@@ -130,7 +130,7 @@ export const DiscussionThread: React.FC<DiscussionThreadProps> = ({
       rootComments.sort((a, b) => {
         if (a.is_pinned && !b.is_pinned) return -1;
         if (!a.is_pinned && b.is_pinned) return 1;
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        return (b.created_at ? new Date(b.created_at).getTime() : 0) - (a.created_at ? new Date(a.created_at).getTime() : 0);
       });
 
       setComments(rootComments);

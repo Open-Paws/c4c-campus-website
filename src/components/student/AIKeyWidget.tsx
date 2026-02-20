@@ -15,6 +15,7 @@ interface KeyStatus {
   limitRemaining: number;
   usageWeekly: number;
   disabled: boolean;
+  regenAvailableAt: string | null;
 }
 
 export default function AIKeyWidget() {
@@ -27,6 +28,7 @@ export default function AIKeyWidget() {
   const [confirmRegenerate, setConfirmRegenerate] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [cooldownLeft, setCooldownLeft] = useState<string | null>(null);
 
   // Check authentication on mount
   useEffect(() => {
@@ -39,6 +41,30 @@ export default function AIKeyWidget() {
       }
     });
   }, []);
+
+  // Cooldown countdown timer
+  useEffect(() => {
+    const availableAt = keyStatus?.regenAvailableAt;
+    if (!availableAt) {
+      setCooldownLeft(null);
+      return;
+    }
+
+    function tick() {
+      const ms = new Date(availableAt!).getTime() - Date.now();
+      if (ms <= 0) {
+        setCooldownLeft(null);
+        return;
+      }
+      const h = Math.floor(ms / 3600000);
+      const m = Math.floor((ms % 3600000) / 60000);
+      setCooldownLeft(`${h}h ${m}m`);
+    }
+
+    tick();
+    const id = setInterval(tick, 60000);
+    return () => clearInterval(id);
+  }, [keyStatus?.regenAvailableAt]);
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -54,9 +80,12 @@ export default function AIKeyWidget() {
       const data = await res.json();
 
       if (!data.hasKey) {
-        // Key doesn't exist yet — shouldn't happen after provision, but handle it
-        setState('error');
-        setErrorMessage('No API key found');
+        // Only show error if we aren't already in a working state
+        setState((prev) => {
+          if (prev === 'ready') return prev;
+          setErrorMessage('No API key found');
+          return 'error';
+        });
         return;
       }
 
@@ -65,12 +94,17 @@ export default function AIKeyWidget() {
         limitRemaining: data.limitRemaining,
         usageWeekly: data.usageWeekly,
         disabled: data.disabled,
+        regenAvailableAt: data.regenAvailableAt ?? null,
       });
       setState('ready');
     } catch (err) {
       console.error('[AIKeyWidget] Status fetch error:', err);
-      setState('error');
-      setErrorMessage('Failed to load usage data');
+      // Don't clobber a working widget on a background refresh failure
+      setState((prev) => {
+        if (prev === 'ready') return prev;
+        setErrorMessage('Failed to load usage data');
+        return 'error';
+      });
     }
   }, []);
 
@@ -121,8 +155,19 @@ export default function AIKeyWidget() {
           setRevealKey(data.fullKey);
         }
 
-        // Now fetch usage status
-        await fetchStatus();
+        // Set ready immediately with defaults — key was just created
+        const weeklyLimit = Number(import.meta.env.PUBLIC_OPENROUTER_STUDENT_WEEKLY_LIMIT) || 10;
+        setKeyStatus({
+          limit: weeklyLimit,
+          limitRemaining: weeklyLimit,
+          usageWeekly: 0,
+          disabled: false,
+          regenAvailableAt: null,
+        });
+        setState('ready');
+
+        // Refresh usage in the background (don't block or error out)
+        fetchStatus().catch(() => {});
       } catch (err) {
         console.error('[AIKeyWidget] Init error:', err);
         setState('error');
@@ -155,6 +200,14 @@ export default function AIKeyWidget() {
           'Content-Type': 'application/json',
         },
       });
+
+      if (res.status === 429) {
+        const cooldownData = await res.json().catch(() => ({})) as { availableAt?: string };
+        if (cooldownData.availableAt) {
+          setKeyStatus((prev) => prev ? { ...prev, regenAvailableAt: cooldownData.availableAt! } : prev);
+        }
+        return;
+      }
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({})) as { error?: string };
@@ -366,31 +419,40 @@ export default function AIKeyWidget() {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2">
-          <button
-            onClick={handleRegenerate}
-            disabled={regenerating}
-            className={`btn btn-sm flex-1 ${
-              confirmRegenerate
-                ? 'bg-red-100 text-red-700 border-red-300 hover:bg-red-200'
-                : 'btn-ghost'
-            }`}
-          >
-            {regenerating
-              ? 'Regenerating...'
-              : confirmRegenerate
-                ? 'Confirm — old key will stop working'
-                : 'Regenerate Key'}
-          </button>
-        </div>
+        {cooldownLeft ? (
+          <div className="flex items-center gap-2 text-sm text-text-muted bg-gray-50 rounded-lg p-3">
+            <span className="inline-block h-4 w-4 border-2 border-gray-300 border-t-purple-500 rounded-full animate-spin"></span>
+            <span>Key regeneration available in <strong className="text-gray-700">{cooldownLeft}</strong></span>
+          </div>
+        ) : (
+          <>
+            <div className="flex gap-2">
+              <button
+                onClick={handleRegenerate}
+                disabled={regenerating}
+                className={`btn btn-sm flex-1 ${
+                  confirmRegenerate
+                    ? 'bg-red-100 text-red-700 border-red-300 hover:bg-red-200'
+                    : 'btn-ghost'
+                }`}
+              >
+                {regenerating
+                  ? 'Regenerating...'
+                  : confirmRegenerate
+                    ? 'Confirm — old key will stop working'
+                    : 'Regenerate Key'}
+              </button>
+            </div>
 
-        {confirmRegenerate && (
-          <button
-            onClick={() => setConfirmRegenerate(false)}
-            className="mt-2 w-full btn btn-ghost btn-sm text-text-muted"
-          >
-            Cancel
-          </button>
+            {confirmRegenerate && (
+              <button
+                onClick={() => setConfirmRegenerate(false)}
+                className="mt-2 w-full btn btn-ghost btn-sm text-text-muted"
+              >
+                Cancel
+              </button>
+            )}
+          </>
         )}
       </div>
     </>

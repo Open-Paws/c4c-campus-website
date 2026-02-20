@@ -55,7 +55,7 @@ export function getAssignmentStatus(
   const dueDate = assignment.due_date ? new Date(assignment.due_date) : null;
   const isPastDue = dueDate !== null && currentTime > dueDate;
   const isClosed = isPastDue && !assignment.allow_late_submissions;
-  const isLateButAllowed = isPastDue && assignment.allow_late_submissions;
+  const isLateButAllowed = isPastDue && !!assignment.allow_late_submissions;
 
   const latestSubmission = assignment.user_submission || null;
   const hasSubmission = latestSubmission !== null;
@@ -87,7 +87,7 @@ export function getAssignmentStatus(
 
   // Compute score percentage if graded
   const scorePercentage = isGraded && latestSubmission.score !== null
-    ? Math.round((latestSubmission.score / assignment.max_points) * 100)
+    ? Math.round((latestSubmission.score / (assignment.max_points ?? 1)) * 100)
     : null;
 
   // Determine status label and badge variant
@@ -98,7 +98,7 @@ export function getAssignmentStatus(
     isClosed,
     isLateButAllowed,
     latestSubmission,
-    assignment.max_points
+    assignment.max_points ?? 0
   );
 
   return {
