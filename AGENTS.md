@@ -1,12 +1,58 @@
-# AGENTS.md — Comprehensive Agent Guide for C4C Campus
+# AGENTS.md — Complete Agent Guide for C4C Campus
 
-> **See also:** `CLAUDE.md` for critical rules (immutable schema, defensive programming, type
-> system, debugging guidelines). This file provides the broader architectural context an AI
-> agent needs to work effectively in this codebase.
+> This is the **single source of truth** for AI agents working in this codebase.
+> Read this file before making any changes.
 
 ---
 
-## 1. Project Overview
+## 1. Critical Rules
+
+### The Schema is Immutable
+
+**`schema.sql` is the absolute, immutable source of truth for all data in this codebase.**
+
+The database schema CANNOT be changed, modified, edited, or altered in any way. It is set in stone:
+
+1. **NEVER suggest changes to `schema.sql`** — The schema is final and unchangeable
+2. **NEVER propose new columns, tables, or modifications** to the database structure
+3. **NEVER create migration files** that would alter the schema
+4. **ALL code must conform to the existing schema** — not the other way around
+
+If you encounter a situation where schema changes seem necessary, you must find a workaround within the existing structure. The schema defines reality; code must adapt to it.
+
+### Defensive Programming Required
+
+The site is predominantly working but contains bugs. When debugging or implementing fixes:
+
+1. **Do not introduce breaking changes** — Every fix must be backward compatible
+2. **Preserve existing functionality** — A bug fix should never break something else
+3. **Test assumptions** — Never assume code paths work; verify them
+4. **Handle edge cases** — Always consider null, undefined, empty arrays, and missing data
+5. **Fail gracefully** — Errors should be caught and handled, never crash the user experience
+
+### What NOT to Do
+
+1. **Don't refactor while fixing bugs** — Stay focused on the issue
+2. **Don't add features during bug fixes** — Scope creep causes regressions
+3. **Don't remove "unnecessary" null checks** — They're probably there for a reason
+4. **Don't change API response structures** — Existing clients depend on them
+5. **Don't modify shared utilities** without understanding all usages
+
+### Validation Commands
+
+Run these before committing changes:
+
+```bash
+npx astro check              # Type check
+npm run db:types:check        # Schema-types sync
+npm run db:field-names:check  # Field name validation
+npm run db:validate:all       # All validation
+npm run test:integration      # Integration tests
+```
+
+---
+
+## 2. Project Overview
 
 **C4C Campus** is a full-featured Learning Management System (LMS) for Coding for Change, focused
 on animal advocacy, climate action, and AI safety education tracks.
@@ -28,17 +74,16 @@ on animal advocacy, climate action, and AI safety education tracks.
 - **SSR-only deployment** — No static site generation. Every page renders on the server via the Vercel adapter.
 - **Astro islands architecture** — Pages are `.astro` files. Interactive components are React islands hydrated client-side.
 - **Content lives in the database**, not in Astro content collections. Courses, lessons, modules are all DB-driven.
-- **Two Supabase client patterns** exist (see Section 5).
+- **Two Supabase client patterns** exist (see Section 6).
 - **No global state manager** — React components use `useState`/`useEffect`/`useCallback` locally.
 
 ---
 
-## 2. Project Structure
+## 3. Project Structure
 
 ```
 c4c_website/
-├── CLAUDE.md                  # Critical rules for AI agents (READ FIRST)
-├── AGENTS.md                  # This file — architectural reference
+├── AGENTS.md                  # This file — the complete agent reference
 ├── schema.sql                 # IMMUTABLE database schema (source of truth)
 ├── astro.config.mjs           # Astro + Vercel SSR config
 ├── tailwind.config.mjs        # Tailwind v4 config
@@ -74,7 +119,7 @@ c4c_website/
 │   │   ├── generated.ts       # AUTO-GENERATED from schema (NEVER edit)
 │   │   └── index.ts           # Application-level types extending generated
 │   ├── pages/                 # Astro pages + API routes
-│   │   ├── api/               # 40+ API endpoints (see Section 6)
+│   │   ├── api/               # 40+ API endpoints (see Section 7)
 │   │   ├── admin/             # Admin pages
 │   │   ├── teacher/           # Teacher pages
 │   │   ├── dashboard.astro    # Student dashboard
@@ -102,13 +147,22 @@ c4c_website/
 └── public/                    # Static assets
 ```
 
+### Key Files
+
+- `schema.sql` — **IMMUTABLE** database schema (source of truth)
+- `src/types/generated.ts` — Auto-generated types (DO NOT EDIT)
+- `src/types/index.ts` — Application-level type definitions
+- `src/lib/auth.ts` — JWT verification, token extraction, role checks
+- `src/lib/api-handlers.ts` — API utility functions
+- `src/lib/time-gating.ts` — Cohort schedule logic
+
 ---
 
-## 3. Database Architecture
+## 4. Database Architecture
 
 ### Schema Overview (34 tables)
 
-The schema is defined in `schema.sql` and is **immutable** — see `CLAUDE.md` for rules.
+The schema is defined in `schema.sql` and is **immutable** (see Section 1).
 
 **Table categories:**
 - **Auth & Profiles:** `applications`, `profiles`, `auth_logs`
@@ -122,12 +176,54 @@ The schema is defined in `schema.sql` and is **immutable** — see `CLAUDE.md` f
 - **Payments:** `payments`, `subscriptions`
 - **Media & Analytics:** `media_library`, `analytics_events`
 
-### ID Types (Critical)
+### ID Types (Critical — Do Not Confuse)
 
 | Type | Tables | TypeScript Type |
 |------|--------|----------------|
 | UUID (string) | `cohorts`, `quiz_attempts`, `assignment_submissions`, `applications`, most junction tables | `string` |
 | BIGSERIAL (number) | `courses`, `modules`, `lessons`, `enrollments`, `lesson_progress` | `number` |
+
+```typescript
+// CORRECT
+const cohortId: string = "550e8400-e29b-41d4-a716-446655440000";
+const courseId: number = 1;
+
+// WRONG - will cause runtime errors
+const cohortId: number = 1; // cohort IDs are UUIDs (strings)
+```
+
+### Field Naming
+
+- **Database**: snake_case (`user_id`, `created_at`, `max_students`)
+- **TypeScript**: snake_case (matching database via generated types)
+- **Never use camelCase in database queries**
+
+```typescript
+// CORRECT
+.select('user_id, course_id')
+.eq('created_at', date)
+
+// WRONG - will fail silently or error
+.select('userId, courseId')
+.eq('createdAt', date)
+```
+
+### Nullable Fields
+
+Match the schema exactly:
+- `cohort_id` in `lesson_progress` and `enrollments` is nullable (SET NULL on delete)
+- `cohort_id` in `cohort_enrollments` and `cohort_schedules` is NOT NULL (CASCADE delete)
+
+### CHECK Constraints
+
+TypeScript unions must match database constraints exactly:
+```typescript
+// Must match: CHECK (status IN ('active', 'completed', 'dropped', 'paused'))
+type EnrollmentStatus = 'active' | 'completed' | 'dropped' | 'paused';
+
+// Must match: CHECK (question_type IN ('multiple_choice', 'true_false', 'short_answer', 'essay', 'multiple_select'))
+type QuestionType = 'multiple_choice' | 'true_false' | 'short_answer' | 'essay' | 'multiple_select';
+```
 
 ### Key Patterns
 
@@ -146,9 +242,20 @@ check_enrollment_status()   -- Validates enrollment before operations
 get_course_progress()       -- Calculates completion percentage
 ```
 
+---
+
+## 5. Type System
+
 ### Generated Types
 
-`src/types/generated.ts` is auto-generated from the schema. Run:
+`src/types/generated.ts` is auto-generated from the database. **NEVER edit this file manually.**
+
+```typescript
+// Import types from generated.ts
+import type { CourseRow, CohortRow, QuizAttemptRow } from './generated';
+```
+
+Run these to manage types:
 ```bash
 npm run db:types:generate    # Regenerate types from schema
 npm run db:types:check       # Verify types match schema
@@ -156,9 +263,22 @@ npm run db:field-names:check # Verify snake_case field naming
 npm run db:validate:all      # Run all validation checks
 ```
 
+### Custom Types
+
+`src/types/index.ts` contains application-level types that extend generated types:
+
+```typescript
+// Example: Course with stricter non-null constraints
+export interface Course extends Omit<CourseRow, 'track' | 'difficulty' | 'created_by'> {
+  track: 'animal_advocacy' | 'climate' | 'ai_safety' | 'general';
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  created_by: string;
+}
+```
+
 ---
 
-## 4. Authentication & Authorization
+## 6. Authentication & Authorization
 
 ### Architecture
 
@@ -218,18 +338,12 @@ export async function POST({ request }: APIContext) {
 }
 ```
 
----
-
-## 5. Supabase Client Patterns
-
-### Two Clients, Two Purposes
+### Supabase Client Patterns
 
 | Client | Key | RLS | Usage |
 |--------|-----|-----|-------|
 | **Anon client** (`src/lib/supabase.ts`) | `PUBLIC_SUPABASE_ANON_KEY` | Enforced | Client-side React components, middleware |
 | **Service role client** (created per-request) | `SUPABASE_SERVICE_ROLE_KEY` | Bypassed | Server-side API routes after JWT verification |
-
-### Creating a Service Role Client
 
 ```typescript
 import { createClient } from '@supabase/supabase-js';
@@ -252,7 +366,7 @@ function createServiceClient() {
 
 ---
 
-## 6. API Routes
+## 7. API Routes
 
 ### Organization
 
@@ -288,17 +402,28 @@ src/pages/api/
 └── enroll-cohort.ts # Cohort enrollment
 ```
 
-### API Patterns
+### Response Format
 
-**Standard response format:**
+```typescript
+interface APIResponse<T> {
+  data: T | null;
+  error: {
+    code: string;
+    message: string;
+    details?: any;
+  } | null;
+}
+```
+
 ```typescript
 // Success
 return new Response(JSON.stringify({ data: result }), { status: 200 });
 
-// Error
+// Error — always return structured errors
 return new Response(JSON.stringify({
-  error: { code: 'ERROR_CODE', message: 'Human-readable message' }
-}), { status: 400 });
+  data: null,
+  error: { code: 'UNAUTHORIZED', message: 'User not authenticated' }
+}), { status: 401 });
 ```
 
 **Common status codes:**
@@ -324,7 +449,69 @@ The cooldown timestamp is stored in `profiles.preferences` JSONB (`last_key_rege
 
 ---
 
-## 7. Frontend Architecture
+## 8. Debugging Guidelines
+
+### Before Making Changes
+
+1. **Read the relevant code first** — Understand what exists before modifying
+2. **Check the schema** — Verify column names, types, and constraints in `schema.sql`
+3. **Run type checking** — `npx astro check` before and after changes
+4. **Run validation** — `npm run db:validate:all` to check schema-code sync
+
+### Safe Bug Fixing
+
+1. **Isolate the problem** — Identify the exact location of the bug
+2. **Understand the impact** — What else depends on this code?
+3. **Make minimal changes** — Fix only what's broken
+4. **Add defensive checks** — Handle edge cases the original code missed
+5. **Test thoroughly** — Verify the fix works and nothing else broke
+
+### Common Bug Patterns
+
+#### Null/Undefined Handling
+```typescript
+// DEFENSIVE: Always check for null/undefined
+const cohortId = enrollment?.cohort_id ?? null;
+const lessons = modules?.flatMap(m => m.lessons ?? []) ?? [];
+const progress = enrollment?.progress?.completed_lessons ?? 0;
+```
+
+#### Type Coercion
+```typescript
+// DEFENSIVE: Parse IDs correctly
+const courseId = typeof id === 'string' ? parseInt(id, 10) : id;
+if (isNaN(courseId)) {
+  return { error: 'Invalid course ID' };
+}
+```
+
+#### Array Safety
+```typescript
+// DEFENSIVE: Check arrays before operations
+if (!Array.isArray(questions) || questions.length === 0) {
+  return { error: 'No questions found' };
+}
+const firstQuestion = questions[0];
+```
+
+#### Database Query Safety
+```typescript
+// DEFENSIVE: Check query results
+const { data, error } = await supabase.from('courses').select('*').eq('id', courseId).single();
+
+if (error) {
+  console.error('Database error:', error);
+  return { error: 'Failed to fetch course' };
+}
+
+if (!data) {
+  return { error: 'Course not found' };
+}
+```
+
+---
+
+## 9. Frontend Architecture
 
 ### Astro + React Islands
 
@@ -364,7 +551,7 @@ Authentication is automatic via cookies — the browser sends `sb-*-auth-token` 
 
 ---
 
-## 8. Environment Variables
+## 10. Environment Variables
 
 ### Required Variables
 
@@ -398,7 +585,7 @@ Optional features return `503` when their env vars are missing (e.g., AI endpoin
 
 ---
 
-## 9. Testing
+## 11. Testing
 
 ### Three-Tier Test Strategy
 
@@ -443,7 +630,7 @@ npx playwright test       # Run E2E tests
 
 ---
 
-## 10. Code Conventions
+## 12. Code Conventions
 
 ### Naming
 
@@ -499,7 +686,7 @@ if (!data) { /* handle */ }
 
 ---
 
-## 11. Common Workflows
+## 13. Common Workflows
 
 ### Adding a New API Endpoint
 
@@ -523,12 +710,12 @@ if (!data) { /* handle */ }
 1. **Check `schema.sql`** for exact column names, types, and constraints
 2. **Check `src/types/generated.ts`** for TypeScript types
 3. Use snake_case in all query builders (`.select('user_id')`, not `.select('userId')`)
-4. Handle nullable fields defensively (see `CLAUDE.md`)
+4. Handle nullable fields defensively (see Section 8)
 5. Run `npm run db:validate:all` after changes
 
 ---
 
-## 12. Security Considerations
+## 14. Security Considerations
 
 - **Never expose `SUPABASE_SERVICE_ROLE_KEY`** in client-side code
 - **Always verify JWT** before using service role client in API routes
@@ -541,7 +728,7 @@ if (!data) { /* handle */ }
 
 ---
 
-## 13. Deployment
+## 15. Deployment
 
 - **Platform:** Vercel with SSR adapter
 - **Build:** `npm run build` (Astro build with Vercel adapter)
