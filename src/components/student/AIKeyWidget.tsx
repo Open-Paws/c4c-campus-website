@@ -74,18 +74,35 @@ export default function AIKeyWidget() {
     }
   }, []);
 
-  // Once authenticated, provision the key
+  // Once authenticated, check if key exists then provision only if needed
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    async function provision() {
-      setState('provisioning');
+    async function init() {
+      setState('loading');
       try {
+        // Check status first — avoids a POST on every dashboard load
+        const statusRes = await fetch('/api/ai/key-status');
+
+        if (statusRes.status === 503) {
+          setState('no_config');
+          return;
+        }
+
+        if (statusRes.ok) {
+          const statusData = await statusRes.json();
+          if (statusData.hasKey) {
+            // Key already exists — just show usage
+            await fetchStatus();
+            return;
+          }
+        }
+
+        // No key yet — provision one
+        setState('provisioning');
         const res = await fetch('/api/ai/provision-key', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
         });
 
         if (res.status === 503) {
@@ -107,13 +124,13 @@ export default function AIKeyWidget() {
         // Now fetch usage status
         await fetchStatus();
       } catch (err) {
-        console.error('[AIKeyWidget] Provision error:', err);
+        console.error('[AIKeyWidget] Init error:', err);
         setState('error');
         setErrorMessage('Failed to set up AI key');
       }
     }
 
-    provision();
+    init();
   }, [isAuthenticated, fetchStatus]);
 
   const handleRefresh = async () => {
