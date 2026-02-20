@@ -393,15 +393,15 @@ export const CourseForum: React.FC<CourseForumProps> = ({
               <div className="flex items-center gap-2 text-sm text-text-muted mb-3">
                 <span className="font-medium">{selectedPost.author.email}</span>
                 <span>•</span>
-                <span>{formatRelativeTime(selectedPost.created_at)}</span>
+                <span>{formatRelativeTime(selectedPost.created_at ?? '')}</span>
               </div>
               <p className="text-text-primary">{selectedPost.content}</p>
             </div>
             {isTeacher && (
               <ModerationActions
                 forumPostId={selectedPost.id}
-                isPinned={selectedPost.is_pinned}
-                isLocked={selectedPost.is_locked}
+                isPinned={selectedPost.is_pinned ?? false}
+                isLocked={selectedPost.is_locked ?? false}
                 onPin={handlePinPost}
                 onLock={handleLockPost}
                 onDelete={handleDeletePost}
@@ -439,7 +439,7 @@ export const CourseForum: React.FC<CourseForumProps> = ({
                           </span>
                         )}
                         <span className="text-xs text-text-muted">
-                          {formatRelativeTime(reply.created_at)}
+                          {formatRelativeTime(reply.created_at ?? '')}
                         </span>
                       </div>
                       <p className="text-sm text-text-primary">{reply.content}</p>
@@ -565,7 +565,7 @@ export const CourseForum: React.FC<CourseForumProps> = ({
                   <div className="flex items-center gap-4 text-xs text-text-muted">
                     <span>{post.author.email}</span>
                     <span>•</span>
-                    <span>{formatRelativeTime(post.created_at)}</span>
+                    <span>{formatRelativeTime(post.created_at ?? '')}</span>
                     <span>•</span>
                     <span>
                       {post.reply_count} {post.reply_count === 1 ? 'reply' : 'replies'}

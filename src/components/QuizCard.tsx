@@ -116,7 +116,7 @@ export function QuizCard({ quizId }: QuizCardProps) {
     : null;
 
   // Use server-provided availability fields if present, otherwise fall back to client calculation
-  const canAttempt = quiz.canAttempt ?? (quiz.max_attempts === 0 || attempts.length < quiz.max_attempts);
+  const canAttempt = quiz.canAttempt ?? ((quiz.max_attempts ?? 0) === 0 || attempts.length < (quiz.max_attempts ?? Infinity));
   const hasIncompleteAttempt = attempts.some(a => !a.submitted_at);
 
   // Use server-provided isAvailable, fall back to local check for display only
@@ -163,7 +163,7 @@ export function QuizCard({ quizId }: QuizCardProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
               <span>
-                {quiz.max_attempts === 0 ? 'Unlimited attempts' : `${quiz.max_attempts} attempt${quiz.max_attempts > 1 ? 's' : ''}`}
+                {(quiz.max_attempts ?? 0) === 0 ? 'Unlimited attempts' : `${quiz.max_attempts} attempt${(quiz.max_attempts ?? 0) > 1 ? 's' : ''}`}
               </span>
             </div>
           </div>
@@ -191,7 +191,7 @@ export function QuizCard({ quizId }: QuizCardProps) {
           {/* Attempts Info */}
           {attempts.length > 0 && (
             <div className="mb-4 text-sm text-text-muted">
-              {attempts.length} of {quiz.max_attempts === 0 ? '∞' : quiz.max_attempts} attempts used
+              {attempts.length} of {(quiz.max_attempts ?? 0) === 0 ? '∞' : quiz.max_attempts} attempts used
             </div>
           )}
 

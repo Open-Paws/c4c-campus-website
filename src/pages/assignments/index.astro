@@ -245,7 +245,7 @@ export const prerender = false;
       // Filter
       filteredAssignments = allAssignments.filter(assignment => {
         // Course filter (use course_id from base Assignment, which is always present)
-        if (courseFilter !== 'all' && assignment.course_id.toString() !== courseFilter) {
+        if (courseFilter !== 'all' && (assignment.course_id ?? 0).toString() !== courseFilter) {
           return false;
         }
 

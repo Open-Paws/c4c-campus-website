@@ -88,8 +88,8 @@ export default function AssignmentCard({ assignment, onSubmissionComplete }: Ass
         <div className="flex items-center gap-2">
           <span className="text-gray-600">File Types:</span>
           <span className="font-medium text-xs">
-            {assignment.allowed_file_types.slice(0, 3).join(', ')}
-            {assignment.allowed_file_types.length > 3 && ` +${assignment.allowed_file_types.length - 3} more`}
+            {(assignment.allowed_file_types ?? []).slice(0, 3).join(', ')}
+            {(assignment.allowed_file_types ?? []).length > 3 && ` +${(assignment.allowed_file_types ?? []).length - 3} more`}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export default function AssignmentCard({ assignment, onSubmissionComplete }: Ass
             <div className="flex justify-between">
               <span className="text-gray-600">Submitted:</span>
               <span className="font-medium">
-                {formatDate(assignment.user_submission.submitted_at)}
+                {formatDate(assignment.user_submission.submitted_at ?? '')}
                 {assignment.user_submission.is_late && (
                   <span className="ml-2 text-red-600">(Late)</span>
                 )}
@@ -156,8 +156,8 @@ export default function AssignmentCard({ assignment, onSubmissionComplete }: Ass
           </h4>
           <FileUploader
             assignmentId={assignment.id}
-            allowedTypes={assignment.allowed_file_types}
-            maxSizeMB={assignment.max_file_size_mb}
+            allowedTypes={assignment.allowed_file_types ?? []}
+            maxSizeMB={assignment.max_file_size_mb ?? 10}
             onSuccess={handleSubmissionComplete}
             onCancel={() => setShowUploader(false)}
           />

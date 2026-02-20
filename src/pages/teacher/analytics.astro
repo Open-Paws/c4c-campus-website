@@ -233,7 +233,7 @@ const defaultCohort = cohortsWithCounts?.[0];
 
     // Global state
     let currentCohortId: string | null = null; // UUID string, not number
-    let currentDateRange = { start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), end: new Date() };
+    let _currentDateRange = { start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), end: new Date() };
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
@@ -263,7 +263,7 @@ const defaultCohort = cohortsWithCounts?.[0];
         root.render(
           createElement(DateRangeSelector, {
             onChange: (range) => {
-              currentDateRange = range;
+              _currentDateRange = range;
               loadDashboardData();
             }
           })

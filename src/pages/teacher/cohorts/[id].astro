@@ -395,10 +395,10 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
     import { supabase } from '@/lib/supabase';
     import { escapeHTML } from '../../../lib/escape-html';
 
-    let currentUser: any = null;
+    let _currentUser: any = null;
     let cohort: any = null;
     let students: any[] = [];
-    let activeTab = 'students';
+    let _activeTab = 'students';
     let teacherName = '';
     let emailRecipients: { user_id: string; name: string; email: string }[] = [];
 
@@ -464,7 +464,7 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
         return;
       }
 
-      currentUser = user;
+      _currentUser = user;
 
       // Get teacher name for emails
       const { data: teacherApp } = await supabase
@@ -783,7 +783,7 @@ import TeacherLayout from '../../../layouts/TeacherLayout.astro';
     }
 
     function switchTab(tab: string) {
-      activeTab = tab;
+      _activeTab = tab;
 
       // Update tab buttons
       document.querySelectorAll('.tab-button').forEach(btn => {
