@@ -465,7 +465,7 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
 
   <script>
     import { supabase } from '@/lib/supabase';
-    import { escapeHTML } from '../../lib/security';
+    import { escapeHTML } from '../../lib/escape-html';
 
     let currentUser: any = null;
     let courses: any[] = [];
@@ -473,7 +473,7 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
     let editingCourse: any = null;
     let editingModule: any = null;
     let currentModules: any[] = [];
-    let activeTab = 'courses';
+    let _activeTab = 'courses';
 
     // Modal helper functions
     function showNotification(title: string, message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info', actions?: { label: string, onClick: () => void, primary?: boolean }[]) {
@@ -949,7 +949,7 @@ import TeacherLayout from '../../layouts/TeacherLayout.astro';
     }
 
     function switchTab(tab: string) {
-      activeTab = tab;
+      _activeTab = tab;
 
       // Update breadcrumb
       const breadcrumb = document.getElementById('breadcrumb-current');

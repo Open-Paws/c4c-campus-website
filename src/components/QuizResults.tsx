@@ -37,7 +37,7 @@ export function QuizResults({
 
   const getScoreColor = () => {
     if (passed) return 'text-success';
-    if (scorePercentage >= quiz.passing_score * 0.8) return 'text-warning';
+    if (scorePercentage >= (quiz.passing_score ?? 70) * 0.8) return 'text-warning';
     return 'text-error';
   };
 

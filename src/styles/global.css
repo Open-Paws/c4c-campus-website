@@ -1,6 +1,28 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Register custom colors as Tailwind v4 theme tokens so utility classes
+   like bg-primary, text-primary, border-primary, text-text-muted etc. work
+   in React components and Astro templates. */
+@theme {
+  --color-primary: hsl(300 100% 50%);
+  --color-primary-light: hsl(300 100% 70%);
+  --color-primary-dark: hsl(300 100% 35%);
+  --color-accent: hsl(75 80% 50%);
+  --color-accent-light: hsl(75 80% 65%);
+  --color-accent-dark: hsl(75 80% 35%);
+  --color-success: hsl(142 76% 36%);
+  --color-warning: hsl(38 92% 50%);
+  --color-error: hsl(0 72% 51%);
+  --color-info: hsl(199 89% 48%);
+  --color-background: hsl(0 0% 100%);
+  --color-surface: hsl(300 20% 98%);
+  --color-surface-elevated: hsl(0 0% 100%);
+  --color-border: hsl(300 10% 90%);
+  --color-text: hsl(0 0% 10%);
+  --color-text-muted: hsl(0 0% 45%);
+}
+
 /* ========================================
    C4C CAMPUS DESIGN SYSTEM
    Extracted from logo: Electric Magenta + Black/White

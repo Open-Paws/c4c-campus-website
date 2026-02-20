@@ -141,7 +141,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <script>
     import { supabase } from '../../lib/supabase';
-    import { escapeHTML } from '../../lib/security';
+    import { escapeHTML } from '../../lib/escape-html';
 
     let currentUser: any = null;
     let allApplications: any[] = [];

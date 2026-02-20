@@ -48,14 +48,14 @@ export default function AssignmentCreator({
         description: editingAssignment.description || '',
         instructions: editingAssignment.instructions || '',
         due_date: editingAssignment.due_date ? new Date(editingAssignment.due_date).toISOString().slice(0, 16) : '',
-        max_points: editingAssignment.max_points,
-        max_file_size_mb: editingAssignment.max_file_size_mb,
-        allowed_file_types: editingAssignment.allowed_file_types,
-        allow_late_submissions: editingAssignment.allow_late_submissions,
-        late_penalty_percent: editingAssignment.late_penalty_percent,
-        allow_resubmission: editingAssignment.allow_resubmission,
-        max_submissions: editingAssignment.max_submissions,
-        is_published: editingAssignment.is_published
+        max_points: editingAssignment.max_points ?? 100,
+        max_file_size_mb: editingAssignment.max_file_size_mb ?? 10,
+        allowed_file_types: editingAssignment.allowed_file_types ?? ['pdf', 'doc', 'docx', 'txt', 'zip'],
+        allow_late_submissions: editingAssignment.allow_late_submissions ?? false,
+        late_penalty_percent: editingAssignment.late_penalty_percent ?? 0,
+        allow_resubmission: editingAssignment.allow_resubmission ?? false,
+        max_submissions: editingAssignment.max_submissions ?? 1,
+        is_published: editingAssignment.is_published ?? false
       });
     }
   }, [editingAssignment]);

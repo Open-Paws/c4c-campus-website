@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AIKeyWidget from '../components/student/AIKeyWidget.tsx';
 ---
 
 <BaseLayout title="Student Dashboard - C4C Campus" hideHeader={true} hideFooter={true}>
@@ -71,27 +72,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <p class="text-text-muted">Your learning hub for courses, progress tracking, and workflow automation.</p>
           </div>
 
-          <!-- My Courses Section -->
+          <!-- AI Credits -->
           <div class="mb-6">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-bold">My Courses</h2>
-              <a href="/courses" class="btn btn-ghost btn-sm">View All →</a>
-            </div>
-            <div id="courses-loading" class="text-center py-8">
-              <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent"></div>
-              <p class="mt-2 text-text-muted text-sm">Loading courses...</p>
-            </div>
-            <div id="courses-list" class="hidden space-y-3">
-              <!-- Courses will be inserted here -->
-            </div>
-            <div id="courses-empty" class="hidden text-center py-8 text-text-muted">
-              <p>No courses enrolled yet. Browse available courses to get started!</p>
-              <a href="/courses" class="btn btn-primary mt-4">Browse Courses</a>
-            </div>
+            <AIKeyWidget client:only="react" />
           </div>
 
           <!-- Quick Stats -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div class="card">
               <div class="flex items-center gap-3">
                 <div class="p-3 bg-gray-100 rounded-lg">
@@ -126,6 +113,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               </div>
             </div>
           </div>
+
+          <!-- My Courses Section -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-bold">My Courses</h2>
+              <a href="/courses" class="btn btn-ghost btn-sm">View All →</a>
+            </div>
+            <div id="courses-loading" class="text-center py-8">
+              <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent"></div>
+              <p class="mt-2 text-text-muted text-sm">Loading courses...</p>
+            </div>
+            <div id="courses-list" class="hidden space-y-3">
+              <!-- Courses will be inserted here -->
+            </div>
+            <div id="courses-empty" class="hidden text-center py-8 text-text-muted">
+              <p>No courses enrolled yet. Browse available courses to get started!</p>
+              <a href="/courses" class="btn btn-primary mt-4">Browse Courses</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -146,7 +152,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <script>
     import { supabase } from '../lib/supabase';
-    import { escapeHTML } from '../lib/security';
+    import { escapeHTML } from '../lib/escape-html';
 
     let currentUser: any = null;
 

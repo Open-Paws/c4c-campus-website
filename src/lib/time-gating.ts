@@ -335,12 +335,14 @@ export async function getCohortModuleStatuses(
     }
 
     // module_id is a BIGINT (number) per schema.sql
-    statuses.set(schedule.module_id, {
-      isUnlocked,
-      unlockDate,
-      lockDate,
-      reason
-    });
+    if (schedule.module_id != null) {
+      statuses.set(schedule.module_id, {
+        isUnlocked,
+        unlockDate,
+        lockDate,
+        reason
+      });
+    }
   });
 
   return statuses;

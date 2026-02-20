@@ -157,7 +157,7 @@ export default function SubmissionHistory({
                       </div>
 
                       <p className="text-sm text-gray-600">
-                        Submitted: {formatDate(submission.submitted_at)}
+                        Submitted: {formatDate(submission.submitted_at ?? '')}
                       </p>
                     </div>
 

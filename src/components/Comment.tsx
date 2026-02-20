@@ -122,7 +122,7 @@ export const Comment: React.FC<CommentProps> = ({
                 </span>
               )}
               <span className="text-xs text-text-muted">
-                {formatRelativeTime(comment.created_at)}
+                {formatRelativeTime(comment.created_at ?? '')}
               </span>
               {comment.created_at !== comment.updated_at && (
                 <span className="text-xs text-text-muted">(edited)</span>
@@ -133,7 +133,7 @@ export const Comment: React.FC<CommentProps> = ({
             {canModerate && (
               <ModerationActions
                 commentId={comment.id}
-                isPinned={comment.is_pinned}
+                isPinned={comment.is_pinned ?? false}
                 onPin={onPin}
                 onDelete={onDelete}
               />

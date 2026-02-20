@@ -164,7 +164,7 @@ export const prerender = false;
     document.getElementById('quiz-title-display')!.textContent = quiz.title;
     document.getElementById('quiz-description')!.textContent = quiz.description || 'No description';
     document.getElementById('passing-score')!.textContent = `${quiz.passing_score}%`;
-    document.getElementById('max-attempts')!.textContent = quiz.max_attempts === 0 ? 'Unlimited' : quiz.max_attempts.toString();
+    document.getElementById('max-attempts')!.textContent = (quiz.max_attempts ?? 0) === 0 ? 'Unlimited' : (quiz.max_attempts ?? 0).toString();
 
     // Calculate best score
     const completedAttempts = attempts.filter(a => a.submitted_at);
@@ -174,7 +174,7 @@ export const prerender = false;
 
     const bestScoreEl = document.getElementById('best-score')!;
     bestScoreEl.textContent = completedAttempts.length > 0 ? `${bestScore}%` : 'N/A';
-    if (quiz && bestScore >= quiz.passing_score) {
+    if (quiz && bestScore >= (quiz.passing_score ?? 70)) {
       bestScoreEl.classList.add('text-success');
     } else if (completedAttempts.length > 0) {
       bestScoreEl.classList.add('text-error');
@@ -272,7 +272,7 @@ export const prerender = false;
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>Started ${formatDate(attempt.started_at)}</span>
+                  <span>Started ${formatDate(attempt.started_at ?? '')}</span>
                 </div>
               `}
             </div>

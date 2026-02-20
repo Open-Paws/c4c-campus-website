@@ -89,7 +89,7 @@ export default function SubmissionStatus({
           <div className="flex justify-between">
             <span className="text-gray-600">Submitted:</span>
             <span className="font-medium">
-              {new Date(submission.submitted_at).toLocaleDateString('en-US', {
+              {submission.submitted_at && new Date(submission.submitted_at).toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',
                 year: 'numeric',

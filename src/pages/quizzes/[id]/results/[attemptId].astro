@@ -218,7 +218,7 @@ export const prerender = false;
               value: userAnswer?.answer || '',
               onChange: () => {}, // Read-only
               readonly: true,
-              showCorrectAnswer: quizData.show_correct_answers,
+              showCorrectAnswer: quizData.show_correct_answers ?? false,
               // Use 'correct_answer' per schema.sql quiz_questions table (not correct_answers_json)
               correctAnswer: question.correct_answer,
               isCorrect: userAnswer?.is_correct,

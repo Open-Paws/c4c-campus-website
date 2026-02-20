@@ -37,8 +37,17 @@ export default defineConfig({
     },
     // Performance optimizations
     optimizeDeps: {
-      include: ['react', 'react-dom', '@supabase/supabase-js', 'fast-deep-equal'],
-      exclude: ['chart.js'],
+      include: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
+        'react-dom/client',
+        'react-chartjs-2',
+        'chart.js',
+        '@supabase/supabase-js',
+        'fast-deep-equal',
+      ],
     },
   },
   compressHTML: true,
