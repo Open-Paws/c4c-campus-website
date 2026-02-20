@@ -33,10 +33,9 @@ export interface ORCreateResult {
 /**
  * Create a new OpenRouter API key for a student.
  * Returns the full key string (one-time only) and the hash for storage.
- * Pass an explicit limit to carry over a partially-spent weekly budget.
  */
-export async function createStudentKey(userId: string, limit?: number): Promise<ORCreateResult> {
-  const weeklyLimit = limit ?? Number(import.meta.env.OPENROUTER_STUDENT_WEEKLY_LIMIT ?? 10);
+export async function createStudentKey(userId: string): Promise<ORCreateResult> {
+  const weeklyLimit = Number(import.meta.env.OPENROUTER_STUDENT_WEEKLY_LIMIT) || 10;
   const response = await fetch(OR_BASE, {
     method: 'POST',
     headers: {

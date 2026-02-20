@@ -156,7 +156,10 @@ export default function AIKeyWidget() {
         },
       });
 
-      if (!res.ok) throw new Error(`Regenerate failed: ${res.status}`);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(errData.error || `Regenerate failed: ${res.status}`);
+      }
 
       const data = await res.json();
 
@@ -167,7 +170,7 @@ export default function AIKeyWidget() {
       await fetchStatus();
     } catch (err) {
       console.error('[AIKeyWidget] Regenerate error:', err);
-      setErrorMessage('Failed to regenerate key');
+      setErrorMessage(err instanceof Error ? err.message : 'Failed to regenerate key');
     } finally {
       setRegenerating(false);
     }

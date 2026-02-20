@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { authenticateRequest, createServiceClient } from '../../../lib/auth';
-import { createStudentKey, deleteKey, getKeyInfo, KeyNotFoundError } from '../../../lib/openrouter';
+import { createStudentKey, deleteKey } from '../../../lib/openrouter';
 
 export const prerender = false;
 
@@ -19,7 +19,6 @@ export const POST: APIRoute = async ({ request }) => {
 
     const supabase = createServiceClient();
 
-    // Read existing profile
     const { data: profile } = await supabase
       .from('profiles')
       .select('preferences')
@@ -29,8 +28,8 @@ export const POST: APIRoute = async ({ request }) => {
     const currentPrefs = (profile?.preferences as Record<string, unknown>) ?? {};
     const oldHash = currentPrefs.openrouter_key_hash as string | undefined;
 
-    // Enforce cooldown via DB timestamp (works across serverless instances)
-    const cooldownHours = Number(import.meta.env.OPENROUTER_REGEN_COOLDOWN_HOURS ?? 24);
+    // Enforce cooldown via DB timestamp — survives serverless restarts unlike in-memory limits
+    const cooldownHours = Number(import.meta.env.OPENROUTER_REGEN_COOLDOWN_HOURS) || 24;
     const lastRegen = currentPrefs.last_key_regenerated_at as string | undefined;
     if (lastRegen) {
       const elapsedHours = (Date.now() - new Date(lastRegen).getTime()) / (1000 * 60 * 60);
@@ -43,26 +42,17 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
-    // Fetch old key's usage before deleting so we can carry over spent budget
-    let alreadySpent = 0;
+    // Delete old key (best effort — don't block new provisioning on failure)
     if (oldHash) {
       try {
-        const info = await getKeyInfo(oldHash);
-        alreadySpent = info.usage_weekly;
         await deleteKey(oldHash);
       } catch (err) {
-        if (!(err instanceof KeyNotFoundError)) {
-          console.warn('[regenerate-key] Failed to fetch/delete old key, proceeding:', err);
-        }
+        console.warn('[regenerate-key] Failed to delete old key, proceeding:', err);
       }
     }
 
-    // New key gets remaining budget for the week (prevents bypass via regeneration)
-    const weeklyLimit = Number(import.meta.env.OPENROUTER_STUDENT_WEEKLY_LIMIT ?? 10);
-    const newLimit = Math.max(0, weeklyLimit - alreadySpent);
-
-    // Create new key with adjusted limit
-    const { key, hash } = await createStudentKey(user.id, newLimit);
+    // Create new key with full weekly limit
+    const { key, hash } = await createStudentKey(user.id);
 
     // Store new hash and regeneration timestamp
     const { error: updateError } = await supabase
@@ -84,10 +74,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        fullKey: key,
-      }),
+      JSON.stringify({ success: true, fullKey: key }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
