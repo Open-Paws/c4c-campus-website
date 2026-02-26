@@ -239,6 +239,7 @@ export const prerender = false;
   let currentModuleId: number | null = null;
   let isTeacher = false;
   let slugValidationTimer: ReturnType<typeof setTimeout> | null = null;
+  let slugValidationRequestId = 0;
 
   /**
    * Validate that the lesson slug is unique within the current module.
@@ -256,6 +257,7 @@ export const prerender = false;
       return true;
     }
 
+    const requestId = ++slugValidationRequestId;
     let query = supabase
       .from('lessons')
       .select('id')
@@ -268,6 +270,13 @@ export const prerender = false;
     }
 
     const { data } = await query.limit(1);
+
+    // Ignore stale async responses that return after the input has changed.
+    const latestSlugInput = document.getElementById('lesson-slug') as HTMLInputElement | null;
+    const latestSlug = latestSlugInput?.value.trim() || '';
+    if (requestId !== slugValidationRequestId || latestSlug !== slug) {
+      return true;
+    }
 
     if (data && data.length > 0) {
       slugError.classList.remove('hidden');
@@ -1091,6 +1100,11 @@ export const prerender = false;
   }
 
   function closeLessonModal() {
+    if (slugValidationTimer) {
+      clearTimeout(slugValidationTimer);
+      slugValidationTimer = null;
+    }
+    slugValidationRequestId++;
     document.getElementById('lesson-modal')?.classList.add('hidden');
     document.getElementById('slug-error')?.classList.add('hidden');
     editingLesson = null;
