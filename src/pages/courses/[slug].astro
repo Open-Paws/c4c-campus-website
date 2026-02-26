@@ -165,6 +165,7 @@ export const prerender = false;
               <label class="block text-sm font-medium mb-2">URL Slug*</label>
               <input type="text" id="lesson-slug" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white" required />
               <p class="text-xs text-gray-500 mt-1">Auto-generated from lesson name</p>
+              <p id="slug-error" class="text-xs text-error mt-1 hidden">This URL slug is already used by another lesson in this module.</p>
             </div>
 
             <div>
@@ -237,6 +238,45 @@ export const prerender = false;
   let editingLesson: any = null;
   let currentModuleId: number | null = null;
   let isTeacher = false;
+  let slugValidationTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /**
+   * Validate that the lesson slug is unique within the current module.
+   * Returns true if valid (no duplicate), false if duplicate found.
+   */
+  async function validateLessonSlug(): Promise<boolean> {
+    const slugInput = document.getElementById('lesson-slug') as HTMLInputElement;
+    const slugError = document.getElementById('slug-error');
+    if (!slugInput || !slugError) return true;
+
+    const slug = slugInput.value.trim();
+    const moduleId = currentModuleId ?? editingLesson?.module_id;
+    if (!slug || !moduleId) {
+      slugError.classList.add('hidden');
+      return true;
+    }
+
+    let query = supabase
+      .from('lessons')
+      .select('id')
+      .eq('module_id', moduleId)
+      .eq('slug', slug);
+
+    // When editing, exclude the current lesson from the check
+    if (editingLesson) {
+      query = query.neq('id', editingLesson.id);
+    }
+
+    const { data } = await query.limit(1);
+
+    if (data && data.length > 0) {
+      slugError.classList.remove('hidden');
+      return false;
+    } else {
+      slugError.classList.add('hidden');
+      return true;
+    }
+  }
 
   async function init() {
     // Get slug from URL
@@ -888,7 +928,16 @@ export const prerender = false;
       const slugInput = document.getElementById('lesson-slug') as HTMLInputElement;
       if (!editingLesson && slugInput) {
         slugInput.value = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        // Trigger debounced slug validation after auto-generation
+        if (slugValidationTimer) clearTimeout(slugValidationTimer);
+        slugValidationTimer = setTimeout(() => validateLessonSlug(), 300);
       }
+    });
+
+    // Validate slug uniqueness on manual slug input
+    document.getElementById('lesson-slug')?.addEventListener('input', () => {
+      if (slugValidationTimer) clearTimeout(slugValidationTimer);
+      slugValidationTimer = setTimeout(() => validateLessonSlug(), 300);
     });
 
     // Video type selector
@@ -1043,6 +1092,7 @@ export const prerender = false;
 
   function closeLessonModal() {
     document.getElementById('lesson-modal')?.classList.add('hidden');
+    document.getElementById('slug-error')?.classList.add('hidden');
     editingLesson = null;
     currentModuleId = null;
   }
@@ -1058,6 +1108,13 @@ export const prerender = false;
     const moduleId = currentModuleId ?? editingLesson?.module_id;
     if (!moduleId) {
       showToast('Error: No module selected', 'error');
+      return;
+    }
+
+    // Validate slug uniqueness before saving
+    const isSlugValid = await validateLessonSlug();
+    if (!isSlugValid) {
+      showToast('A lesson with this URL slug already exists in this module. Please use a different slug.', 'error');
       return;
     }
 
@@ -1079,7 +1136,11 @@ export const prerender = false;
         .eq('id', editingLesson.id);
 
       if (error) {
-        showToast('Error updating lesson: ' + error.message, 'error');
+        if (error.code === '23505') {
+          showToast('A lesson with this URL slug already exists in this module. Please use a different slug.', 'error');
+        } else {
+          showToast('Error updating lesson: ' + error.message, 'error');
+        }
         return;
       }
     } else {
@@ -1088,7 +1149,11 @@ export const prerender = false;
         .insert([lessonData]);
 
       if (error) {
-        showToast('Error creating lesson: ' + error.message, 'error');
+        if (error.code === '23505') {
+          showToast('A lesson with this URL slug already exists in this module. Please use a different slug.', 'error');
+        } else {
+          showToast('Error creating lesson: ' + error.message, 'error');
+        }
         return;
       }
     }

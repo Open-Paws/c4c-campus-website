@@ -47,7 +47,7 @@ export const GET: APIRoute = async ({ request }) => {
           courses (title, slug)
         )
       `)
-      .eq('unlock_date', today);
+      .lte('unlock_date', today);
 
     if (error) {
       console.error('[cron] Error fetching schedules:', error);
