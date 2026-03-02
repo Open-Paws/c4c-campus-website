@@ -9,7 +9,7 @@ const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 
 /**
  * GET /api/cron/module-unlock-notifications
- * Daily cron job that sends notifications to students when a module unlocks today.
+ * Daily cron job that sends notifications to students when a module unlocks.
  * Protected by CRON_SECRET Bearer token.
  */
 export const GET: APIRoute = async ({ request }) => {
@@ -33,9 +33,13 @@ export const GET: APIRoute = async ({ request }) => {
 
   const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const lookbackDays = 7;
+  const lookbackDate = new Date();
+  lookbackDate.setDate(lookbackDate.getDate() - lookbackDays);
+  const lookbackDateStr = lookbackDate.toISOString().split('T')[0]; // YYYY-MM-DD
 
   try {
-    // Find all schedules where unlock_date is exactly today
+    // Bound scan to recent unlocks so cron retries can catch misses without unbounded growth.
     const { data: schedules, error } = await supabaseAdmin
       .from('cohort_schedules')
       .select(`
@@ -47,7 +51,9 @@ export const GET: APIRoute = async ({ request }) => {
           courses (title, slug)
         )
       `)
-      .eq('unlock_date', today);
+      .gte('unlock_date', lookbackDateStr)
+      .lte('unlock_date', today)
+      .order('unlock_date', { ascending: true });
 
     if (error) {
       console.error('[cron] Error fetching schedules:', error);
@@ -59,9 +65,36 @@ export const GET: APIRoute = async ({ request }) => {
 
     if (!schedules || schedules.length === 0) {
       return new Response(
-        JSON.stringify({ message: 'No modules unlocking today', count: 0 }),
+        JSON.stringify({ message: 'No modules eligible for notifications', count: 0, lookbackDays }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    const cohortIds = Array.from(new Set(schedules.map((s: any) => String(s.cohort_id))));
+    const moduleIds = Array.from(new Set(schedules.map((s: any) => String(s.module_id))));
+    const existingNotifKeys = new Set<string>();
+
+    // Load existing notifications once to avoid N+1 lookups for each schedule row.
+    if (cohortIds.length > 0 && moduleIds.length > 0) {
+      const { data: existingNotifs, error: existingNotifsError } = await supabaseAdmin
+        .from('notifications')
+        .select('metadata')
+        .eq('type', 'course_update')
+        .contains('metadata', { notification_subtype: 'module_unlocked' })
+        .in('metadata->>cohort_id', cohortIds)
+        .in('metadata->>module_id', moduleIds);
+
+      if (existingNotifsError) {
+        console.error('[cron] Error fetching existing notifications for dedupe:', existingNotifsError);
+      } else {
+        for (const notif of existingNotifs || []) {
+          const cohortId = (notif as any)?.metadata?.cohort_id;
+          const moduleId = (notif as any)?.metadata?.module_id;
+          if (cohortId !== undefined && moduleId !== undefined) {
+            existingNotifKeys.add(`${cohortId}:${moduleId}`);
+          }
+        }
+      }
     }
 
     let totalNotified = 0;
@@ -73,19 +106,8 @@ export const GET: APIRoute = async ({ request }) => {
 
       if (!courseName || !courseSlug) continue;
 
-      // Deduplication: check if notifications were already sent for this module/cohort
-      const { data: existingNotifs } = await supabaseAdmin
-        .from('notifications')
-        .select('id')
-        .eq('type', 'course_update')
-        .contains('metadata', {
-          module_id: schedule.module_id,
-          cohort_id: schedule.cohort_id,
-          notification_subtype: 'module_unlocked',
-        })
-        .limit(1);
-
-      if (existingNotifs && existingNotifs.length > 0) {
+      const notifKey = `${schedule.cohort_id}:${schedule.module_id}`;
+      if (existingNotifKeys.has(notifKey)) {
         continue; // Already notified
       }
 
@@ -123,6 +145,8 @@ export const GET: APIRoute = async ({ request }) => {
         console.error('[cron] Error inserting notifications:', notifError);
         continue;
       }
+
+      existingNotifKeys.add(notifKey);
 
       // Send emails
       const { data: apps } = await supabaseAdmin
