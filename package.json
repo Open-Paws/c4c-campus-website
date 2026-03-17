@@ -46,7 +46,7 @@
     "@floating-ui/dom": "^1.7.5",
     "@stripe/stripe-js": "^8.8.0",
     "@supabase/storage-js": "^2.98.0",
-    "@supabase/supabase-js": "^2.95.3",
+    "@supabase/supabase-js": "^2.99.2",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.1",
     "@tiptap/extension-image": "^3.20.0",
