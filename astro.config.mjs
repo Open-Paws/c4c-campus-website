@@ -16,12 +16,9 @@ export default defineConfig({
       // Enable code splitting and chunk optimization
       rollupOptions: {
         output: {
-          manualChunks: {
-            // Vendor chunks for better caching
-            'chart': ['chart.js', 'react-chartjs-2'],
-            'editor': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-link', '@tiptap/extension-placeholder', '@tiptap/extension-image'],
-            'supabase': ['@supabase/supabase-js', '@supabase/storage-js'],
-          },
+          // manualChunks removed for Astro 6 compatibility:
+          // In SSR server builds, client-side modules (chart.js, tiptap, supabase)
+          // are externalized and cannot be included in manualChunks.
           // Optimize chunk naming for better caching
           chunkFileNames: () => {
             return `assets/[name].[hash].js`;
@@ -76,6 +73,4 @@ export default defineConfig({
   experimental: {
     clientPrerender: true,
   },
-  // Enable middleware for server-side auth checks
-  middleware: true,
 });

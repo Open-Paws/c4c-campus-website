@@ -40,9 +40,9 @@
     "db:schema-apply": "npm run db:backup && npm run db:reset && npm run db:validate"
   },
   "dependencies": {
-    "@astrojs/node": "^9.5.4",
-    "@astrojs/react": "^4.4.1",
-    "@astrojs/vercel": "^9.0.2",
+    "@astrojs/node": "^10.0.3",
+    "@astrojs/react": "^5.0.1",
+    "@astrojs/vercel": "^10.0.2",
     "@floating-ui/dom": "^1.7.5",
     "@stripe/stripe-js": "^8.8.0",
     "@supabase/storage-js": "^2.100.0",
@@ -58,7 +58,7 @@
     "@types/d3": "^7.4.3",
     "@types/papaparse": "^5.5.2",
     "@types/react-grid-layout": "^1.3.5",
-    "astro": "^5.18.0",
+    "astro": "^6.0.8",
     "canvas-confetti": "^1.9.4",
     "chart.js": "^4.5.1",
     "d3": "^7.9.0",
