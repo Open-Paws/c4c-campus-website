@@ -101,7 +101,7 @@
     "@vitejs/plugin-react": "^5.1.4",
     "axe-core": "^4.11.0",
     "husky": "^9.1.7",
-    "jsdom": "^28.1.0",
+    "jsdom": "^29.0.1",
     "pg": "^8.20.0",
     "puppeteer": "^24.40.0",
     "typescript": "^5.9.3",
