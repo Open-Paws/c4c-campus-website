@@ -45,7 +45,7 @@
     "@astrojs/vercel": "^10.0.3",
     "@floating-ui/dom": "^1.7.5",
     "@stripe/stripe-js": "^8.8.0",
-    "@supabase/storage-js": "^2.100.0",
+    "@supabase/storage-js": "^2.101.1",
     "@supabase/supabase-js": "^2.101.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.2",
