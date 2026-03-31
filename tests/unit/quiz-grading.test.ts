@@ -6,6 +6,10 @@
  *
  * Design rule: every test must fail when the behaviour it covers breaks.
  * No coverage theatre — assertion quality over percentage.
+ *
+ * All tests are pure-logic: no database, no Supabase, no network.
+ * Fixtures use realistic advocacy-domain content (campaigns, investigations,
+ * factory farms, sanctuaries) consistent with the Open Paws ubiquitous language.
  */
 
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
