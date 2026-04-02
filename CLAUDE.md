@@ -253,3 +253,75 @@ src/
 3. **Don't break things** - Every change must be backward compatible
 4. **Match types exactly** - UUID vs BIGSERIAL, snake_case everywhere
 5. **Validate before committing** - Run type checks and tests
+
+---
+
+## Organizational Context
+
+**Layer:** 1 | **Lever:** Strengthen | **Integration:** Standalone (links to platform) — VERY STALE, needs full update
+
+This is the Code for Compassion Campus public website — the developer recruitment funnel for the Layer 1 pipeline. This is the first thing prospective bootcamp and Guild developers see. It is important for India community recruitment (Bengaluru + Mumbai launch, May 2026).
+
+**Note:** This CLAUDE.md was last updated 2025-12-10 and is very stale. This update brings it current as of 2026-04-02.
+
+**Relevant strategy documents:**
+- `programs/developer-training-pipeline/india-community/community-strategy.md` — India launch strategy
+- `programs/developer-training-pipeline/guild/operations.md` — Guild pipeline this site feeds
+- `roadmap/sprint-plan.md` — May 2026 launch deadline; 20 resident developers onboard
+
+**Current status:** The C4C campus site recruits developers into the pipeline. May 2026 hard deadline for Resident Developer cohort. The platform at `open-paws-platform` is where enrolled developers actually work — this site is the funnel to it.
+
+## Development Standards (Updated 2026-04-02)
+
+### 10-Point Review Checklist (ranked by AI violation frequency)
+
+1. **DRY** — AI clones code at 4x the human rate. Search before writing anything new
+2. **Deep modules** — Reject shallow wrappers and pass-through methods. Interface must be simpler than implementation
+3. **Single responsibility** — Each function does one thing at one level of abstraction
+4. **Error handling** — Never catch-all. AI suppresses errors and removes safety checks. Every catch block must handle specifically
+5. **Information hiding** — Don't expose internal state. Mask API keys (last 4 chars only)
+6. **Ubiquitous language** — Use movement terminology consistently. Never let AI invent synonyms for domain terms
+7. **Design for change** — Abstraction layers and loose coupling
+8. **Legacy velocity** — AI code churns 2x faster. Use characterization tests before modifying existing code
+9. **Over-patterning** — Simplest structure that works. Three similar lines of code is better than a premature abstraction
+10. **Test quality** — Every test must fail when the covered behavior breaks. Mutation score over coverage percentage
+
+### Quality Gates
+
+- **Desloppify:** `desloppify scan --path .` — minimum score ≥85 (web app; platform repos: ≥90)
+- **Speciesist language:** `semgrep --config semgrep-no-animal-violence.yaml` on all code/docs edits
+- **TypeScript:** Always run `npx astro check` before pushing. Fix all type errors.
+- **Schema:** Run `npm run db:validate:all` before any commit touching database code.
+- **Two-failure rule:** After two failed fixes on the same problem, stop and restart with a better approach
+
+### Playwright MCP Persona-Based QA
+
+This is a web app. Use Playwright MCP for persona-based browser testing with these personas:
+
+1. **Prospective bootcamp student (India)** — Found the site via university outreach. Can they understand what Code for Compassion is, find the application process, and apply in under 5 minutes on a mid-range device?
+2. **Developer evaluating Guild** — Already has coding skills, looking for a community project. Can they understand the Guild structure, quest system, and progression without clicking into the platform?
+3. **Teacher/org admin reviewing the campus** — Evaluating C4C as a training program for their staff. Can they find curriculum details, cohort structure, and contact information?
+
+For each persona: test the critical flow, verify light and dark mode rendering, check accessibility (keyboard navigation, contrast, screen reader labels). Run Playwright tests sequentially.
+
+### Seven Concerns — Critical for This Repo
+
+All 7 concerns apply. Highlighted critical ones:
+
+- **Accessibility** (critical) — This is the India recruitment funnel. Must work on low-end Android devices, 3G connections, and with screen readers. Internationalization is coming — do not bake in English-only assumptions.
+- **Privacy** — Application form collects personal data. Supabase RLS must be enforced on `applications` table.
+- **Security** — Supabase RLS policies on all tables (check `npm run db:validate:all`).
+- **Advocacy domain** — The campus is the movement's developer recruitment front. All copy must use movement terminology and be free of speciesist idioms.
+- **Emotional safety** — The site introduces new developers to the movement. Apply progressive disclosure for any advocacy content (investigation statistics, graphic content).
+
+### Advocacy Domain Language
+
+Never introduce synonyms for:
+- **Campaign** — organized advocacy effort
+- **Activist** — person engaged in advocacy work (not "user" or "member" in advocacy contexts)
+- **Guild** — the developer community (not "community" or "team")
+- **Farmed animal** — not "livestock" in any campus copy
+
+### Structured Coding Reference
+
+For tool-specific AI coding instructions (Claude Code rules, Cursor MDC, Copilot, Windsurf, etc.), copy the corresponding directory from `structured-coding-with-ai` into this project root.
