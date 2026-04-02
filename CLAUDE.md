@@ -228,14 +228,26 @@ npm run test:integration
 
 ```
 src/
-├── components/     # React components
-├── layouts/        # Astro layouts
-├── lib/            # Shared utilities, API helpers
-├── pages/          # Astro pages and API routes
-│   └── api/        # API endpoints
-└── types/          # TypeScript types
+├── components/     # React islands — see src/components/CLAUDE.md
+│   ├── analytics/  # D3 charts — see src/components/analytics/CLAUDE.md
+│   ├── certificates/ # Certificate card — see src/components/certificates/CLAUDE.md
+│   ├── course/     # Course UI — see src/components/course/CLAUDE.md
+│   ├── payments/   # Pricing table — see src/components/payments/CLAUDE.md
+│   ├── search/     # Search UI — see src/components/search/CLAUDE.md
+│   ├── student/    # Student widgets — see src/components/student/CLAUDE.md
+│   └── teacher/    # Teacher tools — see src/components/teacher/CLAUDE.md
+├── layouts/        # Astro layouts — see src/layouts/CLAUDE.md
+├── lib/            # Shared utilities — see src/lib/CLAUDE.md
+├── middleware/     # Request pipeline — see src/middleware/CLAUDE.md
+├── pages/          # Astro pages — see src/pages/CLAUDE.md
+│   └── api/        # API endpoints — see src/pages/api/CLAUDE.md
+├── styles/         # global.css
+└── types/          # TypeScript types — see src/types/CLAUDE.md
     ├── generated.ts  # Auto-generated (DO NOT EDIT)
     └── index.ts      # Application types
+migrations/         # Incremental SQL migrations — see migrations/CLAUDE.md
+scripts/            # Dev/maintenance scripts — see scripts/CLAUDE.md
+tests/              # Test suite — see tests/CLAUDE.md
 ```
 
 ## Key Files
@@ -243,8 +255,11 @@ src/
 - `schema.sql` - **IMMUTABLE** database schema (source of truth)
 - `src/types/generated.ts` - Auto-generated types (DO NOT EDIT)
 - `src/types/index.ts` - Application-level type definitions
-- `src/lib/api-handlers.ts` - API utility functions
-- `src/lib/time-gating.ts` - Cohort schedule logic
+- `src/lib/auth.ts` - JWT verification, cookie parsing, role checks (used everywhere)
+- `src/lib/api-handlers.ts` - Course validation utilities
+- `src/lib/time-gating.ts` - Cohort schedule / module unlock logic
+- `src/middleware/auth.ts` - Server-side route protection (runs before pages render)
+- `astro.config.mjs` - Astro configuration (adapters, integrations)
 
 ## Summary
 
@@ -258,11 +273,11 @@ src/
 
 ## Organizational Context
 
-**Layer:** 1 | **Lever:** Strengthen | **Integration:** Standalone (links to platform) — VERY STALE, needs full update
+**Layer:** 1 | **Lever:** Strengthen | **Integration:** Standalone (links to platform)
 
 This is the Code for Compassion Campus public website — the developer recruitment funnel for the Layer 1 pipeline. This is the first thing prospective bootcamp and Guild developers see. It is important for India community recruitment (Bengaluru + Mumbai launch, May 2026).
 
-**Note:** This CLAUDE.md was last updated 2025-12-10 and is very stale. This update brings it current as of 2026-04-02.
+**Last updated:** 2026-04-02
 
 **Relevant strategy documents:**
 - `programs/developer-training-pipeline/india-community/community-strategy.md` — India launch strategy
