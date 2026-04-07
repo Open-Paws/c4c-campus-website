@@ -93,9 +93,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       }
 
       // Function to change translation language
+      function safeStorage(fn) {
+        try { return fn(); } catch (e) { /* storage blocked (private browsing, etc.) */ }
+      }
+
       function changeLanguage(lang) {
         console.log('[C4C-Translate] changeLanguage called with:', lang);
-        localStorage.setItem('preferredLanguage', lang);
+        safeStorage(() => localStorage.setItem('preferredLanguage', lang));
 
         // Update ALL selectors on the page
         document.querySelectorAll('.language-selector').forEach(sel => {
@@ -143,7 +147,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         }
 
         // Persist English selection to prevent auto-detection from overriding it
-        localStorage.setItem('preferredLanguage', 'en');
+        safeStorage(() => localStorage.setItem('preferredLanguage', 'en'));
 
         // Force a reload with clean URL
         const newUrl = window.location.origin + window.location.pathname + '?t=' + new Date().getTime();
@@ -167,16 +171,22 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         const iframes = document.querySelectorAll('iframe[src*="translate.googleapis"]');
         iframes.forEach(iframe => iframe.remove());
 
+        // Guard against removing core page elements — Google Translate adds classes to <html>/<body>
+        // that match these selectors; only remove child elements, never the page roots.
         const selectorsToRemove = ['[class*="goog"]', '[class*="skiptranslate"]', '[id*=":0"]', '[class*="gt-"]'];
         selectorsToRemove.forEach(selector => {
-          document.querySelectorAll(selector).forEach(el => el.remove());
+          document.querySelectorAll(selector).forEach(el => {
+            if (el !== document.documentElement && el !== document.body) {
+              el.remove();
+            }
+          });
         });
       }
 
       // On page load, check if there's a preferred language
       document.addEventListener('DOMContentLoaded', function() {
         // 1. Auto-detect and re-apply
-        const preferredLang = localStorage.getItem('preferredLanguage');
+        const preferredLang = safeStorage(() => localStorage.getItem('preferredLanguage'));
         console.log('[C4C-Translate] DOMContentLoaded — preferredLanguage:', preferredLang);
 
         const applyLang = (lang) => {
@@ -236,7 +246,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         }
 
         const attachListeners = () => {
-          const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+          const currentLang = safeStorage(() => localStorage.getItem('preferredLanguage')) || 'en';
           document.querySelectorAll('.language-selector').forEach(selector => {
             if (selector.dataset.listenerAttached) {
                if (selector.value !== currentLang) selector.value = currentLang;
