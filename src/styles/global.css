@@ -727,17 +727,17 @@
     margin-top: 0 !important;
   }
 
-  /* Custom language selector styling */
-  #language-selector {
+  /* Custom language selector styling — matches both class-based and legacy id-based selectors */
+  #language-selector, .language-selector {
     cursor: pointer;
     transition: border-color 0.2s;
   }
 
-  #language-selector:hover {
+  #language-selector:hover, .language-selector:hover {
     border-color: hsl(var(--primary));
   }
 
-  #language-selector:focus {
+  #language-selector:focus, .language-selector:focus {
     outline: none;
     border-color: hsl(var(--primary));
     box-shadow: 0 0 0 3px hsla(var(--primary), 0.1);

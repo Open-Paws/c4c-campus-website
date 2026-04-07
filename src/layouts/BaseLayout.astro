@@ -94,17 +94,30 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
       // Function to change translation language
       function safeStorage(fn) {
-        try { return fn(); } catch (e) { /* storage blocked (private browsing, etc.) */ }
+        try { return fn(); } catch (e) {
+          // Only swallow expected storage errors (private browsing, quota, security policy).
+          // Rethrow anything else so unrelated bugs are not hidden.
+          if (e instanceof DOMException || e.name === 'SecurityError' || e.name === 'QuotaExceededError') {
+            return undefined;
+          }
+          throw e;
+        }
       }
 
       function changeLanguage(lang) {
         console.log('[C4C-Translate] changeLanguage called with:', lang);
         safeStorage(() => localStorage.setItem('preferredLanguage', lang));
 
-        // Update ALL selectors on the page
+        // Update ALL selectors on the page (class-based)
         document.querySelectorAll('.language-selector').forEach(sel => {
           sel.value = lang;
         });
+        // Backward-compat: also update any legacy id-only selector not covered by the class query
+        var legacyById = document.getElementById('language-selector');
+        if (legacyById && !legacyById.classList.contains('language-selector')) {
+          legacyById.value = lang;
+          legacyById.dispatchEvent(new Event('change'));
+        }
 
         if (lang === 'en') {
           console.log('[C4C-Translate] Resetting to English...');
@@ -149,9 +162,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         // Persist English selection to prevent auto-detection from overriding it
         safeStorage(() => localStorage.setItem('preferredLanguage', 'en'));
 
-        // Force a reload with clean URL
-        const newUrl = window.location.origin + window.location.pathname + '?t=' + new Date().getTime();
-        window.location.href = newUrl;
+        // Force a reload, preserving existing search params and hash
+        var url = new URL(window.location.href);
+        url.searchParams.set('t', new Date().getTime());
+        window.location.href = url.toString();
       }
 
       function clearGoogleTranslateCookies() {
@@ -246,14 +260,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         }
 
         const attachListeners = () => {
-          const currentLang = safeStorage(() => localStorage.getItem('preferredLanguage')) || 'en';
+          // Only use stored value — don't default to 'en', which would override auto-detected language
+          var storedLang = safeStorage(() => localStorage.getItem('preferredLanguage'));
           document.querySelectorAll('.language-selector').forEach(selector => {
             if (selector.dataset.listenerAttached) {
-               if (selector.value !== currentLang) selector.value = currentLang;
+               if (storedLang && selector.value !== storedLang) selector.value = storedLang;
                return;
             }
             selector.dataset.listenerAttached = 'true';
-            selector.value = currentLang;
+            if (storedLang) selector.value = storedLang;
 
             selector.addEventListener('change', function() {
               const lang = this.value;
@@ -271,7 +286,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         observer.observe(document.body, { childList: true, subtree: true });
       });
     </script>
-    <script is:inline type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script defer is:inline type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   </head>
   <body class="bg-white text-gray-900 min-h-screen flex flex-col">
     <!-- Toast Notification Container -->

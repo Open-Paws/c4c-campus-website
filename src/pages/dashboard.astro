@@ -23,7 +23,7 @@ import AIKeyWidget from '../components/student/AIKeyWidget.tsx';
             <a href="/courses" class="hidden sm:block btn btn-ghost btn-sm">Courses</a>
 
             <!-- Language Selector -->
-            <select id="language-selector" class="language-selector notranslate hidden sm:block border border-border rounded-lg px-3 py-2 text-sm bg-background" translate="no">
+            <select id="language-selector" class="language-selector notranslate border border-border rounded-lg px-3 py-2 text-sm bg-background" translate="no" aria-label="Select page language">
               <option value="en">English</option>
               <option value="hi">हिन्दी</option>
               <option value="ta">தமிழ்</option>
@@ -409,14 +409,5 @@ import AIKeyWidget from '../components/student/AIKeyWidget.tsx';
 
     // Initialize
     checkAuth();
-  </script>
-                }
-              };
-              setTimeout(tryChange, 300);
-            }
-          }
-        });
-      }
-    });
   </script>
 </BaseLayout>
