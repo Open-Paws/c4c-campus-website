@@ -108,16 +108,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         console.log('[C4C-Translate] changeLanguage called with:', lang);
         safeStorage(() => localStorage.setItem('preferredLanguage', lang));
 
-        // Update ALL selectors on the page (class-based)
-        document.querySelectorAll('.language-selector').forEach(sel => {
+        // Update ALL selectors on the page — class-based and legacy id-based
+        document.querySelectorAll('.language-selector, #language-selector').forEach(sel => {
           sel.value = lang;
         });
-        // Backward-compat: also update any legacy id-only selector not covered by the class query
-        var legacyById = document.getElementById('language-selector');
-        if (legacyById && !legacyById.classList.contains('language-selector')) {
-          legacyById.value = lang;
-          legacyById.dispatchEvent(new Event('change'));
-        }
 
         if (lang === 'en') {
           console.log('[C4C-Translate] Resetting to English...');
@@ -244,11 +238,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           document.documentElement.classList.remove('is-translating');
         } else {
           // No preference set, try auto-detection
-          let browserLang = navigator.language.split('-')[0];
-          // Normalize zh to zh-CN
-          if (browserLang === 'zh') browserLang = 'zh-CN';
-          
+          // Try exact locale match first (e.g., zh-CN), then fall back to primary subtag.
+          // Do NOT force all zh-* to zh-CN — Traditional Chinese (zh-TW) users should
+          // choose explicitly rather than being auto-served Simplified Chinese.
+          var locale = (navigator.language || '');
+          var primarySubtag = locale.split('-')[0];
           const supported = ['hi', 'ta', 'te', 'kn', 'bn', 'mr', 'gu', 'ml', 'pa', 'or', 'as', 'ur', 'es', 'fr', 'de', 'pt', 'zh-CN', 'ja', 'ko', 'ar'];
+          var browserLang = supported.includes(locale) ? locale : primarySubtag;
           
           if (supported.includes(browserLang)) {
             console.log('[C4C-Translate] Auto-applying detected browser language:', browserLang);
@@ -262,7 +258,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         const attachListeners = () => {
           // Only use stored value — don't default to 'en', which would override auto-detected language
           var storedLang = safeStorage(() => localStorage.getItem('preferredLanguage'));
-          document.querySelectorAll('.language-selector').forEach(selector => {
+          document.querySelectorAll('.language-selector, #language-selector').forEach(selector => {
             if (selector.dataset.listenerAttached) {
                if (storedLang && selector.value !== storedLang) selector.value = storedLang;
                return;
