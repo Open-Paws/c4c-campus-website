@@ -186,6 +186,13 @@
     color: hsl(var(--text));
     font-size: var(--text-base);
     line-height: var(--leading-normal);
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  /* Hide page content while translation is initializing to prevent flicker */
+  html.is-translating body {
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 
   /* FOCUS STYLES - High contrast, accessible */
@@ -704,12 +711,15 @@
     width: 0 !important;
   }
 
-  /* Remove any spacing/positioning Google Translate adds to body */
+  /* Remove any spacing/positioning Google Translate adds to body or html */
+  html,
   body {
     top: 0 !important;
     position: static !important;
   }
 
+  html.translated-ltr,
+  html.translated-rtl,
   body.translated-ltr,
   body.translated-rtl {
     top: 0 !important;
@@ -717,17 +727,17 @@
     margin-top: 0 !important;
   }
 
-  /* Custom language selector styling */
-  #language-selector {
+  /* Custom language selector styling — matches both class-based and legacy id-based selectors */
+  #language-selector, .language-selector {
     cursor: pointer;
     transition: border-color 0.2s;
   }
 
-  #language-selector:hover {
+  #language-selector:hover, .language-selector:hover {
     border-color: hsl(var(--primary));
   }
 
-  #language-selector:focus {
+  #language-selector:focus, .language-selector:focus {
     outline: none;
     border-color: hsl(var(--primary));
     box-shadow: 0 0 0 3px hsla(var(--primary), 0.1);

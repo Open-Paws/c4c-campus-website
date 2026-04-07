@@ -54,11 +54,35 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
+    <!-- Immediate language detect to prevent flicker -->
+    <script is:inline>
+      (function() {
+        try {
+          // Backward compatibility: check localStorage first, then fallback to sessionStorage (and migrate)
+          let lang = null;
+          try {
+            lang = localStorage.getItem('preferredLanguage');
+            if (!lang) {
+              lang = sessionStorage.getItem('preferredLanguage');
+              if (lang) localStorage.setItem('preferredLanguage', lang); // Migrate to local
+            }
+          } catch (storageErr) {
+            // LocalStorage might be blocked in some browsers (incognito, etc)
+            console.warn('[C4C-Translate] Storage access failed:', storageErr.name);
+          }
+          
+          if (lang && lang !== 'en') {
+            document.documentElement.classList.add('is-translating');
+          }
+        } catch (e) {
+          // Only catch unexpected fatal errors, don't swallow everything silently
+          if (!(e instanceof DOMException)) console.error('[C4C-Translate] Boot error:', e);
+        }
+      })();
+    </script>
     <!-- Theme Color -->
     <meta name="theme-color" content="#FF00FF" />
 
-    <!-- Google Translate -->
-    <script is:inline type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script is:inline type="text/javascript">
       function googleTranslateElementInit() {
         new google.translate.TranslateElement({
@@ -69,9 +93,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       }
 
       // Function to change translation language
+      function safeStorage(fn) {
+        try { return fn(); } catch (e) {
+          // Only swallow expected storage errors (private browsing, quota, security policy).
+          // Rethrow anything else so unrelated bugs are not hidden.
+          if (e instanceof DOMException || e.name === 'SecurityError' || e.name === 'QuotaExceededError') {
+            return undefined;
+          }
+          throw e;
+        }
+      }
+
       function changeLanguage(lang) {
         console.log('[C4C-Translate] changeLanguage called with:', lang);
-        sessionStorage.setItem('preferredLanguage', lang);
+        safeStorage(() => localStorage.setItem('preferredLanguage', lang));
+
+        // Update ALL selectors on the page — class-based and legacy id-based
+        document.querySelectorAll('.language-selector, #language-selector').forEach(sel => {
+          sel.value = lang;
+        });
 
         if (lang === 'en') {
           console.log('[C4C-Translate] Resetting to English...');
@@ -83,31 +123,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         const select = document.querySelector('.goog-te-combo');
         if (select) {
           console.log('[C4C-Translate] Google Translate combo found, setting to:', lang);
-          select.value = lang;
-          select.dispatchEvent(new Event('change'));
+          if (select.value !== lang) {
+            select.value = lang;
+            select.dispatchEvent(new Event('change'));
+          }
           return true;
         }
 
         // If the select element isn't ready, try again after a delay
-        console.log('[C4C-Translate] Google Translate combo NOT found, will retry in 1s');
-        setTimeout(() => {
-          const selectRetry = document.querySelector('.goog-te-combo');
-          if (selectRetry) {
-            console.log('[C4C-Translate] Retry: combo found, setting to:', lang);
-            selectRetry.value = lang;
-            selectRetry.dispatchEvent(new Event('change'));
-          } else {
-            console.log('[C4C-Translate] Retry: combo still not found');
-          }
-        }, 1000);
-
+        console.log('[C4C-Translate] Google Translate combo NOT found, will retry');
         return false;
       }
 
       function resetToEnglish() {
         console.log('[C4C-Translate] resetToEnglish called');
-        console.log('[C4C-Translate] Current URL:', window.location.href);
-
         clearGoogleTranslateCookies();
         cleanupGoogleTranslate();
 
@@ -124,23 +153,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           translateContainer.innerHTML = '';
         }
 
-        // Force a reload with clean URL (origin + pathname strips any existing query params)
-        const newUrl = window.location.origin + window.location.pathname + '?t=' + new Date().getTime();
-        console.log('[C4C-Translate] Reloading to:', newUrl);
-        window.location.href = newUrl;
+        // Persist English selection to prevent auto-detection from overriding it
+        safeStorage(() => localStorage.setItem('preferredLanguage', 'en'));
+
+        // Force a reload, preserving existing search params and hash
+        var url = new URL(window.location.href);
+        url.searchParams.set('t', new Date().getTime());
+        window.location.href = url.toString();
       }
 
       function clearGoogleTranslateCookies() {
         const cookies = document.cookie.split(';');
-        const googCookies = cookies.filter(c => {
-          const name = c.indexOf('=') > -1 ? c.substr(0, c.indexOf('=')).trim() : c.trim();
-          return name.startsWith('goog');
-        });
-        console.log('[C4C-Translate] Clearing Google cookies:', googCookies.length, 'found');
         cookies.forEach(cookie => {
           const eqPos = cookie.indexOf('=');
           const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-
           if (name.startsWith('goog')) {
             document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
             document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
@@ -150,68 +176,113 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       }
 
       function cleanupGoogleTranslate() {
-        // Remove Google Translate iframes
         const iframes = document.querySelectorAll('iframe[src*="translate.googleapis"]');
-        console.log('[C4C-Translate] Removing', iframes.length, 'Google Translate iframes');
-        iframes.forEach(iframe => {
-          iframe.parentNode?.removeChild(iframe);
-        });
+        iframes.forEach(iframe => iframe.remove());
 
-        // Remove Google Translate elements
-        const selectorsToRemove = [
-          '[class*="goog"]',
-          '[class*="skiptranslate"]',
-          '[id*=":0"]',
-          '[class*="gt-"]'
-        ];
-
+        // Guard against removing core page elements — Google Translate adds classes to <html>/<body>
+        // that match these selectors; only remove child elements, never the page roots.
+        const selectorsToRemove = ['[class*="goog"]', '[class*="skiptranslate"]', '[id*=":0"]', '[class*="gt-"]'];
         selectorsToRemove.forEach(selector => {
-          const elements = document.querySelectorAll(selector);
-          console.log('[C4C-Translate] Cleanup selector', selector, '— matched', elements.length, 'elements');
-          elements.forEach(el => el.remove());
+          document.querySelectorAll(selector).forEach(el => {
+            if (el !== document.documentElement && el !== document.body) {
+              el.remove();
+            }
+          });
         });
       }
 
       // On page load, check if there's a preferred language
       document.addEventListener('DOMContentLoaded', function() {
-        const preferredLang = sessionStorage.getItem('preferredLanguage');
+        // 1. Auto-detect and re-apply
+        const preferredLang = safeStorage(() => localStorage.getItem('preferredLanguage'));
         console.log('[C4C-Translate] DOMContentLoaded — preferredLanguage:', preferredLang);
 
+        const applyLang = (lang) => {
+          let attempts = 0;
+          const maxAttempts = 20;
+          
+          const tryChange = function() {
+            attempts++;
+            if (changeLanguage(lang)) {
+              // Successfully triggered combo, now wait for Google classes
+              let checkAttempts = 0;
+              const checkInterval = setInterval(() => {
+                checkAttempts++;
+                const isTranslated = document.documentElement.classList.contains('translated-ltr') || 
+                                   document.documentElement.classList.contains('translated-rtl') ||
+                                   document.body.classList.contains('translated-ltr') ||
+                                   document.body.classList.contains('translated-rtl');
+                
+                if (isTranslated || checkAttempts > 30) {
+                  document.documentElement.classList.remove('is-translating');
+                  clearInterval(checkInterval);
+                }
+              }, 100);
+              return;
+            }
+            
+            if (attempts < maxAttempts) {
+              setTimeout(tryChange, 250);
+            } else {
+              // Fallback: show page even if translate failed
+              document.documentElement.classList.remove('is-translating');
+            }
+          };
+          tryChange();
+        };
+
         if (preferredLang && preferredLang !== 'en') {
-          console.log('[C4C-Translate] Will reapply language', preferredLang, 'in 1.5s');
-          setTimeout(() => {
-            changeLanguage(preferredLang);
-          }, 1500);
+          applyLang(preferredLang);
         } else if (preferredLang === 'en') {
-          console.log('[C4C-Translate] English preferred, page already in English — skipping cleanup to preserve widget');
+          // Explicit English, don't auto-detect
+          document.documentElement.classList.remove('is-translating');
+        } else {
+          // No preference set, try auto-detection
+          // Try exact locale match first (e.g., zh-CN), then fall back to primary subtag.
+          // Do NOT force all zh-* to zh-CN — Traditional Chinese (zh-TW) users should
+          // choose explicitly rather than being auto-served Simplified Chinese.
+          var locale = (navigator.language || '');
+          var primarySubtag = locale.split('-')[0];
+          const supported = ['hi', 'ta', 'te', 'kn', 'bn', 'mr', 'gu', 'ml', 'pa', 'or', 'as', 'ur', 'es', 'fr', 'de', 'pt', 'zh-CN', 'ja', 'ko', 'ar'];
+          var browserLang = supported.includes(locale) ? locale : primarySubtag;
+          
+          if (supported.includes(browserLang)) {
+            console.log('[C4C-Translate] Auto-applying detected browser language:', browserLang);
+            document.documentElement.classList.add('is-translating'); // Protect against flicker for auto-detect
+            applyLang(browserLang); 
+          } else {
+            document.documentElement.classList.remove('is-translating');
+          }
         }
 
-        const languageSelector = document.getElementById('language-selector');
-        if (languageSelector) {
-          languageSelector.addEventListener('change', function() {
-            const lang = this.value;
-            console.log('[C4C-Translate] Language selector changed to:', lang);
-            if (lang) {
-              if (!changeLanguage(lang)) {
-                let attempts = 0;
-                const maxAttempts = 10;
-                const tryChange = function() {
-                  attempts++;
-                  console.log('[C4C-Translate] Retry attempt', attempts, 'for language:', lang);
-                  if (changeLanguage(lang)) {
-                    return;
-                  }
-                  if (attempts < maxAttempts) {
-                    setTimeout(tryChange, 300);
-                  }
-                };
-                setTimeout(tryChange, 300);
-              }
+        const attachListeners = () => {
+          // Only use stored value — don't default to 'en', which would override auto-detected language
+          var storedLang = safeStorage(() => localStorage.getItem('preferredLanguage'));
+          document.querySelectorAll('.language-selector, #language-selector').forEach(selector => {
+            if (selector.dataset.listenerAttached) {
+               if (storedLang && selector.value !== storedLang) selector.value = storedLang;
+               return;
             }
+            selector.dataset.listenerAttached = 'true';
+            if (storedLang) selector.value = storedLang;
+
+            selector.addEventListener('change', function() {
+              const lang = this.value;
+              console.log('[C4C-Translate] Selector changed to:', lang);
+              if (lang) {
+                if (lang !== 'en') document.documentElement.classList.add('is-translating');
+                applyLang(lang);
+              }
+            });
           });
-        }
+        };
+
+        attachListeners();
+        const observer = new MutationObserver(attachListeners);
+        observer.observe(document.body, { childList: true, subtree: true });
       });
     </script>
+    <script defer is:inline type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   </head>
   <body class="bg-white text-gray-900 min-h-screen flex flex-col">
     <!-- Toast Notification Container -->
@@ -238,16 +309,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
       <nav class="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16 gap-4">
-          <!-- Logo + Language Selector -->
-          <div class="flex items-center gap-4 flex-shrink-0">
-            <a href="/" class="flex items-center gap-3 font-bold text-xl whitespace-nowrap">
-              <img src="/logo.jpeg" alt="Code for Compassion Campus" class="h-10 w-10 rounded-lg" />
-              <span class="hidden lg:inline">Code for Compassion Campus</span>
+          <!-- Logo -->
+          <div class="flex-shrink-0">
+            <a href="/" class="flex items-center gap-3 font-bold text-xl whitespace-nowrap group">
+              <img src="/logo.jpeg" alt="Code for Compassion Campus" class="h-10 w-10 rounded-lg transition-transform group-hover:scale-105" />
+              <span class="hidden 2xl:inline">Code for Compassion Campus</span>
+              <span class="hidden md:inline 2xl:hidden">C4C Campus</span>
             </a>
+          </div>
 
-            <!-- Language Selector -->
-            <select id="language-selector" class="notranslate hidden lg:block border border-gray-300 rounded-lg px-3 py-2 bg-white text-sm flex-shrink-0" translate="no" aria-label="Select page language">
-              <option value="en">English</option>
+          <!-- Mobile Menu Button -->
+          <div class="flex items-center gap-2 xl:hidden">
+            <!-- Mobile Language Selector -->
+            <select class="language-selector notranslate block border border-gray-300 rounded-lg px-2 py-1 bg-white text-xs" translate="no" aria-label="Select page language">
+              <option value="en">Eng</option>
               <option value="hi">हिन्दी</option>
               <option value="ta">தமிழ்</option>
               <option value="te">తెలుగు</option>
@@ -257,48 +332,78 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
               <option value="gu">ગુજરાતી</option>
               <option value="ml">മലയാളം</option>
               <option value="pa">ਪੰਜਾਬੀ</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="de">Deutsch</option>
-              <option value="pt">Português</option>
+              <option value="or">ଓଡ଼ିଆ</option>
+              <option value="as">অসমীয়া</option>
+              <option value="ur">اردو</option>
+              <option value="es">Esp</option>
+              <option value="fr">Fra</option>
+              <option value="de">Deu</option>
+              <option value="pt">Por</option>
               <option value="zh-CN">中文</option>
               <option value="ja">日本語</option>
               <option value="ko">한국어</option>
               <option value="ar">العربية</option>
             </select>
+            <button
+              id="mobile-menu-button"
+              class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Toggle menu"
+            >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
 
-          <!-- Mobile Menu Button -->
-          <button
-            id="mobile-menu-button"
-            class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            aria-label="Toggle menu"
-          >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-
           <!-- Desktop Navigation -->
-          <div class="hidden md:flex items-center gap-4 lg:gap-6 flex-shrink-0">
-            <a href="/framework" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Framework</a>
-            <a href="/programs" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Programs</a>
-            <a href="/tracks" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Tracks</a>
-            <a href="/about" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">About</a>
-            <a href="/faq" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">FAQ</a>
-            <a href="/blog" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Blog</a>
-            <a href="/contact" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Contact</a>
-            <a href="/login" class="btn btn-secondary whitespace-nowrap text-sm">
-              Student Login
-            </a>
-            <a href="/apply" class="btn btn-primary whitespace-nowrap">
-              Apply Now
-            </a>
+          <div class="hidden xl:flex items-center gap-4 lg:gap-6 flex-shrink-0">
+            <nav class="flex items-center gap-4 lg:gap-6">
+              <a href="/framework" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Framework</a>
+              <a href="/programs" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Programs</a>
+              <a href="/tracks" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Tracks</a>
+              <a href="/about" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">About</a>
+              <a href="/faq" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">FAQ</a>
+              <a href="/blog" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Blog</a>
+              <a href="/contact" class="text-text hover:text-primary transition-colors font-medium whitespace-nowrap">Contact</a>
+            </nav>
+
+            <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+              <!-- Desktop Language Selector -->
+              <select class="language-selector notranslate border border-gray-300 rounded-lg px-3 py-2 bg-white text-sm" translate="no" aria-label="Select page language">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="ta">தமிழ்</option>
+                <option value="te">తెలుగు</option>
+                <option value="kn">ಕನ್ನಡ</option>
+                <option value="bn">বাংলা</option>
+                <option value="mr">मराठी</option>
+                <option value="gu">ગુજરાતી</option>
+                <option value="ml">മലയാളം</option>
+                <option value="pa">ਪੰਜਾਬੀ</option>
+                <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                <option value="as">অসমীয়া (Assamese)</option>
+                <option value="ur">اردو (Urdu)</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="pt">Português</option>
+                <option value="zh-CN">中文</option>
+                <option value="ja">日本語</option>
+                <option value="ko">한국어</option>
+                <option value="ar">العربية</option>
+              </select>
+              <a href="/login" class="btn btn-secondary whitespace-nowrap text-sm py-2 min-h-0">
+                Login
+              </a>
+              <a href="/apply" class="btn btn-primary whitespace-nowrap text-sm py-2 min-h-0">
+                Apply
+              </a>
+            </div>
           </div>
         </div>
 
         <!-- Mobile Navigation -->
-        <div id="mobile-menu" class="hidden md:hidden pb-4">
+        <div id="mobile-menu" class="hidden xl:hidden pb-4">
           <div class="flex flex-col gap-4">
             <a href="/framework" class="text-text hover:text-primary transition-colors font-medium">Framework</a>
             <a href="/programs" class="text-text hover:text-primary transition-colors font-medium">Programs</a>
@@ -307,6 +412,35 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             <a href="/faq" class="text-text hover:text-primary transition-colors font-medium">FAQ</a>
             <a href="/blog" class="text-text hover:text-primary transition-colors font-medium">Blog</a>
             <a href="/contact" class="text-text hover:text-primary transition-colors font-medium">Contact</a>
+            
+            <!-- Mobile Language Selector -->
+            <div class="flex flex-col gap-2 pt-2 border-t border-gray-100">
+              <label for="mobile-language-selector" class="text-xs text-gray-500 font-medium">Language</label>
+              <select id="mobile-language-selector" class="language-selector notranslate w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-sm" translate="no">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="ta">தமிழ்</option>
+                <option value="te">తెలుగు</option>
+                <option value="kn">ಕನ್ನಡ</option>
+                <option value="bn">বাংলা</option>
+                <option value="mr">मराठी</option>
+                <option value="gu">ગુજરાતી</option>
+                <option value="ml">മലയാളം</option>
+                <option value="pa">ਪੰਜਾਬੀ</option>
+                <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                <option value="as">অসমীয়া (Assamese)</option>
+                <option value="ur">اردو (Urdu)</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="pt">Português</option>
+                <option value="zh-CN">中文</option>
+                <option value="ja">日本語</option>
+                <option value="ko">한국어</option>
+                <option value="ar">العربية</option>
+              </select>
+            </div>
+
             <a href="/login" class="btn btn-secondary w-full text-center">
               Student Login
             </a>

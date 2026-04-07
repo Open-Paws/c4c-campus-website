@@ -23,8 +23,8 @@ import AIKeyWidget from '../components/student/AIKeyWidget.tsx';
             <a href="/courses" class="hidden sm:block btn btn-ghost btn-sm">Courses</a>
 
             <!-- Language Selector -->
-            <select id="language-selector" class="notranslate hidden sm:block border border-border rounded-lg px-3 py-2 text-sm bg-background" translate="no">
-              <option value="">Language</option>
+            <select id="language-selector" class="language-selector notranslate border border-border rounded-lg px-3 py-2 text-sm bg-background" translate="no" aria-label="Select page language">
+              <option value="en">English</option>
               <option value="hi">हिन्दी</option>
               <option value="ta">தமிழ்</option>
               <option value="te">తెలుగు</option>
@@ -32,8 +32,11 @@ import AIKeyWidget from '../components/student/AIKeyWidget.tsx';
               <option value="bn">বাংলা</option>
               <option value="mr">मराठी</option>
               <option value="gu">ગુજરાતી</option>
-              <option value="ml">മലయാളം</option>
+              <option value="ml">മലയാളം</option>
               <option value="pa">ਪੰਜਾਬੀ</option>
+              <option value="or">ଓଡ଼ିଆ (Odia)</option>
+              <option value="as">অসমীয়া (Assamese)</option>
+              <option value="ur">اردو (Urdu)</option>
               <option value="es">Español</option>
               <option value="fr">Français</option>
               <option value="de">Deutsch</option>
@@ -43,7 +46,6 @@ import AIKeyWidget from '../components/student/AIKeyWidget.tsx';
               <option value="ko">한국어</option>
               <option value="ar">العربية</option>
             </select>
-            <div id="google_translate_element" style="display: none;"></div>
             <button id="logout-btn" class="btn btn-ghost text-sm">
               Sign Out
             </button>
@@ -405,181 +407,7 @@ import AIKeyWidget from '../components/student/AIKeyWidget.tsx';
       window.location.href = '/login';
     });
 
-    // Google Translate Integration
-    const languageSelector = document.getElementById('language-selector');
-    if (languageSelector) {
-      languageSelector.addEventListener('change', function() {
-        const lang = (this as HTMLSelectElement).value;
-        if (lang) {
-          // Wait for Google Translate to initialize
-          setTimeout(function() {
-            const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-            if (select) {
-              select.value = lang;
-              select.dispatchEvent(new Event('change'));
-            }
-          }, 500);
-        }
-      });
-    }
-
     // Initialize
     checkAuth();
-  </script>
-
-  <!-- Google Translate Script -->
-  <script is:inline type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <script is:inline type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'hi,ta,te,kn,bn,mr,gu,ml,pa,or,as,ur,es,fr,de,pt,zh-CN,ja,ko,ar',
-        autoDisplay: false
-      }, 'google_translate_element');
-    }
-
-    // Function to change translation language
-    function changeLanguage(lang) {
-      console.log('[C4C-Translate] changeLanguage called with:', lang);
-      sessionStorage.setItem('preferredLanguage', lang);
-
-      if (lang === 'en') {
-        console.log('[C4C-Translate] Resetting to English...');
-        resetToEnglish();
-        return true;
-      }
-
-      // For other languages, trigger Google Translate
-      const select = document.querySelector('.goog-te-combo');
-      if (select) {
-        console.log('[C4C-Translate] Google Translate combo found, setting to:', lang);
-        select.value = lang;
-        select.dispatchEvent(new Event('change'));
-        return true;
-      }
-
-      // If the select element isn't ready, try again after a delay
-      console.log('[C4C-Translate] Google Translate combo NOT found, will retry in 1s');
-      setTimeout(() => {
-        const selectRetry = document.querySelector('.goog-te-combo');
-        if (selectRetry) {
-          console.log('[C4C-Translate] Retry: combo found, setting to:', lang);
-          selectRetry.value = lang;
-          selectRetry.dispatchEvent(new Event('change'));
-        } else {
-          console.log('[C4C-Translate] Retry: combo still not found');
-        }
-      }, 1000);
-
-      return false;
-    }
-
-    function resetToEnglish() {
-      console.log('[C4C-Translate] resetToEnglish called');
-      console.log('[C4C-Translate] Current URL:', window.location.href);
-
-      clearGoogleTranslateCookies();
-      cleanupGoogleTranslate();
-
-      // Remove any Google Translate modifications to the body
-      document.body.className = document.body.className
-        .replace(/\bskiptranslate\b/g, '')
-        .replace(/\btranslated-\w+\b/g, '')
-        .replace(/\bgt-\w+\b/g, '')
-        .trim();
-
-      // Reset the Google Translate iframe container
-      const translateContainer = document.getElementById('google_translate_element');
-      if (translateContainer) {
-        translateContainer.innerHTML = '';
-      }
-
-      // Force a reload with clean URL (origin + pathname strips any existing query params)
-      const newUrl = window.location.origin + window.location.pathname + '?t=' + new Date().getTime();
-      console.log('[C4C-Translate] Reloading to:', newUrl);
-      window.location.href = newUrl;
-    }
-
-    function clearGoogleTranslateCookies() {
-      const cookies = document.cookie.split(';');
-      const googCookies = cookies.filter(c => {
-        const name = c.indexOf('=') > -1 ? c.substr(0, c.indexOf('=')).trim() : c.trim();
-        return name.startsWith('goog');
-      });
-      console.log('[C4C-Translate] Clearing Google cookies:', googCookies.length, 'found');
-      cookies.forEach(cookie => {
-        const eqPos = cookie.indexOf('=');
-        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-
-        if (name.startsWith('goog')) {
-          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
-          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${window.location.hostname};`;
-        }
-      });
-    }
-
-    function cleanupGoogleTranslate() {
-      // Remove Google Translate iframes
-      const iframes = document.querySelectorAll('iframe[src*="translate.googleapis"]');
-      console.log('[C4C-Translate] Removing', iframes.length, 'Google Translate iframes');
-      iframes.forEach(iframe => {
-        iframe.parentNode?.removeChild(iframe);
-      });
-
-      // Remove Google Translate elements
-      const selectorsToRemove = [
-        '[class*="goog"]',
-        '[class*="skiptranslate"]',
-        '[id*=":0"]',
-        '[class*="gt-"]'
-      ];
-
-      selectorsToRemove.forEach(selector => {
-        const elements = document.querySelectorAll(selector);
-        console.log('[C4C-Translate] Cleanup selector', selector, '— matched', elements.length, 'elements');
-        elements.forEach(el => el.remove());
-      });
-    }
-
-    // On page load, check if there's a preferred language
-    document.addEventListener('DOMContentLoaded', function() {
-      const preferredLang = sessionStorage.getItem('preferredLanguage');
-      console.log('[C4C-Translate] DOMContentLoaded — preferredLanguage:', preferredLang);
-
-      if (preferredLang && preferredLang !== 'en') {
-        console.log('[C4C-Translate] Will reapply language', preferredLang, 'in 1.5s');
-        setTimeout(() => {
-          changeLanguage(preferredLang);
-        }, 1500);
-      } else if (preferredLang === 'en') {
-        console.log('[C4C-Translate] English preferred, page already in English — skipping cleanup to preserve widget');
-      }
-
-      const languageSelector = document.getElementById('language-selector');
-      if (languageSelector) {
-        languageSelector.addEventListener('change', function() {
-          const lang = this.value;
-          console.log('[C4C-Translate] Language selector changed to:', lang);
-          if (lang) {
-            if (!changeLanguage(lang)) {
-              let attempts = 0;
-              const maxAttempts = 10;
-              const tryChange = function() {
-                attempts++;
-                console.log('[C4C-Translate] Retry attempt', attempts, 'for language:', lang);
-                if (changeLanguage(lang)) {
-                  return;
-                }
-                if (attempts < maxAttempts) {
-                  setTimeout(tryChange, 300);
-                }
-              };
-              setTimeout(tryChange, 300);
-            }
-          }
-        });
-      }
-    });
   </script>
 </BaseLayout>
