@@ -62,9 +62,6 @@ const performanceMiddleware = defineMiddleware(async (context, next) => {
   headers.set('Server-Timing', `total;dur=${duration}`);
 
   // Log slow requests (> 1 second)
-  if (duration > 1000) {
-    console.warn(`[Performance] Slow request: ${context.url.pathname} took ${duration}ms`);
-  }
 
   return new Response(response.body, {
     status: response.status,

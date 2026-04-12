@@ -89,9 +89,6 @@ export const POST: APIRoute = async ({ request }) => {
 
     const isAdmin = await verifyAdminAccess(supabase, user.id);
     if (!isAdmin) {
-      console.warn('[update-application-status] Auth failed: Admin role check failed', {
-        userId: user.id
-      });
       return new Response(
         JSON.stringify({ error: 'Forbidden: Admin access required' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
