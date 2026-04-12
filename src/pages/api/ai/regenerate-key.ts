@@ -51,7 +51,8 @@ export const POST: APIRoute = async ({ request }) => {
     if (oldHash) {
       try {
         await deleteKey(oldHash);
-      } catch (err) {
+      } catch {
+        // Best-effort deletion — do not block new provisioning on failure
       }
     }
 

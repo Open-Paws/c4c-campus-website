@@ -61,8 +61,6 @@ const performanceMiddleware = defineMiddleware(async (context, next) => {
   const headers = new Headers(response.headers);
   headers.set('Server-Timing', `total;dur=${duration}`);
 
-  // Log slow requests (> 1 second)
-
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
