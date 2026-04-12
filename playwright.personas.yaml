@@ -1,0 +1,252 @@
+version: "1"
+# Schema: https://github.com/Open-Paws/open-paws-strategy/ecosystem/playwright-persona-schema.md
+
+personas:
+  - id: anonymous-visitor
+    name: Anonymous Visitor
+    role: anonymous
+    description: Unregistered user exploring the campus website before applying to the bootcamp
+
+    auth:
+      state: anonymous
+
+    device:
+      type: desktop
+      viewport:
+        width: 1280
+        height: 800
+      dark_mode: false
+
+    accessibility:
+      needs: []
+
+    content_sensitivity:
+      tier: minimal
+
+    flows:
+      - id: explore-homepage
+        name: Explore campus homepage
+        entry_point: /
+        steps:
+          - Navigate to /
+          - Wait for network idle
+          - Scroll to the course listings or apply section
+        expected_outcome: User sees campus headline and a clear path to apply or learn more
+
+      - id: view-pricing
+        name: View pricing page
+        entry_point: /pricing
+        steps:
+          - Navigate to /pricing
+          - Wait for content to load
+        expected_outcome: User sees pricing tiers and a call-to-action to apply or enroll
+
+    assertions:
+      should_see:
+        - Campus or bootcamp headline
+        - Navigation links
+        - Apply or Sign Up call-to-action
+      should_not_see:
+        - Dashboard
+        - Admin
+        - Teacher Portal
+      critical_routes:
+        accessible:
+          - /
+          - /about
+          - /pricing
+          - /programs
+          - /faq
+          - /apply
+        blocked:
+          - /dashboard
+          - /admin
+
+  - id: enrolled-student
+    name: Enrolled Student
+    role: enrolled
+    description: Logged-in student accessing their dashboard, courses, and assignments
+
+    auth:
+      state: enrolled
+      seed_account: student-e2e@c4c.openpaws.ai
+
+    device:
+      type: desktop
+      viewport:
+        width: 1280
+        height: 800
+      dark_mode: false
+
+    accessibility:
+      needs: []
+
+    content_sensitivity:
+      tier: standard
+
+    flows:
+      - id: view-dashboard
+        name: View student dashboard after login
+        entry_point: /dashboard
+        steps:
+          - Navigate to /dashboard
+          - Wait for network idle
+        expected_outcome: Student sees their enrolled courses, progress, and upcoming assignments
+
+      - id: browse-courses
+        name: Browse enrolled courses
+        entry_point: /courses
+        steps:
+          - Navigate to /courses
+          - Wait for content to load
+        expected_outcome: Student sees their courses with progress indicators
+
+      - id: view-tracks
+        name: View available learning tracks
+        entry_point: /tracks
+        steps:
+          - Navigate to /tracks
+          - Wait for network idle
+        expected_outcome: Student sees learning tracks relevant to their enrollment
+
+    assertions:
+      should_see:
+        - Dashboard heading or welcome message
+        - Course progress indicators
+        - Navigation with authenticated links
+      should_not_see:
+        - Admin controls
+        - Teacher management tools
+      critical_routes:
+        accessible:
+          - /dashboard
+          - /courses
+          - /tracks
+          - /notifications
+          - /account
+        blocked:
+          - /admin
+
+  - id: keyboard-student
+    name: Keyboard-Only Student
+    role: enrolled
+    description: Enrolled student navigating exclusively via keyboard — accessibility compliance test
+
+    auth:
+      state: enrolled
+      seed_account: student-e2e@c4c.openpaws.ai
+
+    device:
+      type: desktop
+      viewport:
+        width: 1280
+        height: 800
+      dark_mode: false
+
+    accessibility:
+      needs:
+        - keyboard_only
+
+    content_sensitivity:
+      tier: standard
+
+    flows:
+      - id: keyboard-navigate-dashboard
+        name: Navigate dashboard using only keyboard
+        entry_point: /dashboard
+        steps:
+          - Navigate to /dashboard
+          - Press Tab to move focus into the page
+          - Verify skip-to-main-content link is first focusable element
+          - Tab through all primary navigation items
+        expected_outcome: All interactive elements receive visible focus in a logical order; skip link is present and functional
+
+    assertions:
+      should_see:
+        - Skip to main content link
+        - Visible focus indicators on all interactive elements
+      should_not_see:
+        - Elements that trap keyboard focus with no escape path
+
+  - id: admin-user
+    name: Campus Admin
+    role: admin
+    description: Admin managing student applications, cohorts, teacher assignments, and content
+
+    auth:
+      state: admin
+      seed_account: admin-e2e@c4c.openpaws.ai
+
+    device:
+      type: desktop
+      viewport:
+        width: 1440
+        height: 900
+      dark_mode: true
+
+    accessibility:
+      needs: []
+
+    content_sensitivity:
+      tier: detailed
+
+    flows:
+      - id: access-admin-panel
+        name: Access admin panel
+        entry_point: /admin
+        steps:
+          - Navigate to /admin
+          - Wait for network idle
+          - Verify admin-only management interface is visible
+        expected_outcome: Admin sees the admin management panel with student and course controls
+
+    assertions:
+      should_see:
+        - Admin heading or panel
+        - Student management controls
+        - Course management options
+      should_not_see:
+        - Access Denied
+        - 403 error
+      critical_routes:
+        accessible:
+          - /admin
+
+  - id: low-bandwidth-user
+    name: Low-Bandwidth User
+    role: anonymous
+    description: User on a slow mobile connection — tests graceful degradation of campus pages
+
+    auth:
+      state: anonymous
+
+    device:
+      type: mobile
+      viewport:
+        width: 375
+        height: 667
+      dark_mode: false
+
+    accessibility:
+      needs:
+        - low_bandwidth
+
+    content_sensitivity:
+      tier: minimal
+
+    flows:
+      - id: homepage-on-slow-connection
+        name: Load campus homepage on a slow mobile connection
+        entry_point: /
+        steps:
+          - Navigate to / with throttled network
+          - Wait for load event
+          - Verify primary headline and CTA are visible without full asset load
+        expected_outcome: Page headline and apply call-to-action are visible before all assets finish loading
+
+    assertions:
+      should_see:
+        - Campus headline
+        - Primary call-to-action
+      should_not_see:
+        - Broken layout or unstyled content
