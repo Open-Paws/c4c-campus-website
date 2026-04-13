@@ -99,7 +99,7 @@
     "@types/react": "^19.2.14",
     "@types/sanitize-html": "^2.16.1",
     "@vitejs/plugin-react": "^5.1.4",
-    "axe-core": "^4.11.0",
+    "axe-core": "^4.11.3",
     "husky": "^9.1.7",
     "jsdom": "^29.0.1",
     "pg": "^8.20.0",
