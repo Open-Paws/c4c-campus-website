@@ -1,0 +1,1381 @@
+{
+  "version": 8,
+  "created": "2026-04-12T07:37:11+00:00",
+  "updated": "2026-04-12T08:45:14+00:00",
+  "queue_order": [
+    "subjective::abstraction_fitness",
+    "subjective::advocacy_data_sovereignty",
+    "subjective::advocacy_language_quality",
+    "subjective::advocacy_security_posture",
+    "subjective::advocacy_terminology_consistency",
+    "subjective::advocacy_tool_integration",
+    "subjective::advocacy_ux_inclusivity",
+    "subjective::ai_generated_debt",
+    "subjective::api_surface_coherence",
+    "subjective::authorization_consistency",
+    "subjective::contract_coherence",
+    "subjective::convention_outlier",
+    "subjective::cross_module_architecture",
+    "subjective::dependency_health",
+    "subjective::design_coherence",
+    "subjective::error_consistency",
+    "subjective::high_level_elegance",
+    "subjective::incomplete_migration",
+    "subjective::initialization_coupling",
+    "subjective::logic_clarity",
+    "subjective::low_level_elegance",
+    "subjective::mid_level_elegance",
+    "subjective::naming_quality",
+    "subjective::package_organization",
+    "subjective::test_strategy",
+    "subjective::type_safety",
+    "review::.::holistic::ai_generated_debt::c4c-002",
+    "review::.::holistic::api_surface_coherence::c4c-003",
+    "review::.::holistic::incomplete_migration::c4c-001",
+    "review::.::holistic::initialization_coupling::c4c-004"
+  ],
+  "deferred": [],
+  "skipped": {},
+  "active_cluster": null,
+  "overrides": {
+    "logs::src/middleware/index.ts::Performance": {
+      "issue_id": "logs::src/middleware/index.ts::Performance",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/logs",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "logs::src/pages/api/admin/update-application-status.ts::update-application-status": {
+      "issue_id": "logs::src/pages/api/admin/update-application-status.ts::update-application-status",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/logs",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "logs::src/pages/api/ai/regenerate-key.ts::regenerate-key": {
+      "issue_id": "logs::src/pages/api/ai/regenerate-key.ts::regenerate-key",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/logs",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "logs::src/pages/api/apply.ts::API /apply": {
+      "issue_id": "logs::src/pages/api/apply.ts::API /apply",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/logs",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "logs::src/pages/api/cohorts/[id]/schedule.ts::schedule": {
+      "issue_id": "logs::src/pages/api/cohorts/[id]/schedule.ts::schedule",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/logs",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "logs::src/pages/api/cron/module-unlock-notifications.ts::cron": {
+      "issue_id": "logs::src/pages/api/cron/module-unlock-notifications.ts::cron",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/logs",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/cohorts.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/cohorts.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/teacher/send-email.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/teacher/send-email.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/quizzes/[id]/attempts/[attemptId]/save.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/quizzes/[id]/attempts/[attemptId]/save.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/email-notifications.ts::untested_module": {
+      "issue_id": "test_coverage::src/lib/email-notifications.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/search/NoResults.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/search/NoResults.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/search/SearchFilters.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/search/SearchFilters.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/student/AssignmentRubric.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/student/AssignmentRubric.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/rate-limit.ts::untested_module": {
+      "issue_id": "test_coverage::src/lib/rate-limit.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/data/blog-posts.ts::untested_module": {
+      "issue_id": "test_coverage::src/data/blog-posts.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/assignments/[id]/submissions.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/assignments/[id]/submissions.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/assignments/index.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/assignments/index.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/blog/upload-image.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/blog/upload-image.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/users/search.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/users/search.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/Toast.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/Toast.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/analytics/MetricCard.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/analytics/MetricCard.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/NotificationBell.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/NotificationBell.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/blog/[id].ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/blog/[id].ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/QuizCard.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/QuizCard.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/student/DueDateCountdown.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/student/DueDateCountdown.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/enroll-cohort.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/enroll-cohort.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/discussions/[id]/reply.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/discussions/[id]/reply.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/CourseForum.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/CourseForum.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/teacher/enroll-student.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/teacher/enroll-student.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/enroll.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/enroll.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/student/AssignmentCard.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/student/AssignmentCard.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/student/SubmissionHistory.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/student/SubmissionHistory.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/cache.ts::untested_module": {
+      "issue_id": "test_coverage::src/lib/cache.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/certificates/CertificateCard.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/certificates/CertificateCard.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/QuizQuestion.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/QuizQuestion.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/DiscussionThread.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/DiscussionThread.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/quizzes/[id]/index.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/quizzes/[id]/index.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/teacher/SubmissionsList.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/teacher/SubmissionsList.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/teacher/AssignmentCreator.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/teacher/AssignmentCreator.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/middleware/index.ts::untested_module": {
+      "issue_id": "test_coverage::src/middleware/index.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/QuizTimer.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/QuizTimer.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/toast.ts::untested_module": {
+      "issue_id": "test_coverage::src/lib/toast.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/teacher/AssignmentGrader.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/teacher/AssignmentGrader.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/quizzes/index.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/quizzes/index.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/BlogEditor.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/BlogEditor.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/ai/provision-key.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/ai/provision-key.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/middleware/security.ts::untested_module": {
+      "issue_id": "test_coverage::src/middleware/security.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/blog.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/blog.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/quizzes/[id]/attempts/[attemptId]/submit.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/quizzes/[id]/attempts/[attemptId]/submit.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/admin/assign-reviewer.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/admin/assign-reviewer.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/analytics/DateRangeSelector.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/analytics/DateRangeSelector.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/ai/regenerate-key.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/ai/regenerate-key.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/admin/reviewers.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/admin/reviewers.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/admin/update-application-status.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/admin/update-application-status.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/assignments/[id]/submit.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/assignments/[id]/submit.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/realtime.ts::untested_module": {
+      "issue_id": "test_coverage::src/lib/realtime.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/ProgressChart.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/ProgressChart.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/search/SearchSuggestions.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/search/SearchSuggestions.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/assignments/[id]/grade.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/assignments/[id]/grade.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/ai/key-status.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/ai/key-status.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/teacher/approved-students.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/teacher/approved-students.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/analytics/D3HeatMap.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/analytics/D3HeatMap.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/QuizProgress.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/QuizProgress.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/cohorts/[id]/enroll.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/cohorts/[id]/enroll.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/middleware/auth.ts::untested_module": {
+      "issue_id": "test_coverage::src/middleware/auth.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/certificates/index.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/certificates/index.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/contact.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/contact.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/cohorts/[id]/schedule.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/cohorts/[id]/schedule.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/submissions/[id]/download.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/submissions/[id]/download.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/cron/module-unlock-notifications.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/cron/module-unlock-notifications.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/analytics/ExportPanel.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/analytics/ExportPanel.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/payments/PricingTable.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/payments/PricingTable.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/openrouter.ts::untested_module": {
+      "issue_id": "test_coverage::src/lib/openrouter.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/middleware/cache-middleware.ts::untested_module": {
+      "issue_id": "test_coverage::src/middleware/cache-middleware.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/apply.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/apply.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/student/SubmissionStatus.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/student/SubmissionStatus.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/cohorts/[id].ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/cohorts/[id].ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/assignments/[id].ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/assignments/[id].ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/logger.ts::untested_module": {
+      "issue_id": "test_coverage::src/lib/logger.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/certificates/verify/[code].ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/certificates/verify/[code].ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/QuizResults.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/QuizResults.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/BlogPostForm.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/BlogPostForm.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/password-validation.ts::untested_module": {
+      "issue_id": "test_coverage::src/lib/password-validation.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/discussions/[id]/moderate.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/discussions/[id]/moderate.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/quizzes/[id]/start.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/quizzes/[id]/start.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/quizzes/[id]/attempts/[attemptId]/index.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/quizzes/[id]/attempts/[attemptId]/index.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/discussions.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/discussions.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/student/AIKeyWidget.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/student/AIKeyWidget.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/search/SearchResults.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/search/SearchResults.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/pages/api/content/media.ts::untested_module": {
+      "issue_id": "test_coverage::src/pages/api/content/media.ts::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/LessonDiscussionContainer.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/LessonDiscussionContainer.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/search/SearchBar.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/search/SearchBar.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/student/FileUploader.tsx::untested_module": {
+      "issue_id": "test_coverage::src/components/student/FileUploader.tsx::untested_module",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_module",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/rate-limiter.ts::untested_critical": {
+      "issue_id": "test_coverage::src/lib/rate-limiter.ts::untested_critical",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_critical",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/notifications.ts::untested_critical": {
+      "issue_id": "test_coverage::src/lib/notifications.ts::untested_critical",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_critical",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/types/messaging.ts::untested_critical": {
+      "issue_id": "test_coverage::src/types/messaging.ts::untested_critical",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_critical",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/types/quiz.ts::untested_critical": {
+      "issue_id": "test_coverage::src/types/quiz.ts::untested_critical",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-untested_critical",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/supabase.ts::transitive_only": {
+      "issue_id": "test_coverage::src/lib/supabase.ts::transitive_only",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-transitive_only",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/components/EmailComposeModal.tsx::transitive_only": {
+      "issue_id": "test_coverage::src/components/EmailComposeModal.tsx::transitive_only",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-transitive_only",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/escape-html.ts::transitive_only": {
+      "issue_id": "test_coverage::src/lib/escape-html.ts::transitive_only",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-transitive_only",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "test_coverage::src/lib/auth.ts::transitive_only": {
+      "issue_id": "test_coverage::src/lib/auth.ts::transitive_only",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/test_coverage-transitive_only",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/middleware/auth.ts::security::log_sensitive::src/middleware/auth.ts::57": {
+      "issue_id": "security::src/middleware/auth.ts::security::log_sensitive::src/middleware/auth.ts::57",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-log_sensitive",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/middleware/auth.ts::security::log_sensitive::src/middleware/auth.ts::65": {
+      "issue_id": "security::src/middleware/auth.ts::security::log_sensitive::src/middleware/auth.ts::65",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-log_sensitive",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/pages/api/admin/update-application-status.ts::security::log_sensitive::src/pages/api/admin/update-application-status.ts::76": {
+      "issue_id": "security::src/pages/api/admin/update-application-status.ts::security::log_sensitive::src/pages/api/admin/update-application-status.ts::76",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-log_sensitive",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/pages/api/apply.ts::security::log_sensitive::src/pages/api/apply.ts::248": {
+      "issue_id": "security::src/pages/api/apply.ts::security::log_sensitive::src/pages/api/apply.ts::248",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-log_sensitive",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/pages/api/apply.ts::security::hardcoded_secret_name::src/pages/api/apply.ts::13": {
+      "issue_id": "security::src/pages/api/apply.ts::security::hardcoded_secret_name::src/pages/api/apply.ts::13",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-hardcoded_secret_name",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/pages/api/apply.ts::security::hardcoded_secret_name::src/pages/api/apply.ts::30": {
+      "issue_id": "security::src/pages/api/apply.ts::security::hardcoded_secret_name::src/pages/api/apply.ts::30",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-hardcoded_secret_name",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::98": {
+      "issue_id": "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::98",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-innerHTML_assignment",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::138": {
+      "issue_id": "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::138",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-innerHTML_assignment",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::167": {
+      "issue_id": "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::167",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-innerHTML_assignment",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::234": {
+      "issue_id": "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::234",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-innerHTML_assignment",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::275": {
+      "issue_id": "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::275",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-innerHTML_assignment",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/lib/toast.ts::security::innerHTML_assignment::src/lib/toast.ts::110": {
+      "issue_id": "security::src/lib/toast.ts::security::innerHTML_assignment::src/lib/toast.ts::110",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-innerHTML_assignment",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "security::src/lib/toast.ts::security::innerHTML_assignment::src/lib/toast.ts::141": {
+      "issue_id": "security::src/lib/toast.ts::security::innerHTML_assignment::src/lib/toast.ts::141",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/security-innerHTML_assignment",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::abstraction_fitness": {
+      "issue_id": "subjective::abstraction_fitness",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::advocacy_data_sovereignty": {
+      "issue_id": "subjective::advocacy_data_sovereignty",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::advocacy_language_quality": {
+      "issue_id": "subjective::advocacy_language_quality",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::advocacy_security_posture": {
+      "issue_id": "subjective::advocacy_security_posture",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::advocacy_terminology_consistency": {
+      "issue_id": "subjective::advocacy_terminology_consistency",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::advocacy_tool_integration": {
+      "issue_id": "subjective::advocacy_tool_integration",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::advocacy_ux_inclusivity": {
+      "issue_id": "subjective::advocacy_ux_inclusivity",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::ai_generated_debt": {
+      "issue_id": "subjective::ai_generated_debt",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::api_surface_coherence": {
+      "issue_id": "subjective::api_surface_coherence",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::authorization_consistency": {
+      "issue_id": "subjective::authorization_consistency",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::contract_coherence": {
+      "issue_id": "subjective::contract_coherence",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::convention_outlier": {
+      "issue_id": "subjective::convention_outlier",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::cross_module_architecture": {
+      "issue_id": "subjective::cross_module_architecture",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::dependency_health": {
+      "issue_id": "subjective::dependency_health",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::design_coherence": {
+      "issue_id": "subjective::design_coherence",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::error_consistency": {
+      "issue_id": "subjective::error_consistency",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::high_level_elegance": {
+      "issue_id": "subjective::high_level_elegance",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::incomplete_migration": {
+      "issue_id": "subjective::incomplete_migration",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::initialization_coupling": {
+      "issue_id": "subjective::initialization_coupling",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::logic_clarity": {
+      "issue_id": "subjective::logic_clarity",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::low_level_elegance": {
+      "issue_id": "subjective::low_level_elegance",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::mid_level_elegance": {
+      "issue_id": "subjective::mid_level_elegance",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::naming_quality": {
+      "issue_id": "subjective::naming_quality",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::package_organization": {
+      "issue_id": "subjective::package_organization",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::test_strategy": {
+      "issue_id": "subjective::test_strategy",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    },
+    "subjective::type_safety": {
+      "issue_id": "subjective::type_safety",
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "cluster": "auto/initial-review",
+      "updated_at": "2026-04-12T07:37:11+00:00"
+    }
+  },
+  "clusters": {
+    "auto/logs": {
+      "name": "auto/logs",
+      "description": "Remove 6 logs issues",
+      "issue_ids": [
+        "logs::src/middleware/index.ts::Performance",
+        "logs::src/pages/api/admin/update-application-status.ts::update-application-status",
+        "logs::src/pages/api/ai/regenerate-key.ts::regenerate-key",
+        "logs::src/pages/api/apply.ts::API /apply",
+        "logs::src/pages/api/cohorts/[id]/schedule.ts::schedule",
+        "logs::src/pages/api/cron/module-unlock-notifications.ts::cron"
+      ],
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "updated_at": "2026-04-12T07:37:11+00:00",
+      "auto": true,
+      "cluster_key": "auto::logs",
+      "action": "desloppify autofix debug-logs --dry-run",
+      "execution_status": "done",
+      "user_modified": false,
+      "action_type": "auto_fix",
+      "execution_policy": "ephemeral_autopromote"
+    },
+    "auto/test_coverage-untested_module": {
+      "name": "auto/test_coverage-untested_module",
+      "description": "Fix 87 test coverage issues",
+      "issue_ids": [
+        "test_coverage::src/pages/api/cohorts.ts::untested_module",
+        "test_coverage::src/pages/api/teacher/send-email.ts::untested_module",
+        "test_coverage::src/pages/api/quizzes/[id]/attempts/[attemptId]/save.ts::untested_module",
+        "test_coverage::src/lib/email-notifications.ts::untested_module",
+        "test_coverage::src/components/search/NoResults.tsx::untested_module",
+        "test_coverage::src/components/search/SearchFilters.tsx::untested_module",
+        "test_coverage::src/components/student/AssignmentRubric.tsx::untested_module",
+        "test_coverage::src/lib/rate-limit.ts::untested_module",
+        "test_coverage::src/data/blog-posts.ts::untested_module",
+        "test_coverage::src/pages/api/assignments/[id]/submissions.ts::untested_module",
+        "test_coverage::src/pages/api/assignments/index.ts::untested_module",
+        "test_coverage::src/pages/api/blog/upload-image.ts::untested_module",
+        "test_coverage::src/pages/api/users/search.ts::untested_module",
+        "test_coverage::src/components/Toast.tsx::untested_module",
+        "test_coverage::src/components/analytics/MetricCard.tsx::untested_module",
+        "test_coverage::src/components/NotificationBell.tsx::untested_module",
+        "test_coverage::src/pages/api/blog/[id].ts::untested_module",
+        "test_coverage::src/components/QuizCard.tsx::untested_module",
+        "test_coverage::src/components/student/DueDateCountdown.tsx::untested_module",
+        "test_coverage::src/pages/api/enroll-cohort.ts::untested_module",
+        "test_coverage::src/pages/api/discussions/[id]/reply.ts::untested_module",
+        "test_coverage::src/components/CourseForum.tsx::untested_module",
+        "test_coverage::src/pages/api/teacher/enroll-student.ts::untested_module",
+        "test_coverage::src/pages/api/enroll.ts::untested_module",
+        "test_coverage::src/components/student/AssignmentCard.tsx::untested_module",
+        "test_coverage::src/components/student/SubmissionHistory.tsx::untested_module",
+        "test_coverage::src/lib/cache.ts::untested_module",
+        "test_coverage::src/components/certificates/CertificateCard.tsx::untested_module",
+        "test_coverage::src/components/QuizQuestion.tsx::untested_module",
+        "test_coverage::src/components/DiscussionThread.tsx::untested_module",
+        "test_coverage::src/pages/api/quizzes/[id]/index.ts::untested_module",
+        "test_coverage::src/components/teacher/SubmissionsList.tsx::untested_module",
+        "test_coverage::src/components/teacher/AssignmentCreator.tsx::untested_module",
+        "test_coverage::src/middleware/index.ts::untested_module",
+        "test_coverage::src/components/QuizTimer.tsx::untested_module",
+        "test_coverage::src/lib/toast.ts::untested_module",
+        "test_coverage::src/components/teacher/AssignmentGrader.tsx::untested_module",
+        "test_coverage::src/pages/api/quizzes/index.ts::untested_module",
+        "test_coverage::src/components/BlogEditor.tsx::untested_module",
+        "test_coverage::src/pages/api/ai/provision-key.ts::untested_module",
+        "test_coverage::src/middleware/security.ts::untested_module",
+        "test_coverage::src/pages/api/blog.ts::untested_module",
+        "test_coverage::src/pages/api/quizzes/[id]/attempts/[attemptId]/submit.ts::untested_module",
+        "test_coverage::src/pages/api/admin/assign-reviewer.ts::untested_module",
+        "test_coverage::src/components/analytics/DateRangeSelector.tsx::untested_module",
+        "test_coverage::src/pages/api/ai/regenerate-key.ts::untested_module",
+        "test_coverage::src/pages/api/admin/reviewers.ts::untested_module",
+        "test_coverage::src/pages/api/admin/update-application-status.ts::untested_module",
+        "test_coverage::src/pages/api/assignments/[id]/submit.ts::untested_module",
+        "test_coverage::src/lib/realtime.ts::untested_module",
+        "test_coverage::src/components/ProgressChart.tsx::untested_module",
+        "test_coverage::src/components/search/SearchSuggestions.tsx::untested_module",
+        "test_coverage::src/pages/api/assignments/[id]/grade.ts::untested_module",
+        "test_coverage::src/pages/api/ai/key-status.ts::untested_module",
+        "test_coverage::src/pages/api/teacher/approved-students.ts::untested_module",
+        "test_coverage::src/components/analytics/D3HeatMap.tsx::untested_module",
+        "test_coverage::src/components/QuizProgress.tsx::untested_module",
+        "test_coverage::src/pages/api/cohorts/[id]/enroll.ts::untested_module",
+        "test_coverage::src/middleware/auth.ts::untested_module",
+        "test_coverage::src/pages/api/certificates/index.ts::untested_module",
+        "test_coverage::src/pages/api/contact.ts::untested_module",
+        "test_coverage::src/pages/api/cohorts/[id]/schedule.ts::untested_module",
+        "test_coverage::src/pages/api/submissions/[id]/download.ts::untested_module",
+        "test_coverage::src/pages/api/cron/module-unlock-notifications.ts::untested_module",
+        "test_coverage::src/components/analytics/ExportPanel.tsx::untested_module",
+        "test_coverage::src/components/payments/PricingTable.tsx::untested_module",
+        "test_coverage::src/lib/openrouter.ts::untested_module",
+        "test_coverage::src/middleware/cache-middleware.ts::untested_module",
+        "test_coverage::src/pages/api/apply.ts::untested_module",
+        "test_coverage::src/components/student/SubmissionStatus.tsx::untested_module",
+        "test_coverage::src/pages/api/cohorts/[id].ts::untested_module",
+        "test_coverage::src/pages/api/assignments/[id].ts::untested_module",
+        "test_coverage::src/lib/logger.ts::untested_module",
+        "test_coverage::src/pages/api/certificates/verify/[code].ts::untested_module",
+        "test_coverage::src/components/QuizResults.tsx::untested_module",
+        "test_coverage::src/components/BlogPostForm.tsx::untested_module",
+        "test_coverage::src/lib/password-validation.ts::untested_module",
+        "test_coverage::src/pages/api/discussions/[id]/moderate.ts::untested_module",
+        "test_coverage::src/pages/api/quizzes/[id]/start.ts::untested_module",
+        "test_coverage::src/pages/api/quizzes/[id]/attempts/[attemptId]/index.ts::untested_module",
+        "test_coverage::src/pages/api/discussions.ts::untested_module",
+        "test_coverage::src/components/student/AIKeyWidget.tsx::untested_module",
+        "test_coverage::src/components/search/SearchResults.tsx::untested_module",
+        "test_coverage::src/pages/api/content/media.ts::untested_module",
+        "test_coverage::src/components/LessonDiscussionContainer.tsx::untested_module",
+        "test_coverage::src/components/search/SearchBar.tsx::untested_module",
+        "test_coverage::src/components/student/FileUploader.tsx::untested_module"
+      ],
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "updated_at": "2026-04-12T07:37:11+00:00",
+      "auto": true,
+      "cluster_key": "detector::test_coverage::untested_module",
+      "action": "review test coverage gaps",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "refactor",
+      "execution_policy": "planned_only"
+    },
+    "auto/test_coverage-untested_critical": {
+      "name": "auto/test_coverage-untested_critical",
+      "description": "Fix 4 test coverage issues",
+      "issue_ids": [
+        "test_coverage::src/lib/rate-limiter.ts::untested_critical",
+        "test_coverage::src/lib/notifications.ts::untested_critical",
+        "test_coverage::src/types/messaging.ts::untested_critical",
+        "test_coverage::src/types/quiz.ts::untested_critical"
+      ],
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "updated_at": "2026-04-12T07:37:11+00:00",
+      "auto": true,
+      "cluster_key": "detector::test_coverage::untested_critical",
+      "action": "review test coverage gaps",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "refactor",
+      "execution_policy": "planned_only"
+    },
+    "auto/test_coverage-transitive_only": {
+      "name": "auto/test_coverage-transitive_only",
+      "description": "Fix 4 test coverage issues",
+      "issue_ids": [
+        "test_coverage::src/lib/supabase.ts::transitive_only",
+        "test_coverage::src/components/EmailComposeModal.tsx::transitive_only",
+        "test_coverage::src/lib/escape-html.ts::transitive_only",
+        "test_coverage::src/lib/auth.ts::transitive_only"
+      ],
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "updated_at": "2026-04-12T07:37:11+00:00",
+      "auto": true,
+      "cluster_key": "detector::test_coverage::transitive_only",
+      "action": "review test coverage gaps",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "refactor",
+      "execution_policy": "planned_only"
+    },
+    "auto/security-log_sensitive": {
+      "name": "auto/security-log_sensitive",
+      "description": "Fix 4 security issues",
+      "issue_ids": [
+        "security::src/middleware/auth.ts::security::log_sensitive::src/middleware/auth.ts::57",
+        "security::src/middleware/auth.ts::security::log_sensitive::src/middleware/auth.ts::65",
+        "security::src/pages/api/admin/update-application-status.ts::security::log_sensitive::src/pages/api/admin/update-application-status.ts::76",
+        "security::src/pages/api/apply.ts::security::log_sensitive::src/pages/api/apply.ts::248"
+      ],
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "updated_at": "2026-04-12T07:37:11+00:00",
+      "auto": true,
+      "cluster_key": "detector::security::log_sensitive",
+      "action": "review and fix security issues",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "manual_fix",
+      "execution_policy": "planned_only"
+    },
+    "auto/security-hardcoded_secret_name": {
+      "name": "auto/security-hardcoded_secret_name",
+      "description": "Fix 2 security issues",
+      "issue_ids": [
+        "security::src/pages/api/apply.ts::security::hardcoded_secret_name::src/pages/api/apply.ts::13",
+        "security::src/pages/api/apply.ts::security::hardcoded_secret_name::src/pages/api/apply.ts::30"
+      ],
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "updated_at": "2026-04-12T07:37:11+00:00",
+      "auto": true,
+      "cluster_key": "detector::security::hardcoded_secret_name",
+      "action": "review and fix security issues",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "manual_fix",
+      "execution_policy": "planned_only"
+    },
+    "auto/security-innerHTML_assignment": {
+      "name": "auto/security-innerHTML_assignment",
+      "description": "Fix 7 security issues",
+      "issue_ids": [
+        "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::98",
+        "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::138",
+        "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::167",
+        "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::234",
+        "security::src/lib/notifications.ts::security::innerHTML_assignment::src/lib/notifications.ts::275",
+        "security::src/lib/toast.ts::security::innerHTML_assignment::src/lib/toast.ts::110",
+        "security::src/lib/toast.ts::security::innerHTML_assignment::src/lib/toast.ts::141"
+      ],
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "updated_at": "2026-04-12T07:37:11+00:00",
+      "auto": true,
+      "cluster_key": "detector::security::innerHTML_assignment",
+      "action": "review and fix security issues",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "manual_fix",
+      "execution_policy": "planned_only"
+    },
+    "auto/initial-review": {
+      "name": "auto/initial-review",
+      "description": "Initial review of 26 unscored subjective dimensions",
+      "issue_ids": [
+        "subjective::abstraction_fitness",
+        "subjective::advocacy_data_sovereignty",
+        "subjective::advocacy_language_quality",
+        "subjective::advocacy_security_posture",
+        "subjective::advocacy_terminology_consistency",
+        "subjective::advocacy_tool_integration",
+        "subjective::advocacy_ux_inclusivity",
+        "subjective::ai_generated_debt",
+        "subjective::api_surface_coherence",
+        "subjective::authorization_consistency",
+        "subjective::contract_coherence",
+        "subjective::convention_outlier",
+        "subjective::cross_module_architecture",
+        "subjective::dependency_health",
+        "subjective::design_coherence",
+        "subjective::error_consistency",
+        "subjective::high_level_elegance",
+        "subjective::incomplete_migration",
+        "subjective::initialization_coupling",
+        "subjective::logic_clarity",
+        "subjective::low_level_elegance",
+        "subjective::mid_level_elegance",
+        "subjective::naming_quality",
+        "subjective::package_organization",
+        "subjective::test_strategy",
+        "subjective::type_safety"
+      ],
+      "created_at": "2026-04-12T07:37:11+00:00",
+      "updated_at": "2026-04-12T07:37:11+00:00",
+      "auto": true,
+      "cluster_key": "subjective::unscored",
+      "action": "desloppify review --prepare --dimensions abstraction_fitness,advocacy_data_sovereignty,advocacy_language_quality,advocacy_security_posture,advocacy_terminology_consistency,advocacy_tool_integration,advocacy_ux_inclusivity,ai_generated_debt,api_surface_coherence,authorization_consistency,contract_coherence,convention_outlier,cross_module_architecture,dependency_health,design_coherence,error_consistency,high_level_elegance,incomplete_migration,initialization_coupling,logic_clarity,low_level_elegance,mid_level_elegance,naming_quality,package_organization,test_strategy,type_safety",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "manual_fix",
+      "execution_policy": "planned_only"
+    }
+  },
+  "superseded": {},
+  "promoted_ids": [],
+  "plan_start_scores": {
+    "strict": 80.6,
+    "overall": 80.6,
+    "objective": 80.9,
+    "verified": 80.9
+  },
+  "refresh_state": {
+    "_subjective_migration_pruned": true,
+    "lifecycle_phase": "plan",
+    "postflight_scan_completed_at_scan_count": 6
+  },
+  "execution_log": [
+    {
+      "timestamp": "2026-04-12T07:37:11+00:00",
+      "action": "sync_subjective",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "changes": true
+      }
+    },
+    {
+      "timestamp": "2026-04-12T07:37:11+00:00",
+      "action": "auto_cluster",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "changes": true
+      }
+    },
+    {
+      "timestamp": "2026-04-12T07:37:11+00:00",
+      "action": "sync_lifecycle_phase",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "phase": "review_initial"
+      }
+    },
+    {
+      "timestamp": "2026-04-12T07:37:11+00:00",
+      "action": "seed_start_scores",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-04-12T07:39:16+00:00",
+      "action": "cluster_done",
+      "issue_ids": [
+        "logs::src/middleware/index.ts::Performance",
+        "logs::src/pages/api/admin/update-application-status.ts::update-application-status",
+        "logs::src/pages/api/ai/regenerate-key.ts::regenerate-key",
+        "logs::src/pages/api/apply.ts::API /apply",
+        "logs::src/pages/api/cohorts/[id]/schedule.ts::schedule",
+        "logs::src/pages/api/cron/module-unlock-notifications.ts::cron"
+      ],
+      "cluster_name": "auto/logs",
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "reason": "all items resolved in state"
+      }
+    },
+    {
+      "timestamp": "2026-04-12T07:39:16+00:00",
+      "action": "reconcile",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "superseded_count": 0,
+        "pruned_count": 0,
+        "resurfaced_count": 0,
+        "clusters_completed_count": 1
+      }
+    },
+    {
+      "timestamp": "2026-04-12T07:39:16+00:00",
+      "action": "clear_start_scores",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-04-12T07:39:16+00:00",
+      "action": "complete_postflight_scan",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "scan_count": 2
+      }
+    },
+    {
+      "timestamp": "2026-04-12T08:27:39+00:00",
+      "action": "seed_start_scores",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-04-12T08:28:24+00:00",
+      "action": "clear_start_scores",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-04-12T08:28:24+00:00",
+      "action": "complete_postflight_scan",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "scan_count": 4
+      }
+    },
+    {
+      "timestamp": "2026-04-12T08:44:13+00:00",
+      "action": "review_import_sync",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "trigger": "review_import",
+        "new_ids": [
+          "review::.::holistic::ai_generated_debt::c4c-002",
+          "review::.::holistic::api_surface_coherence::c4c-003",
+          "review::.::holistic::incomplete_migration::c4c-001",
+          "review::.::holistic::initialization_coupling::c4c-004"
+        ],
+        "added_to_queue": [
+          "review::.::holistic::ai_generated_debt::c4c-002",
+          "review::.::holistic::api_surface_coherence::c4c-003",
+          "review::.::holistic::incomplete_migration::c4c-001",
+          "review::.::holistic::initialization_coupling::c4c-004"
+        ],
+        "workflow_injected_ids": [],
+        "triage_injected": false,
+        "triage_injected_ids": [],
+        "triage_deferred": false,
+        "diff_new": 4,
+        "diff_reopened": 0,
+        "diff_auto_resolved": 6,
+        "stale_pruned_from_queue": [
+          "logs::src/middleware/index.ts::Performance",
+          "logs::src/pages/api/admin/update-application-status.ts::update-application-status",
+          "logs::src/pages/api/ai/regenerate-key.ts::regenerate-key",
+          "logs::src/pages/api/apply.ts::API /apply",
+          "logs::src/pages/api/cohorts/[id]/schedule.ts::schedule",
+          "logs::src/pages/api/cron/module-unlock-notifications.ts::cron"
+        ],
+        "covered_subjective_pruned_from_queue": [],
+        "covered_subjective": [
+          "subjective::abstraction_fitness",
+          "subjective::advocacy_data_sovereignty",
+          "subjective::advocacy_language_quality",
+          "subjective::advocacy_security_posture",
+          "subjective::advocacy_terminology_consistency",
+          "subjective::advocacy_tool_integration",
+          "subjective::advocacy_ux_inclusivity",
+          "subjective::ai_generated_debt",
+          "subjective::api_surface_coherence",
+          "subjective::authorization_consistency",
+          "subjective::contract_coherence",
+          "subjective::convention_outlier",
+          "subjective::cross_module_architecture",
+          "subjective::dependency_health",
+          "subjective::design_coherence",
+          "subjective::error_consistency",
+          "subjective::high_level_elegance",
+          "subjective::incomplete_migration",
+          "subjective::initialization_coupling",
+          "subjective::logic_clarity",
+          "subjective::low_level_elegance",
+          "subjective::mid_level_elegance",
+          "subjective::naming_quality",
+          "subjective::package_organization",
+          "subjective::test_strategy",
+          "subjective::type_safety"
+        ],
+        "stale_sync_injected": [],
+        "stale_sync_pruned": [],
+        "auto_cluster_changes": 0,
+        "import_scores_injected": [],
+        "import_scores_pruned": [],
+        "sync_status": "synced",
+        "sync_message": null
+      }
+    },
+    {
+      "timestamp": "2026-04-12T08:45:14+00:00",
+      "action": "seed_start_scores",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-04-12T08:45:14+00:00",
+      "action": "complete_postflight_scan",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "scan_count": 6
+      }
+    }
+  ],
+  "epic_triage_meta": {},
+  "commit_log": [],
+  "uncommitted_issues": [],
+  "commit_tracking_branch": null,
+  "scan_count_at_plan_start": 6
+}

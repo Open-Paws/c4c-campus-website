@@ -1,0 +1,1719 @@
+{
+  "command": "scan",
+  "overall_score": 80.6,
+  "objective_score": 80.9,
+  "strict_score": 80.6,
+  "verified_strict_score": 80.9,
+  "prev_overall_score": 80.6,
+  "prev_objective_score": 80.9,
+  "prev_strict_score": 80.6,
+  "prev_verified_strict_score": 80.9,
+  "profile": "ci",
+  "noise_budget": 10,
+  "noise_global_budget": 0,
+  "hidden_by_detector": {
+    "smells": 181,
+    "test_coverage": 87,
+    "structural": 27,
+    "orphaned": 8,
+    "security": 5
+  },
+  "hidden_total": 308,
+  "diff": {
+    "new": 0,
+    "auto_resolved": 0,
+    "reopened": 0,
+    "total_current": 377,
+    "suspect_detectors": [
+      "review"
+    ],
+    "chronic_reopeners": [],
+    "skipped_other_lang": 0,
+    "resolved_out_of_scope": 0,
+    "ignored": 0,
+    "ignore_patterns": 0,
+    "raw_issues": 377,
+    "suppressed_pct": 0.0
+  },
+  "stats": {
+    "total": 393,
+    "auto_resolved": 0,
+    "deferred": 0,
+    "false_positive": 0,
+    "fixed": 0,
+    "open": 393,
+    "triaged_out": 0,
+    "wontfix": 0,
+    "by_tier": {
+      "1": {
+        "auto_resolved": 0,
+        "deferred": 0,
+        "false_positive": 0,
+        "fixed": 0,
+        "open": 11,
+        "triaged_out": 0,
+        "wontfix": 0
+      },
+      "2": {
+        "auto_resolved": 0,
+        "deferred": 0,
+        "false_positive": 0,
+        "fixed": 0,
+        "open": 29,
+        "triaged_out": 0,
+        "wontfix": 0
+      },
+      "3": {
+        "auto_resolved": 0,
+        "deferred": 0,
+        "false_positive": 0,
+        "fixed": 0,
+        "open": 352,
+        "triaged_out": 0,
+        "wontfix": 0
+      },
+      "4": {
+        "auto_resolved": 0,
+        "deferred": 0,
+        "false_positive": 0,
+        "fixed": 0,
+        "open": 1,
+        "triaged_out": 0,
+        "wontfix": 0
+      }
+    }
+  },
+  "open_scope": {
+    "in_scope": 393,
+    "out_of_scope": 0,
+    "global": 393
+  },
+  "warnings": [],
+  "dimension_scores": {
+    "Code quality": {
+      "score": 88.3,
+      "strict": 88.3,
+      "verified_strict_score": 88.3,
+      "checks": 875,
+      "failing": 195,
+      "tier": 3,
+      "detectors": {
+        "unused": {
+          "potential": 121,
+          "pass_rate": 0.9917355371900827,
+          "failing": 1,
+          "weighted_failures": 1.0
+        },
+        "logs": {
+          "potential": 121,
+          "pass_rate": 0.9504132231404959,
+          "failing": 6,
+          "weighted_failures": 6.0
+        },
+        "smells": {
+          "potential": 122,
+          "pass_rate": 0.3631147540983605,
+          "failing": 162,
+          "weighted_failures": 77.70000000000002
+        },
+        "orphaned": {
+          "potential": 162,
+          "pass_rate": 0.9222222222222223,
+          "failing": 18,
+          "weighted_failures": 12.599999999999996
+        },
+        "flat_dirs": {
+          "potential": 48,
+          "pass_rate": 0.9416666666666668,
+          "failing": 4,
+          "weighted_failures": 2.8
+        },
+        "naming": {
+          "potential": 41,
+          "pass_rate": 0.9926829268292684,
+          "failing": 1,
+          "weighted_failures": 0.3
+        },
+        "facade": {
+          "potential": 162,
+          "pass_rate": 1.0,
+          "failing": 0,
+          "weighted_failures": 0.0
+        },
+        "props": {
+          "potential": 55,
+          "pass_rate": 1.0,
+          "failing": 0,
+          "weighted_failures": 0.0
+        },
+        "react": {
+          "potential": 34,
+          "pass_rate": 0.9705882352941176,
+          "failing": 2,
+          "weighted_failures": 1.0
+        },
+        "patterns": {
+          "potential": 7,
+          "pass_rate": 1.0,
+          "failing": 0,
+          "weighted_failures": 0.0
+        },
+        "deprecated": {
+          "potential": 2,
+          "pass_rate": 0.5,
+          "failing": 1,
+          "weighted_failures": 1.0
+        }
+      }
+    },
+    "Security": {
+      "score": 97.5,
+      "strict": 97.5,
+      "verified_strict_score": 97.5,
+      "checks": 282,
+      "failing": 15,
+      "tier": 4,
+      "detectors": {
+        "cycles": {
+          "potential": 162,
+          "pass_rate": 1.0,
+          "failing": 0,
+          "weighted_failures": 0.0
+        },
+        "security": {
+          "potential": 120,
+          "pass_rate": 0.9408333333333334,
+          "failing": 15,
+          "weighted_failures": 7.1
+        }
+      }
+    },
+    "File health": {
+      "score": 92.2,
+      "strict": 92.2,
+      "verified_strict_score": 92.2,
+      "checks": 120,
+      "failing": 13,
+      "tier": 3,
+      "detectors": {
+        "structural": {
+          "potential": 120,
+          "pass_rate": 0.9216666666666666,
+          "failing": 13,
+          "weighted_failures": 9.399999999999999
+        }
+      }
+    },
+    "Test health": {
+      "score": 20.1,
+      "strict": 20.1,
+      "verified_strict_score": 20.1,
+      "checks": 1743,
+      "failing": 97,
+      "tier": 4,
+      "detectors": {
+        "test_coverage": {
+          "potential": 1743,
+          "pass_rate": 0.20091758541703905,
+          "failing": 97,
+          "weighted_failures": 1392.800648618101
+        }
+      }
+    },
+    "Advocacy security": {
+      "score": 99.4,
+      "strict": 99.4,
+      "verified_strict_score": 99.4,
+      "checks": 127,
+      "failing": 1,
+      "tier": 2,
+      "detectors": {
+        "advocacy_security": {
+          "potential": 127,
+          "pass_rate": 0.9944881889763779,
+          "failing": 1,
+          "weighted_failures": 0.7
+        }
+      }
+    },
+    "Abstraction fit": {
+      "score": 78.0,
+      "strict": 78.0,
+      "verified_strict_score": 78.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.78,
+          "failing": 0,
+          "weighted_failures": 2.2,
+          "assessment_score": 78.0,
+          "placeholder": false,
+          "dimension_key": "abstraction_fitness",
+          "configured_weight": 8.0,
+          "components": []
+        }
+      }
+    },
+    "Data sovereignty": {
+      "score": 80.0,
+      "strict": 80.0,
+      "verified_strict_score": 80.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.8,
+          "failing": 0,
+          "weighted_failures": 2.0,
+          "assessment_score": 80.0,
+          "placeholder": false,
+          "dimension_key": "advocacy_data_sovereignty",
+          "configured_weight": 6.0,
+          "components": []
+        }
+      }
+    },
+    "Advocacy language": {
+      "score": 90.0,
+      "strict": 90.0,
+      "verified_strict_score": 90.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.9,
+          "failing": 0,
+          "weighted_failures": 1.0,
+          "assessment_score": 90.0,
+          "placeholder": false,
+          "dimension_key": "advocacy_language_quality",
+          "configured_weight": 8.0,
+          "components": []
+        }
+      }
+    },
+    "Advocacy security (subjective)": {
+      "score": 82.0,
+      "strict": 82.0,
+      "verified_strict_score": 82.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.82,
+          "failing": 0,
+          "weighted_failures": 1.8,
+          "assessment_score": 82.0,
+          "placeholder": false,
+          "dimension_key": "advocacy_security_posture",
+          "configured_weight": 10.0,
+          "components": []
+        }
+      }
+    },
+    "Advocacy terminology": {
+      "score": 88.0,
+      "strict": 88.0,
+      "verified_strict_score": 88.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.88,
+          "failing": 0,
+          "weighted_failures": 1.2,
+          "assessment_score": 88.0,
+          "placeholder": false,
+          "dimension_key": "advocacy_terminology_consistency",
+          "configured_weight": 4.0,
+          "components": []
+        }
+      }
+    },
+    "Advocacy tools": {
+      "score": 80.0,
+      "strict": 80.0,
+      "verified_strict_score": 80.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.8,
+          "failing": 0,
+          "weighted_failures": 2.0,
+          "assessment_score": 80.0,
+          "placeholder": false,
+          "dimension_key": "advocacy_tool_integration",
+          "configured_weight": 3.0,
+          "components": []
+        }
+      }
+    },
+    "Advocacy UX": {
+      "score": 83.0,
+      "strict": 83.0,
+      "verified_strict_score": 83.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.83,
+          "failing": 0,
+          "weighted_failures": 1.7,
+          "assessment_score": 83.0,
+          "placeholder": false,
+          "dimension_key": "advocacy_ux_inclusivity",
+          "configured_weight": 4.0,
+          "components": []
+        }
+      }
+    },
+    "AI generated debt": {
+      "score": 72.0,
+      "strict": 72.0,
+      "verified_strict_score": 72.0,
+      "checks": 10,
+      "failing": 1,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.72,
+          "failing": 1,
+          "weighted_failures": 2.8,
+          "assessment_score": 72.0,
+          "placeholder": false,
+          "dimension_key": "ai_generated_debt",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      }
+    },
+    "API coherence": {
+      "score": 72.0,
+      "strict": 72.0,
+      "verified_strict_score": 72.0,
+      "checks": 10,
+      "failing": 1,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.72,
+          "failing": 1,
+          "weighted_failures": 2.8,
+          "assessment_score": 72.0,
+          "placeholder": false,
+          "dimension_key": "api_surface_coherence",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      }
+    },
+    "Auth consistency": {
+      "score": 79.0,
+      "strict": 79.0,
+      "verified_strict_score": 79.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.79,
+          "failing": 0,
+          "weighted_failures": 2.1,
+          "assessment_score": 79.0,
+          "placeholder": false,
+          "dimension_key": "authorization_consistency",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      }
+    },
+    "Contracts": {
+      "score": 82.0,
+      "strict": 82.0,
+      "verified_strict_score": 82.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.82,
+          "failing": 0,
+          "weighted_failures": 1.8,
+          "assessment_score": 82.0,
+          "placeholder": false,
+          "dimension_key": "contract_coherence",
+          "configured_weight": 12.0,
+          "components": []
+        }
+      }
+    },
+    "Convention drift": {
+      "score": 82.0,
+      "strict": 82.0,
+      "verified_strict_score": 82.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.82,
+          "failing": 0,
+          "weighted_failures": 1.8,
+          "assessment_score": 82.0,
+          "placeholder": false,
+          "dimension_key": "convention_outlier",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      }
+    },
+    "Cross-module arch": {
+      "score": 77.0,
+      "strict": 77.0,
+      "verified_strict_score": 77.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.77,
+          "failing": 0,
+          "weighted_failures": 2.3,
+          "assessment_score": 77.0,
+          "placeholder": false,
+          "dimension_key": "cross_module_architecture",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      }
+    },
+    "Dep health": {
+      "score": 80.0,
+      "strict": 80.0,
+      "verified_strict_score": 80.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.8,
+          "failing": 0,
+          "weighted_failures": 2.0,
+          "assessment_score": 80.0,
+          "placeholder": false,
+          "dimension_key": "dependency_health",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      }
+    },
+    "Design coherence": {
+      "score": 77.0,
+      "strict": 77.0,
+      "verified_strict_score": 77.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.77,
+          "failing": 0,
+          "weighted_failures": 2.3,
+          "assessment_score": 77.0,
+          "placeholder": false,
+          "dimension_key": "design_coherence",
+          "configured_weight": 10.0,
+          "components": []
+        }
+      }
+    },
+    "Error consistency": {
+      "score": 75.0,
+      "strict": 75.0,
+      "verified_strict_score": 75.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.75,
+          "failing": 0,
+          "weighted_failures": 2.5,
+          "assessment_score": 75.0,
+          "placeholder": false,
+          "dimension_key": "error_consistency",
+          "configured_weight": 3.0,
+          "components": []
+        }
+      }
+    },
+    "High elegance": {
+      "score": 80.0,
+      "strict": 80.0,
+      "verified_strict_score": 80.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.8,
+          "failing": 0,
+          "weighted_failures": 2.0,
+          "assessment_score": 80.0,
+          "placeholder": false,
+          "dimension_key": "high_level_elegance",
+          "configured_weight": 22.0,
+          "components": []
+        }
+      }
+    },
+    "Stale migration": {
+      "score": 65.0,
+      "strict": 65.0,
+      "verified_strict_score": 65.0,
+      "checks": 10,
+      "failing": 1,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.65,
+          "failing": 1,
+          "weighted_failures": 3.5,
+          "assessment_score": 65.0,
+          "placeholder": false,
+          "dimension_key": "incomplete_migration",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      }
+    },
+    "Init coupling": {
+      "score": 74.0,
+      "strict": 74.0,
+      "verified_strict_score": 74.0,
+      "checks": 10,
+      "failing": 1,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.74,
+          "failing": 1,
+          "weighted_failures": 2.6,
+          "assessment_score": 74.0,
+          "placeholder": false,
+          "dimension_key": "initialization_coupling",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      }
+    },
+    "Logic clarity": {
+      "score": 83.0,
+      "strict": 83.0,
+      "verified_strict_score": 83.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.83,
+          "failing": 0,
+          "weighted_failures": 1.7,
+          "assessment_score": 83.0,
+          "placeholder": false,
+          "dimension_key": "logic_clarity",
+          "configured_weight": 6.0,
+          "components": []
+        }
+      }
+    },
+    "Low elegance": {
+      "score": 79.0,
+      "strict": 79.0,
+      "verified_strict_score": 79.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.79,
+          "failing": 0,
+          "weighted_failures": 2.1,
+          "assessment_score": 79.0,
+          "placeholder": false,
+          "dimension_key": "low_level_elegance",
+          "configured_weight": 12.0,
+          "components": []
+        }
+      }
+    },
+    "Mid elegance": {
+      "score": 78.0,
+      "strict": 78.0,
+      "verified_strict_score": 78.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.78,
+          "failing": 0,
+          "weighted_failures": 2.2,
+          "assessment_score": 78.0,
+          "placeholder": false,
+          "dimension_key": "mid_level_elegance",
+          "configured_weight": 22.0,
+          "components": []
+        }
+      }
+    },
+    "Naming quality": {
+      "score": 88.0,
+      "strict": 88.0,
+      "verified_strict_score": 88.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.88,
+          "failing": 0,
+          "weighted_failures": 1.2,
+          "assessment_score": 88.0,
+          "placeholder": false,
+          "dimension_key": "naming_quality",
+          "configured_weight": 2.0,
+          "components": []
+        }
+      }
+    },
+    "Structure nav": {
+      "score": 84.0,
+      "strict": 84.0,
+      "verified_strict_score": 84.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.84,
+          "failing": 0,
+          "weighted_failures": 1.6,
+          "assessment_score": 84.0,
+          "placeholder": false,
+          "dimension_key": "package_organization",
+          "configured_weight": 5.0,
+          "components": []
+        }
+      }
+    },
+    "Test strategy": {
+      "score": 82.0,
+      "strict": 82.0,
+      "verified_strict_score": 82.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.82,
+          "failing": 0,
+          "weighted_failures": 1.8,
+          "assessment_score": 82.0,
+          "placeholder": false,
+          "dimension_key": "test_strategy",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      }
+    },
+    "Type safety": {
+      "score": 80.0,
+      "strict": 80.0,
+      "verified_strict_score": 80.0,
+      "checks": 10,
+      "failing": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.8,
+          "failing": 0,
+          "weighted_failures": 2.0,
+          "assessment_score": 80.0,
+          "placeholder": false,
+          "dimension_key": "type_safety",
+          "configured_weight": 12.0,
+          "components": []
+        }
+      }
+    }
+  },
+  "score_breakdown": {
+    "overall_score": 80.6,
+    "mechanical_fraction": 0.25,
+    "subjective_fraction": 0.75,
+    "mechanical_avg": 80.94661791590492,
+    "subjective_avg": 80.43037974683544,
+    "entries": [
+      {
+        "name": "Code quality",
+        "pool": "mechanical",
+        "score": 88.3,
+        "checks": 875.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.18281535648994512,
+        "overall_per_point": 0.04570383912248628,
+        "overall_contribution": 4.0356489945155385,
+        "overall_drag": 0.5347349177330896
+      },
+      {
+        "name": "Security",
+        "pool": "mechanical",
+        "score": 97.5,
+        "checks": 282.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.18281535648994512,
+        "overall_per_point": 0.04570383912248628,
+        "overall_contribution": 4.4561243144424125,
+        "overall_drag": 0.1142595978062157
+      },
+      {
+        "name": "File health",
+        "pool": "mechanical",
+        "score": 92.2,
+        "checks": 120.0,
+        "sample_factor": 0.6,
+        "configured_weight": 2.0,
+        "effective_weight": 1.2,
+        "pool_share": 0.21937842778793415,
+        "overall_per_point": 0.05484460694698354,
+        "overall_contribution": 5.056672760511883,
+        "overall_drag": 0.42778793418647143
+      },
+      {
+        "name": "Test health",
+        "pool": "mechanical",
+        "score": 20.1,
+        "checks": 1743.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.18281535648994512,
+        "overall_per_point": 0.04570383912248628,
+        "overall_contribution": 0.9186471663619743,
+        "overall_drag": 3.6517367458866543
+      },
+      {
+        "name": "Advocacy security",
+        "pool": "mechanical",
+        "score": 99.4,
+        "checks": 127.0,
+        "sample_factor": 0.635,
+        "configured_weight": 2.0,
+        "effective_weight": 1.27,
+        "pool_share": 0.2321755027422303,
+        "overall_per_point": 0.05804387568555758,
+        "overall_contribution": 5.769561243144423,
+        "overall_drag": 0.034826325411334215
+      },
+      {
+        "name": "Abstraction fit",
+        "pool": "subjective",
+        "score": 78.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 8.0,
+        "effective_weight": 8.0,
+        "pool_share": 0.05063291139240506,
+        "overall_per_point": 0.0379746835443038,
+        "overall_contribution": 2.9620253164556964,
+        "overall_drag": 0.8354430379746836
+      },
+      {
+        "name": "Data sovereignty",
+        "pool": "subjective",
+        "score": 80.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 6.0,
+        "effective_weight": 6.0,
+        "pool_share": 0.0379746835443038,
+        "overall_per_point": 0.028481012658227847,
+        "overall_contribution": 2.2784810126582276,
+        "overall_drag": 0.5696202531645569
+      },
+      {
+        "name": "Advocacy language",
+        "pool": "subjective",
+        "score": 90.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 8.0,
+        "effective_weight": 8.0,
+        "pool_share": 0.05063291139240506,
+        "overall_per_point": 0.0379746835443038,
+        "overall_contribution": 3.4177215189873418,
+        "overall_drag": 0.379746835443038
+      },
+      {
+        "name": "Advocacy security (subjective)",
+        "pool": "subjective",
+        "score": 82.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 10.0,
+        "effective_weight": 10.0,
+        "pool_share": 0.06329113924050633,
+        "overall_per_point": 0.04746835443037975,
+        "overall_contribution": 3.8924050632911396,
+        "overall_drag": 0.8544303797468356
+      },
+      {
+        "name": "Advocacy terminology",
+        "pool": "subjective",
+        "score": 88.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 4.0,
+        "effective_weight": 4.0,
+        "pool_share": 0.02531645569620253,
+        "overall_per_point": 0.0189873417721519,
+        "overall_contribution": 1.6708860759493671,
+        "overall_drag": 0.22784810126582278
+      },
+      {
+        "name": "Advocacy tools",
+        "pool": "subjective",
+        "score": 80.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 3.0,
+        "effective_weight": 3.0,
+        "pool_share": 0.0189873417721519,
+        "overall_per_point": 0.014240506329113924,
+        "overall_contribution": 1.1392405063291138,
+        "overall_drag": 0.28481012658227844
+      },
+      {
+        "name": "Advocacy UX",
+        "pool": "subjective",
+        "score": 83.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 4.0,
+        "effective_weight": 4.0,
+        "pool_share": 0.02531645569620253,
+        "overall_per_point": 0.0189873417721519,
+        "overall_contribution": 1.5759493670886076,
+        "overall_drag": 0.3227848101265823
+      },
+      {
+        "name": "AI generated debt",
+        "pool": "subjective",
+        "score": 72.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.006329113924050633,
+        "overall_per_point": 0.004746835443037975,
+        "overall_contribution": 0.34177215189873417,
+        "overall_drag": 0.1329113924050633
+      },
+      {
+        "name": "API coherence",
+        "pool": "subjective",
+        "score": 72.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.006329113924050633,
+        "overall_per_point": 0.004746835443037975,
+        "overall_contribution": 0.34177215189873417,
+        "overall_drag": 0.1329113924050633
+      },
+      {
+        "name": "Auth consistency",
+        "pool": "subjective",
+        "score": 79.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.006329113924050633,
+        "overall_per_point": 0.004746835443037975,
+        "overall_contribution": 0.375,
+        "overall_drag": 0.09968354430379747
+      },
+      {
+        "name": "Contracts",
+        "pool": "subjective",
+        "score": 82.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 12.0,
+        "effective_weight": 12.0,
+        "pool_share": 0.0759493670886076,
+        "overall_per_point": 0.056962025316455694,
+        "overall_contribution": 4.670886075949367,
+        "overall_drag": 1.0253164556962024
+      },
+      {
+        "name": "Convention drift",
+        "pool": "subjective",
+        "score": 82.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.006329113924050633,
+        "overall_per_point": 0.004746835443037975,
+        "overall_contribution": 0.38924050632911394,
+        "overall_drag": 0.08544303797468354
+      },
+      {
+        "name": "Cross-module arch",
+        "pool": "subjective",
+        "score": 77.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.006329113924050633,
+        "overall_per_point": 0.004746835443037975,
+        "overall_contribution": 0.36550632911392406,
+        "overall_drag": 0.10917721518987342
+      },
+      {
+        "name": "Dep health",
+        "pool": "subjective",
+        "score": 80.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.006329113924050633,
+        "overall_per_point": 0.004746835443037975,
+        "overall_contribution": 0.379746835443038,
+        "overall_drag": 0.0949367088607595
+      },
+      {
+        "name": "Design coherence",
+        "pool": "subjective",
+        "score": 77.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 10.0,
+        "effective_weight": 10.0,
+        "pool_share": 0.06329113924050633,
+        "overall_per_point": 0.04746835443037975,
+        "overall_contribution": 3.655063291139241,
+        "overall_drag": 1.0917721518987342
+      },
+      {
+        "name": "Error consistency",
+        "pool": "subjective",
+        "score": 75.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 3.0,
+        "effective_weight": 3.0,
+        "pool_share": 0.0189873417721519,
+        "overall_per_point": 0.014240506329113924,
+        "overall_contribution": 1.0680379746835442,
+        "overall_drag": 0.3560126582278481
+      },
+      {
+        "name": "High elegance",
+        "pool": "subjective",
+        "score": 80.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 22.0,
+        "effective_weight": 22.0,
+        "pool_share": 0.13924050632911392,
+        "overall_per_point": 0.10443037974683544,
+        "overall_contribution": 8.354430379746836,
+        "overall_drag": 2.088607594936709
+      },
+      {
+        "name": "Stale migration",
+        "pool": "subjective",
+        "score": 65.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.006329113924050633,
+        "overall_per_point": 0.004746835443037975,
+        "overall_contribution": 0.3085443037974684,
+        "overall_drag": 0.1661392405063291
+      },
+      {
+        "name": "Init coupling",
+        "pool": "subjective",
+        "score": 74.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.006329113924050633,
+        "overall_per_point": 0.004746835443037975,
+        "overall_contribution": 0.3512658227848101,
+        "overall_drag": 0.12341772151898735
+      },
+      {
+        "name": "Logic clarity",
+        "pool": "subjective",
+        "score": 83.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 6.0,
+        "effective_weight": 6.0,
+        "pool_share": 0.0379746835443038,
+        "overall_per_point": 0.028481012658227847,
+        "overall_contribution": 2.363924050632911,
+        "overall_drag": 0.4841772151898734
+      },
+      {
+        "name": "Low elegance",
+        "pool": "subjective",
+        "score": 79.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 12.0,
+        "effective_weight": 12.0,
+        "pool_share": 0.0759493670886076,
+        "overall_per_point": 0.056962025316455694,
+        "overall_contribution": 4.5,
+        "overall_drag": 1.1962025316455696
+      },
+      {
+        "name": "Mid elegance",
+        "pool": "subjective",
+        "score": 78.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 22.0,
+        "effective_weight": 22.0,
+        "pool_share": 0.13924050632911392,
+        "overall_per_point": 0.10443037974683544,
+        "overall_contribution": 8.145569620253164,
+        "overall_drag": 2.2974683544303796
+      },
+      {
+        "name": "Naming quality",
+        "pool": "subjective",
+        "score": 88.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 2.0,
+        "effective_weight": 2.0,
+        "pool_share": 0.012658227848101266,
+        "overall_per_point": 0.00949367088607595,
+        "overall_contribution": 0.8354430379746836,
+        "overall_drag": 0.11392405063291139
+      },
+      {
+        "name": "Structure nav",
+        "pool": "subjective",
+        "score": 84.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 5.0,
+        "effective_weight": 5.0,
+        "pool_share": 0.03164556962025317,
+        "overall_per_point": 0.023734177215189875,
+        "overall_contribution": 1.9936708860759496,
+        "overall_drag": 0.379746835443038
+      },
+      {
+        "name": "Test strategy",
+        "pool": "subjective",
+        "score": 82.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 1.0,
+        "effective_weight": 1.0,
+        "pool_share": 0.006329113924050633,
+        "overall_per_point": 0.004746835443037975,
+        "overall_contribution": 0.38924050632911394,
+        "overall_drag": 0.08544303797468354
+      },
+      {
+        "name": "Type safety",
+        "pool": "subjective",
+        "score": 80.0,
+        "checks": 0.0,
+        "sample_factor": 1.0,
+        "configured_weight": 12.0,
+        "effective_weight": 12.0,
+        "pool_share": 0.0759493670886076,
+        "overall_per_point": 0.056962025316455694,
+        "overall_contribution": 4.556962025316455,
+        "overall_drag": 1.1392405063291138
+      }
+    ]
+  },
+  "subjective_integrity": {
+    "status": "disabled",
+    "target_score": 85.0,
+    "matched_count": 0,
+    "matched_dimensions": [],
+    "reset_dimensions": []
+  },
+  "score_confidence": {
+    "status": "full",
+    "confidence": 1.0,
+    "detectors": [],
+    "dimensions": []
+  },
+  "potentials": {
+    "typescript": {
+      "logs": 121,
+      "unused": 121,
+      "exports": 0,
+      "deprecated": 2,
+      "structural": 120,
+      "flat_dirs": 48,
+      "props": 55,
+      "single_use": 0,
+      "coupling": 0,
+      "cycles": 162,
+      "orphaned": 162,
+      "patterns": 7,
+      "naming": 41,
+      "facade": 162,
+      "signature": 4,
+      "test_coverage": 1743,
+      "smells": 122,
+      "react": 34,
+      "security": 120,
+      "advocacy_language": 0,
+      "advocacy_security": 127,
+      "stale_wontfix": 0
+    }
+  },
+  "scan_coverage": {
+    "typescript": {
+      "status": "full",
+      "confidence": 1.0,
+      "detectors": {
+        "security": {
+          "detector": "security",
+          "status": "full",
+          "confidence": 1.0,
+          "summary": "Security coverage complete for enabled detectors.",
+          "impact": "",
+          "remediation": "",
+          "tool": "",
+          "reason": ""
+        }
+      },
+      "warnings": [],
+      "updated_at": "2026-04-12T08:46:24+00:00"
+    }
+  },
+  "zone_distribution": {
+    "production": 120,
+    "test": 65,
+    "config": 1
+  },
+  "narrative": {
+    "phase": "stagnation",
+    "headline": "\u26a0 15 security issues \u2014 review before other cleanup. Score plateaued at 80.6 for 5 scans. Test health (20.1%) is where the breakthrough is. (4 review work items \u2014 run `desloppify show review --status open`)",
+    "dimensions": {
+      "lowest_dimensions": [
+        {
+          "name": "Test health",
+          "strict": 20.1,
+          "failing": 97,
+          "impact": 0.0
+        },
+        {
+          "name": "Stale migration",
+          "strict": 65.0,
+          "failing": 1,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        },
+        {
+          "name": "AI generated debt",
+          "strict": 72.0,
+          "failing": 1,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        }
+      ],
+      "biggest_gap_dimensions": [],
+      "stagnant_dimensions": [
+        {
+          "name": "Security",
+          "strict": 97.5,
+          "stuck_scans": 5
+        },
+        {
+          "name": "File health",
+          "strict": 92.2,
+          "stuck_scans": 5
+        },
+        {
+          "name": "Test health",
+          "strict": 20.1,
+          "stuck_scans": 5
+        },
+        {
+          "name": "Advocacy security",
+          "strict": 99.4,
+          "stuck_scans": 5
+        }
+      ]
+    },
+    "actions": [
+      {
+        "type": "auto_fix",
+        "detector": "unused",
+        "count": 5,
+        "description": "5 unused issues \u2014 run `desloppify autofix unused-imports --dry-run` to preview, then apply",
+        "command": "desloppify autofix unused-imports --dry-run",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 1,
+        "lane": "cleanup"
+      },
+      {
+        "type": "auto_fix",
+        "detector": "logs",
+        "count": 6,
+        "description": "6 logs issues in 1 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 2,
+        "clusters": [
+          "auto/logs"
+        ],
+        "cluster_count": 1,
+        "lane": "cleanup"
+      },
+      {
+        "type": "reorganize",
+        "detector": "orphaned",
+        "count": 18,
+        "description": "18 orphaned issues \u2014 delete dead files or relocate with `desloppify move`",
+        "command": "desloppify show orphaned --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 3,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "flat_dirs",
+        "count": 4,
+        "description": "4 flat_dirs issues \u2014 create subdirectories and use `desloppify move`",
+        "command": "desloppify show flat_dirs --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 4,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "naming",
+        "count": 1,
+        "description": "1 naming issues \u2014 rename files with `desloppify move` to fix conventions",
+        "command": "desloppify show naming --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 5,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "single_use",
+        "count": 6,
+        "description": "6 single_use issues \u2014 inline or relocate with `desloppify move`",
+        "command": "desloppify show single_use --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 6,
+        "lane": "restructure"
+      },
+      {
+        "type": "refactor",
+        "detector": "structural",
+        "count": 37,
+        "description": "37 structural work items \u2014 review large files \u2014 split only when responsibilities are clearly separable",
+        "command": "desloppify show structural --status open",
+        "impact": 0.0,
+        "dimension": "File health",
+        "priority": 7,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "refactor",
+        "detector": "react",
+        "count": 2,
+        "description": "2 react work items \u2014 refactor React antipatterns (state sync, provider nesting, hook bloat)",
+        "command": "desloppify show react --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 8,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "refactor",
+        "detector": "test_coverage",
+        "count": 97,
+        "description": "97 test_coverage issues in 3 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
+        "impact": 0.0,
+        "dimension": "Test health",
+        "priority": 9,
+        "clusters": [
+          "auto/test_coverage-untested_module",
+          "auto/test_coverage-untested_critical",
+          "auto/test_coverage-transitive_only"
+        ],
+        "cluster_count": 3,
+        "lane": "test_coverage"
+      },
+      {
+        "type": "refactor",
+        "detector": "signature",
+        "count": 4,
+        "description": "4 signature work items \u2014 consolidate inconsistent function signatures",
+        "command": "desloppify show signature --status open",
+        "impact": 0.0,
+        "dimension": "Unknown",
+        "priority": 10,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "refactor",
+        "detector": "review",
+        "count": 4,
+        "description": "4 review work items need investigation \u2014 run `desloppify show review --status open` to see them",
+        "command": "desloppify show review --status open",
+        "impact": 0.0,
+        "dimension": "Unknown",
+        "priority": 11,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "smells",
+        "count": 191,
+        "description": "191 smells issues \u2014 inspect with `desloppify next` and fix manually",
+        "command": "desloppify show smells --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 12,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "deprecated",
+        "count": 2,
+        "description": "2 deprecated work items \u2014 remove deprecated symbols or migrate callers",
+        "command": "desloppify show deprecated --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 13,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "security",
+        "count": 15,
+        "description": "15 security issues in 3 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
+        "impact": 0.0,
+        "dimension": "Security",
+        "priority": 14,
+        "clusters": [
+          "auto/security-log_sensitive",
+          "auto/security-hardcoded_secret_name",
+          "auto/security-innerHTML_assignment"
+        ],
+        "cluster_count": 3,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "advocacy_security",
+        "count": 1,
+        "description": "1 advocacy_security work items \u2014 review for animal activist identity exposure, sensitive data transmission to external APIs, and ag-gag compliance risks",
+        "command": "desloppify show advocacy_security --status open",
+        "impact": 0.0,
+        "dimension": "Advocacy security",
+        "priority": 15,
+        "lane": "refactor_0"
+      }
+    ],
+    "strategy": {
+      "fixer_leverage": {
+        "auto_fixable_count": 11,
+        "total_count": 401,
+        "coverage": 0.027,
+        "impact_ratio": 0.0,
+        "recommendation": "none"
+      },
+      "lanes": {
+        "cleanup": {
+          "actions": [
+            2,
+            1
+          ],
+          "file_count": 8,
+          "total_impact": 0.0,
+          "automation": "full",
+          "run_first": true
+        },
+        "restructure": {
+          "actions": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "file_count": 28,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "refactor_0": {
+          "actions": [
+            7,
+            8,
+            10,
+            12,
+            13,
+            14,
+            15
+          ],
+          "file_count": 122,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "refactor_1": {
+          "actions": [
+            11
+          ],
+          "file_count": 1,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "test_coverage": {
+          "actions": [
+            9
+          ],
+          "file_count": 97,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        }
+      },
+      "can_parallelize": true,
+      "hint": "4 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 4 issue(s) \u2014 `desloppify show review --status open`."
+    },
+    "tools": {
+      "fixers": [
+        {
+          "name": "unused-imports",
+          "detector": "unused",
+          "open_count": 5,
+          "command": "desloppify autofix unused-imports --dry-run"
+        },
+        {
+          "name": "unused-vars",
+          "detector": "unused",
+          "open_count": 5,
+          "command": "desloppify autofix unused-vars --dry-run"
+        },
+        {
+          "name": "unused-params",
+          "detector": "unused",
+          "open_count": 5,
+          "command": "desloppify autofix unused-params --dry-run"
+        },
+        {
+          "name": "debug-logs",
+          "detector": "logs",
+          "open_count": 6,
+          "command": "desloppify autofix debug-logs --dry-run"
+        },
+        {
+          "name": "dead-useeffect",
+          "detector": "smells",
+          "open_count": 191,
+          "command": "desloppify autofix dead-useeffect --dry-run"
+        },
+        {
+          "name": "empty-if-chain",
+          "detector": "smells",
+          "open_count": 191,
+          "command": "desloppify autofix empty-if-chain --dry-run"
+        }
+      ],
+      "move": {
+        "available": true,
+        "relevant": true,
+        "reason": "18 orphaned files + 6 single-use files + 4 flat directories + 1 naming issues",
+        "usage": "desloppify move <source> <dest> [--dry-run]"
+      },
+      "plan": {
+        "command": "desloppify plan",
+        "description": "Generate prioritized markdown cleanup plan"
+      },
+      "badge": {
+        "generated": false,
+        "in_readme": false,
+        "path": "scorecard.png",
+        "recommendation": null
+      }
+    },
+    "debt": {
+      "overall_gap": 0.0,
+      "wontfix_count": 0,
+      "worst_dimension": null,
+      "worst_gap": 0.0,
+      "trend": "stable"
+    },
+    "milestone": null,
+    "primary_action": {
+      "command": "desloppify autofix unused-imports --dry-run",
+      "description": "5 unused issues \u2014 run `desloppify autofix unused-imports --dry-run` to preview, then apply"
+    },
+    "why_now": "4 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 4 issue(s) \u2014 `desloppify show review --status open`.",
+    "verification_step": {
+      "command": "desloppify scan",
+      "reason": "revalidate after changes"
+    },
+    "risk_flags": [],
+    "strict_target": {
+      "target": 85.0,
+      "current": 80.6,
+      "gap": 4.4,
+      "state": "below",
+      "warning": null
+    },
+    "reminders": [
+      {
+        "type": "review_issues_pending",
+        "message": "4 review work item(s) need investigation. Run `desloppify show review --status open` to see the work queue.",
+        "command": "desloppify show review --status open",
+        "priority": 1,
+        "severity": "high"
+      },
+      {
+        "type": "report_scores",
+        "message": "ALWAYS share ALL scores with the user: overall, objective, and strict, plus every dimension score (lenient + strict), including subjective dimensions. The goal is to maximize strict scores.",
+        "command": null,
+        "no_decay": true,
+        "priority": 3,
+        "severity": "low"
+      },
+      {
+        "type": "review_not_run",
+        "message": "Mechanical checks look good! Run a subjective design review to catch issues linters miss: desloppify review --prepare",
+        "command": "desloppify review --prepare",
+        "priority": 3,
+        "severity": "low"
+      }
+    ],
+    "reminder_history": {
+      "auto_fixers_available": 3,
+      "dry_run_first": 3,
+      "report_scores": 6,
+      "zone_classification": 3,
+      "feedback_nudge": 3,
+      "stagnant_nudge": 30,
+      "review_issues_pending": 2,
+      "review_not_run": 2
+    }
+  },
+  "config": {
+    "target_strict_score": 85,
+    "review_max_age_days": 30,
+    "review_batch_max_files": 80,
+    "holistic_max_age_days": 30,
+    "generate_scorecard": true,
+    "badge_path": "scorecard.png",
+    "exclude": [],
+    "ignore": [],
+    "ignore_metadata": {},
+    "zone_overrides": {},
+    "review_dimensions": [],
+    "large_files_threshold": 0,
+    "props_threshold": 0,
+    "issue_noise_budget": 10,
+    "issue_noise_global_budget": 0,
+    "execution_log_max_entries": 10000,
+    "needs_rescan": false,
+    "languages": {},
+    "commit_tracking_enabled": true,
+    "commit_pr": 0,
+    "commit_default_branch": "",
+    "commit_message_template": "desloppify: {status} {count} issue(s) \u2014 {summary}",
+    "trust_plugins": false,
+    "transition_messages": {},
+    "hermes_enabled": false,
+    "hermes_models": {
+      "execute": "openrouter:x-ai/grok-4.20-beta",
+      "review": "openrouter:google/gemini-3.1-pro-preview"
+    }
+  },
+  "plan": {
+    "active": true,
+    "focus": null,
+    "total_ordered": 30,
+    "total_skipped": 0,
+    "plan_overrides_narrative": true
+  }
+}
