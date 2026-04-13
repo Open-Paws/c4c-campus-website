@@ -40,7 +40,6 @@ async function notifyCohortStudents(
       .limit(1);
 
     if (existingNotifs && existingNotifs.length > 0) {
-      console.log('[schedule] Notifications already sent for this module/cohort, skipping');
       return;
     }
 
@@ -52,7 +51,6 @@ async function notifyCohortStudents(
       .eq('status', 'active');
 
     if (enrollError || !enrollments || enrollments.length === 0) {
-      console.log('[schedule] No active enrollments found for cohort', cohortId);
       return;
     }
 
@@ -128,12 +126,9 @@ async function notifyCohortStudents(
         }).catch((err: any) => {
           console.error('[schedule] Failed to send email notification:', err);
         });
-      } else {
-        console.warn('[schedule] No email found for a student, skipping notification');
       }
     }
 
-    console.log(`[schedule] Sent notifications to ${userIds.length} students for module ${moduleId}`);
   } catch (error) {
     console.error('[schedule] Error in notifyCohortStudents:', error);
   }

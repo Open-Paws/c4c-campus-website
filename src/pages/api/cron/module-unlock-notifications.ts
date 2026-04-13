@@ -194,13 +194,10 @@ export const GET: APIRoute = async ({ request }) => {
           }).catch((err) => {
             console.error(`[cron] Failed to send email notification for course "${courseName}", module "${moduleName}":`, err);
           });
-        } else {
-          console.warn(`[cron] No email found for a student in course "${courseName}", module "${moduleName}", skipping email notification`);
         }
       }
 
       totalNotified += userIds.length;
-      console.log(`[cron] Notified ${userIds.length} students for module "${moduleName}" in cohort ${schedule.cohort_id}`);
     }
 
     return new Response(

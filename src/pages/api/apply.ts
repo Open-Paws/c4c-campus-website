@@ -245,7 +245,6 @@ export const POST: APIRoute = async ({ request }) => {
     // Validate password strength (VULN-002 fix)
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
-      console.warn('[API /apply] Weak password rejected:', passwordValidation.errors);
       return new Response(
         JSON.stringify({
           error: 'Password does not meet security requirements',

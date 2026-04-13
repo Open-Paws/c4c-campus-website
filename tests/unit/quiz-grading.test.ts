@@ -12,7 +12,7 @@
  * factory farms, sanctuaries) consistent with the Open Paws ubiquitous language.
  */
 
-import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import {
   validateQuiz,
   checkQuizAvailability,

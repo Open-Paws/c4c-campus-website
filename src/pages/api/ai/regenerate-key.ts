@@ -51,8 +51,8 @@ export const POST: APIRoute = async ({ request }) => {
     if (oldHash) {
       try {
         await deleteKey(oldHash);
-      } catch (err) {
-        console.warn('[regenerate-key] Failed to delete old key, proceeding:', err);
+      } catch {
+        // Best-effort deletion — do not block new provisioning on failure
       }
     }
 
