@@ -8,6 +8,6 @@ dist/
 node_modules/
 .claude/rules/advocacy-domain.md
 .coderabbit.yaml
-# Test fixtures use farmed animal species names ('pig', 'cow', 'dog') as
-# quiz option identifiers — these are domain data, not speciesist idioms.
+# Test fixtures use farmed animal species names as quiz option identifiers.
+# These are domain data about animals, not speciesist idioms.
 tests/unit/quiz-grading.test.ts

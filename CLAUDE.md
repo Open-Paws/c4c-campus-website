@@ -289,7 +289,7 @@ gh api repos/Open-Paws/open-paws-strategy/contents/settled-decisions.md --jq '.c
 
 **Current status (as of 2026-04-09):**
 
-- **Tutorial quests: DONE.** All 5 written: F-rank (cold-turkey YAML rule), E-rank (filtered results count), F-rank (scapegoat YAML rule), E-rank (CSV export), D-rank (ESLint rule). Content lives in `programs/developer-training-pipeline/guild/tutorial-quests.md`.
+- **Tutorial quests: DONE.** All 5 written: F-rank (cold-turkey YAML rule), E-rank (filtered results count), F-rank (blame-target YAML rule), E-rank (CSV export), D-rank (ESLint rule). Content lives in `programs/developer-training-pipeline/guild/tutorial-quests.md`.
 - **LMS content for May cohort: UNASSIGNED — this is a blocker.** Nothing else about May launch matters if developers arrive and there is nothing to do. Assign LMS content owner by April 15 or escalate immediately. See `roadmap/flywheel.md` first-day readiness table.
 - **Graze-CLI: NOT in curriculum yet.** Smoke test on a non-core-team machine is required before writing Graze-CLI into any teaching material. Sam coordinates. Do not add Graze-CLI references to this site until the smoke test passes.
 - **No-animal-violence VS Code extension + pre-commit hook: NOT yet in curriculum.** Do not add these to the site's developer onboarding flow until a curriculum decision is made.
@@ -345,7 +345,7 @@ Never introduce synonyms for:
 - **Campaign** — organized advocacy effort
 - **Activist** — person engaged in advocacy work (not "user" or "member" in advocacy contexts)
 - **Guild** — the developer community (not "community" or "team")
-- **Farmed animal** — not "livestock" in any campus copy
+- **Farmed animal** — not the industry commodity framing; use "farmed animal/s" in all campus copy
 
 ### Structured Coding Reference
 
