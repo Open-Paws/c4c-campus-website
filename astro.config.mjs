@@ -8,7 +8,7 @@ import react from '@astrojs/react';
 export default defineConfig({
   integrations: [react()],
   output: 'server',
-  adapter: vercel(),
+  adapter: vercel({ skewProtection: false }),
   vite: {
     // @ts-expect-error - @tailwindcss/vite types are incompatible with Astro's bundled Vite types
     plugins: [tailwindcss()],
