@@ -4,7 +4,7 @@
  * Displays quiz information in lesson context with start/continue/review options
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { QuizWithDetails, QuizAttempt } from '@/types/quiz';
 
 interface QuizCardProps {

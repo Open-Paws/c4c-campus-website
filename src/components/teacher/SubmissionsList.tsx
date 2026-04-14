@@ -3,7 +3,7 @@
  * Shows all student submissions for an assignment
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { formatFileSize, getFileIcon } from '@/lib/file-upload';
 import AssignmentGrader from './AssignmentGrader';
 

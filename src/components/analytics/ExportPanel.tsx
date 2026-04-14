@@ -5,7 +5,7 @@
  * Export analytics data in multiple formats (CSV, PDF, Excel, PNG)
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import * as XLSX from 'exceljs';
 import Papa from 'papaparse';
 import jsPDF from 'jspdf';

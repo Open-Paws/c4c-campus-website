@@ -3,7 +3,7 @@
  * Modal for creating and editing assignments
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Assignment } from '@/types/assignment';
 
 interface AssignmentCreatorProps {

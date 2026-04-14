@@ -4,6 +4,8 @@
  * Zero-results state with "Did you mean?" suggestions
  */
 
+import React from 'react';
+
 interface NoResultsProps {
   query: string;
   suggestions?: string[];

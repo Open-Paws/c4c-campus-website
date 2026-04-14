@@ -4,6 +4,8 @@
  * Displays search results with metadata
  */
 
+import React from 'react';
+
 interface SearchResult {
   id: number;
   type: 'course' | 'lesson' | 'discussion' | 'forum';

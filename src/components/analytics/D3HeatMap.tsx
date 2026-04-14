@@ -7,7 +7,7 @@
  */
 
 import * as d3 from 'd3';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface HeatMapCell {
   day: number;      // 0-6 (Sunday-Saturday)

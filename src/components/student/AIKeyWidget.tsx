@@ -5,7 +5,7 @@
  * Shows a one-time key reveal modal, then a usage visualization.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
 
 type WidgetState = 'loading' | 'no_config' | 'provisioning' | 'ready' | 'error';

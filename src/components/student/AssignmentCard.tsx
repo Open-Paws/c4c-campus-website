@@ -3,7 +3,7 @@
  * Display assignment details and allow student submission
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { AssignmentWithSubmission } from '@/types/assignment';
 import { getAssignmentStatus, getBadgeClasses } from '@/lib/assignment-status';
 import FileUploader from './FileUploader';

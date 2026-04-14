@@ -3,7 +3,7 @@
  * Displays a certificate with download and verification options
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 // Certificate type matching schema.sql certificates table
 interface Certificate {
