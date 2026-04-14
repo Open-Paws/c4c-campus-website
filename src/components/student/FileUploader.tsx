@@ -2,9 +2,7 @@
  * File Uploader Component
  * Drag-and-drop file upload for assignment submissions
  */
-import React from 'react';
-
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { validateFile, formatFileSize, getFileIcon } from '@/lib/file-upload';
 
 interface FileUploaderProps {

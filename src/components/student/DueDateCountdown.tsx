@@ -2,9 +2,7 @@
  * Due Date Countdown Component
  * Display countdown timer to assignment due date
  */
-import React from 'react';
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface DueDateCountdownProps {
   dueDate: string;
