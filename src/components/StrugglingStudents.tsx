@@ -8,7 +8,7 @@
  * Provides quick actions to reach out to students
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { StudentWithProgress } from '../types';
 import EmailComposeModal from './EmailComposeModal';
 

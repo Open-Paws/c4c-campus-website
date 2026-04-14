@@ -4,6 +4,7 @@
  * Displays quiz results with score, feedback, and review options
  */
 
+import React from 'react';
 import type { Quiz, QuizAttempt } from '@/types/quiz';
 
 interface QuizResultsProps {

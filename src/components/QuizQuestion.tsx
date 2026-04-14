@@ -5,7 +5,7 @@
  * Supports: multiple choice, true/false, short answer, essay, fill in blank
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { QuizQuestionForStudent } from '@/types/quiz';
 
 interface QuizQuestionProps {

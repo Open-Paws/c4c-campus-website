@@ -4,6 +4,8 @@
  * Autocomplete dropdown for search suggestions
  */
 
+import React from 'react';
+
 interface SearchSuggestionsProps {
   suggestions: string[];
   onClick: (suggestion: string) => void;

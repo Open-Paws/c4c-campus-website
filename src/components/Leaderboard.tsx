@@ -9,7 +9,7 @@
  * - Last activity
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { LeaderboardEntry } from '../types';
 
 interface LeaderboardProps {

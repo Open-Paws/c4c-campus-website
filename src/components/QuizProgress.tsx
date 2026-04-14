@@ -4,7 +4,7 @@
  * Shows quiz progress with question counter and progress bar
  */
 
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 interface QuizProgressProps {
   currentQuestion: number;

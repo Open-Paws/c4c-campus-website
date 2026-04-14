@@ -8,7 +8,7 @@
  * - Mobile responsive
  */
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SearchSuggestions from './SearchSuggestions';
 
 interface SearchBarProps {

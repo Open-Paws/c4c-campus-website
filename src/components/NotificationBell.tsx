@@ -6,7 +6,7 @@
  * Real-time updates via Supabase subscriptions
  */
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { Notification } from '../types/messaging';
 

@@ -4,7 +4,7 @@
  * Countdown timer for timed quizzes with visual warnings
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 interface QuizTimerProps {
   startedAt: string;

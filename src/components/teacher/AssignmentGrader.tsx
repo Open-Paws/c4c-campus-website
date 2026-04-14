@@ -3,7 +3,7 @@
  * Grade individual student submissions
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { formatFileSize, getFileIcon } from '@/lib/file-upload';
 
 interface AssignmentGraderProps {

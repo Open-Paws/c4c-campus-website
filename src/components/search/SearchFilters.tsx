@@ -4,6 +4,8 @@
  * Filter sidebar for search results
  */
 
+import React from 'react';
+
 interface SearchFiltersProps {
   filters: {
     track?: string;

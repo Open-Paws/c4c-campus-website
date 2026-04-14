@@ -2,6 +2,7 @@
  * Submission Status Component
  * Visual status indicator for assignment submissions
  */
+import React from 'react';
 
 import type { Submission } from '@/types/assignment';
 import type { AssignmentStatus } from '@/lib/assignment-status';

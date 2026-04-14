@@ -5,7 +5,7 @@
  * Flexible date range selection with presets and custom range picker
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export interface DateRange {
   start: Date;

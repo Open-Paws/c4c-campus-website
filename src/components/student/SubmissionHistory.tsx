@@ -3,7 +3,7 @@
  * View all submissions and history for an assignment
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { formatFileSize, getFileIcon } from '@/lib/file-upload';
 import type { Submission } from '@/types/assignment';
 

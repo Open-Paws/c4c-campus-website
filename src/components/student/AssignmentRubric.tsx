@@ -2,6 +2,7 @@
  * Assignment Rubric Component
  * Display grading rubric for an assignment
  */
+import React from 'react';
 
 interface RubricCriterion {
   name: string;
