@@ -279,7 +279,7 @@ This is the Code for Compassion Campus public website — the developer recruitm
 
 **Last updated:** 2026-04-09
 
-**Relevant strategy documents:** Fetch current strategy context before acting:
+**Relevant strategy documents — fetch fresh each session:**
 
 ```bash
 gh api repos/Open-Paws/open-paws-strategy/contents/org-overview.md --jq '.content' | base64 -d
