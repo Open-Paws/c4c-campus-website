@@ -213,7 +213,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         ? new Date(post.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
         : new Date(post.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
-      const statusClass = `status-${post.status}`;
+      const statusClass = 'status-' + post.status;
 
       return `
         <div class="card" data-post-id="${post.id}">
