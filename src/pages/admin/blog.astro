@@ -225,7 +225,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                 <span class="text-xs text-text-muted">${date}</span>
               </div>
               <h3 class="text-lg font-bold truncate">${escapeHTML(post.title)}</h3>
-              ${post.description ? `<p class="text-sm text-text-muted mt-1 line-clamp-2">${escapeHTML(post.description)}</p>` : ''}
+              ${post.description ? '<p class="text-sm text-text-muted mt-1 line-clamp-2">' + escapeHTML(post.description) + '</p>' : ''}
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
               <button class="btn btn-outline btn-sm btn-edit" data-id="${post.id}">Edit</button>
