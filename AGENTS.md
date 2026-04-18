@@ -5,6 +5,30 @@
 
 ---
 
+## 0. Organizational Context and Current Status
+
+**Layer:** 1 | **Lever:** Strengthen | **Integration:** Standalone (links to platform)
+
+C4C Campus is the developer recruitment funnel for the [Open Paws](https://openpaws.ai) Layer 1 pipeline — the first thing prospective bootcamp and Guild developers see. It is critical for India community recruitment (Bengaluru + Mumbai launch, May 2026).
+
+**Last confirmed status (2026-04-09):**
+
+- **May 2026 deadline is hard.** The Resident Developer cohort launch is the primary driver of all priority decisions.
+- **LMS content for May cohort is unassigned — this is a blocker.** Nothing else about May launch matters if developers arrive and there is nothing to do.
+- **Graze-CLI is NOT in curriculum yet.** Do not add Graze-CLI references to this site until a smoke test on a non-core-team machine passes. Sam coordinates.
+- **No-animal-violence VS Code extension + pre-commit hook are NOT in curriculum yet.** Do not add these to the developer onboarding flow until a curriculum decision is made.
+- The platform at `open-paws-platform` is where enrolled developers actually work — this site is the recruitment funnel to it.
+
+**Fetch fresh strategy context each session:**
+
+```bash
+gh api repos/Open-Paws/open-paws-strategy/contents/org-overview.md --jq '.content' | base64 -d
+gh api repos/Open-Paws/open-paws-strategy/contents/priorities.md --jq '.content' | base64 -d
+gh api repos/Open-Paws/open-paws-strategy/contents/settled-decisions.md --jq '.content' | base64 -d
+```
+
+---
+
 ## 1. Critical Rules
 
 ### The Schema is Immutable
@@ -37,6 +61,8 @@ The site is predominantly working but contains bugs. When debugging or implement
 3. **Don't remove "unnecessary" null checks** — They're probably there for a reason
 4. **Don't change API response structures** — Existing clients depend on them
 5. **Don't modify shared utilities** without understanding all usages
+6. **Don't add Graze-CLI references** until the smoke test passes
+7. **Don't add no-animal-violence tooling to the dev onboarding flow** until curriculum decision is made
 
 ### Validation Commands
 
@@ -58,7 +84,7 @@ npm run test:integration      # Integration tests
 on animal advocacy, climate action, and AI safety education tracks.
 
 | Layer | Technology |
-|-------|-----------|
+|-------|-----------| 
 | Framework | Astro 5.x SSR (server-rendered, not static) |
 | Hosting | Vercel (serverless functions + edge) |
 | UI Islands | React 19 (`client:only="react"` or `client:load`) |
@@ -84,12 +110,15 @@ on animal advocacy, climate action, and AI safety education tracks.
 ```
 c4c_website/
 ├── AGENTS.md                  # This file — the complete agent reference
+├── CLAUDE.md                  # AI coding guidelines (overlaps this file; this file is authoritative)
 ├── schema.sql                 # IMMUTABLE database schema (source of truth)
 ├── astro.config.mjs           # Astro + Vercel SSR config
 ├── tailwind.config.mjs        # Tailwind v4 config
 ├── vitest.config.ts           # Unit test config (jsdom)
 ├── vitest.integration.config.ts # Integration test config (node, real DB)
 ├── playwright.config.ts       # E2E test config (6 browser/device combos)
+├── playwright.personas.yaml   # Persona definitions for QA testing
+├── vercel.json                # Security headers + cron job schedule
 ├── .env.example               # All environment variables documented
 ├── src/
 │   ├── middleware/             # Request pipeline (auth, security, caching)
@@ -125,6 +154,10 @@ c4c_website/
 │   │   ├── dashboard.astro    # Student dashboard
 │   │   ├── courses/           # Course browsing & detail pages
 │   │   ├── assignments/       # Assignment list & submission pages
+│   │   ├── apply.astro        # Application form (public, stores to Supabase)
+│   │   ├── programs.astro     # Programs overview (public recruitment funnel)
+│   │   ├── tracks.astro       # Focus track details (public)
+│   │   ├── framework.astro    # C4C framework page (public)
 │   │   └── ...
 │   ├── components/            # React components (islands)
 │   │   ├── student/           # Student-facing widgets
@@ -155,6 +188,7 @@ c4c_website/
 - `src/lib/auth.ts` — JWT verification, token extraction, role checks
 - `src/lib/api-handlers.ts` — API utility functions
 - `src/lib/time-gating.ts` — Cohort schedule logic
+- `src/middleware/auth.ts` — Server-side route protection (runs before pages render)
 
 ---
 
@@ -302,7 +336,7 @@ The token extraction in `extractAccessToken()` handles multiple cookie format va
 ### Roles
 
 | Role | Access | Route Pattern |
-|------|--------|--------------|
+|------|--------|--------------| 
 | `admin` | Full system access | `/admin/*` |
 | `teacher` | Course management, grading | `/teacher/*` |
 | `student` | Dashboard, coursework | `/dashboard`, `/assignments/*` |
@@ -522,7 +556,7 @@ if (!data) {
 ### Component Organization
 
 | Directory | Purpose | Examples |
-|-----------|---------|---------|
+|-----------|---------|---------| 
 | `components/student/` | Student dashboard widgets | `AIKeyWidget`, `AssignmentCard`, `SubmissionStatus` |
 | `components/teacher/` | Teacher grading/creation tools | `AssignmentGrader`, `SubmissionsList` |
 | `components/course/` | Course display | `CourseCard`, `LessonNav`, `VideoPlayer` |
@@ -556,7 +590,7 @@ Authentication is automatic via cookies — the browser sends `sb-*-auth-token` 
 ### Required Variables
 
 | Variable | Scope | Purpose |
-|----------|-------|---------|
+|----------|-------|---------| 
 | `PUBLIC_SUPABASE_URL` | Client + Server | Supabase project URL |
 | `PUBLIC_SUPABASE_ANON_KEY` | Client + Server | Supabase anon key (RLS-enforced) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server only | Supabase admin key (bypasses RLS) |
@@ -566,9 +600,9 @@ Authentication is automatic via cookies — the browser sends `sb-*-auth-token` 
 ### Optional Variables
 
 | Variable | Scope | Purpose |
-|----------|-------|---------|
-| `OPENROUTER_PROVISIONING_API_KEY` | Server only | OpenRouter Management API key |
-| `PUBLIC_OPENROUTER_STUDENT_WEEKLY_LIMIT` | Client + Server | Weekly spending limit (default: $10) |
+|----------|-------|---------| 
+| `OPENROUTER_MANAGEMENT_KEY` | Server only | OpenRouter Management API key |
+| `OPENROUTER_STUDENT_WEEKLY_LIMIT` | Client + Server | Weekly spending limit (default: $10) |
 | `OPENROUTER_REGEN_COOLDOWN_HOURS` | Server only | Key regen cooldown (default: 24h) |
 | `CRON_SECRET` | Server only | Auth token for cron endpoints |
 | `PUBLIC_STRIPE_*` / `STRIPE_*` | Mixed | Stripe payment integration |
@@ -581,7 +615,7 @@ Authentication is automatic via cookies — the browser sends `sb-*-auth-token` 
 
 ### Graceful Degradation
 
-Optional features return `503` when their env vars are missing (e.g., AI endpoints without `OPENROUTER_PROVISIONING_API_KEY`). The UI components check for 503 and hide themselves (`return null`).
+Optional features return `503` when their env vars are missing (e.g., AI endpoints without `OPENROUTER_MANAGEMENT_KEY`). The UI components check for 503 and hide themselves (`return null`).
 
 ---
 
@@ -623,6 +657,16 @@ npx playwright test       # Run E2E tests
 - Location: `tests/security/`
 - Tests: File upload validation, malware scanning
 
+### Persona-Based QA (Three Required Personas)
+
+When doing browser QA, test from each of these three perspectives (defined in `playwright.personas.yaml`):
+
+1. **Prospective bootcamp student (India)** — Found the site via university outreach. Can they understand what Code for Compassion is, find the application process, and apply in under 5 minutes on a mid-range device?
+2. **Developer evaluating the Guild** — Already has coding skills, looking for a community project. Can they understand the Guild structure, quest system, and progression without clicking into the platform?
+3. **Teacher or org admin reviewing C4C** — Evaluating C4C as a training program for their staff. Can they find curriculum details, cohort structure, and contact information?
+
+For each persona: test the critical flow, verify both light and dark mode rendering, check accessibility (keyboard navigation, contrast, screen reader labels). Run Playwright tests sequentially — never share browser instances between parallel runs.
+
 ### Pre-Commit Hooks (Husky)
 
 - **Schema-types sync** (`npm run db:types:check`) — **Blocking**: commit fails if types don't match schema
@@ -635,7 +679,7 @@ npx playwright test       # Run E2E tests
 ### Naming
 
 | Context | Convention | Example |
-|---------|-----------|---------|
+|---------|-----------|---------| 
 | React components | PascalCase | `AIKeyWidget.tsx`, `CourseCard.tsx` |
 | Utility files | kebab-case | `api-handlers.ts`, `time-gating.ts` |
 | Functions/variables | camelCase | `fetchStatus()`, `handleRefresh()` |
@@ -715,7 +759,57 @@ if (!data) { /* handle */ }
 
 ---
 
-## 14. Security Considerations
+## 14. Safe vs. Risky Changes
+
+### Safe — low blast radius
+
+- Adding new public-facing `.astro` pages (programs, tracks, informational content)
+- Updating copy in existing public pages (text, headings, descriptions)
+- Adding new React components that are self-contained with local state
+- Adding new API endpoints (follow the standard pattern in Section 7)
+- Updating email templates (`src/lib/email-notifications.ts`)
+- Adding unit tests or integration tests
+- Updating CSS custom properties or Tailwind utility class usage
+- Adding or updating blog posts via the blog API
+
+### Moderate — test carefully
+
+- Modifying existing API endpoints — check all callers; `data` shape changes break React components
+- Changing middleware chain order (`src/middleware/index.ts`) — order is performance-critical
+- Updating `src/lib/auth.ts` — affects every authenticated route and API endpoint
+- Changing quiz grading logic (`src/lib/quiz-grading.ts`) — affects existing attempt scores
+- Modifying time-gating logic (`src/lib/time-gating.ts`) — controls what students can access
+- Adding or changing shared React components used across multiple pages
+
+### Risky — do not change without explicit instruction
+
+- **`schema.sql`** — immutable; never change
+- **`src/types/generated.ts`** — auto-generated; never edit by hand
+- **`src/middleware/auth.ts`** — route protection; regressions unlock unauthorized access
+- **`src/lib/security.ts`** — CSRF and XSS prevention; regressions create vulnerabilities
+- **Assignment submission state machine** (`src/lib/assignment-status.ts`) — enrolled students have live submissions
+- **Supabase RLS policies** (in `schema.sql`) — access control at the DB level
+- **Enrollment logic** (`enroll_in_cohort` DB function) — atomic; race conditions possible if changed
+- **Certificate generation** — involves PDF output sent to students
+
+---
+
+## 15. Integration Points
+
+| Integration | Config location | Notes |
+|-------------|----------------|-------|
+| Supabase | `src/lib/supabase.ts`, env vars | Two client patterns — see Section 6 |
+| Vercel | `astro.config.mjs`, `vercel.json` | SSR adapter + cron + security headers |
+| Resend email | `src/lib/email-notifications.ts` | Triggered by enrollment, grading, announcements |
+| OpenRouter | `src/lib/openrouter.ts`, `src/pages/api/ai/` | Optional; degrades to 503 if key absent |
+| Stripe | `src/components/payments/`, `src/pages/api/` | Optional; payment UI hidden if keys absent |
+| Plyr video | `src/components/course/` | Client-side only; embedded in lesson pages |
+| Tiptap editor | `src/components/` | Rich text for assignment submissions and course creation |
+| D3 / Chart.js | `src/components/analytics/` | Dashboard visualizations for teachers and admins |
+
+---
+
+## 16. Security Considerations
 
 - **Never expose `SUPABASE_SERVICE_ROLE_KEY`** in client-side code
 - **Always verify JWT** before using service role client in API routes
@@ -725,14 +819,27 @@ if (!data) { /* handle */ }
 - **CSP headers** are set in middleware — update if adding new external script/style sources
 - **Rate limiting** exists at both client and server levels
 - **RLS policies** are the primary access control mechanism — service role bypasses them, so extra care is needed in API routes
+- **Applications table** stores personal data from prospective students — Supabase RLS must remain enforced on this table
 
 ---
 
-## 15. Deployment
+## 17. Deployment
 
 - **Platform:** Vercel with SSR adapter
 - **Build:** `npm run build` (Astro build with Vercel adapter)
 - **Preview:** `npm run preview` (local production-like server)
 - **Dev:** `npm run dev` (Astro dev server with HMR)
 - **Cron jobs:** Vercel cron calls `/api/cron/*` endpoints with `CRON_SECRET` authentication
+- **Cron schedule:** `/api/cron/module-unlock-notifications` runs daily at 06:00 UTC (`vercel.json`)
 - **Environment:** All server-only env vars are set in Vercel dashboard; `PUBLIC_*` vars are embedded at build time
+
+---
+
+## 18. TODOs and Known Gaps
+
+- **LMS content for May cohort is unassigned** — this is a launch blocker. Assign a content owner or escalate before April 15 (see strategy repo `roadmap/flywheel.md`)
+- **Graze-CLI integration** — pending smoke test on a non-core-team machine before adding to curriculum
+- **No-animal-violence tooling in developer onboarding** — pending curriculum decision
+- **Internationalization** — planned but not started; do not bake in English-only assumptions
+- **Static page performance** — public marketing pages (index, programs, tracks) render server-side on every request; caching strategy TBD
+- **Server-side rate limiting** uses in-memory stores — resets on every Vercel cold start; consider Redis for persistent rate limiting at scale
