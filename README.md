@@ -2,6 +2,7 @@
 # C4C Campus
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![desloppify score](https://img.shields.io/badge/desloppify-81.4%2F100-brightgreen)](scorecard.png)
 [![Node ≥22](https://img.shields.io/badge/node-%3E%3D22.12.0-brightgreen)](package.json)
 [![Astro 6](https://img.shields.io/badge/astro-6-orange)](https://astro.build)
 [![Supabase](https://img.shields.io/badge/database-Supabase-3ECF8E)](https://supabase.com)
@@ -243,6 +244,10 @@ Roles: `admin` (`/admin/*`), `teacher` (`/teacher/*`), `student` (`/dashboard`, 
 </details>
 
 ---
+
+## Code Quality
+
+<img src="scorecard.png" width="100%">
 
 ## Contributing
 

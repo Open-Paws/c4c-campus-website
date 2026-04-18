@@ -1,5 +1,7 @@
 # C4C Campus
 
+[![desloppify score](https://img.shields.io/badge/desloppify-81.4%2F100-brightgreen)](scorecard.png)
+
 **Engineering Compassion Through AI**
 
 > Status: **Active Development** — Hard deadline: May 2026 Resident Developer cohort launch. The platform is predominantly working; contributors should expect active feature work alongside ongoing bug fixes.
@@ -310,6 +312,10 @@ After first deploy, update your Supabase project's **Site URL** to match your Ve
 | `npm run build:production` | Local production build with image optimization and type check |
 
 ---
+
+## Code Quality
+
+<img src="scorecard.png" width="100%">
 
 ## Contributing
 
