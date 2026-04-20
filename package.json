@@ -89,7 +89,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
     "@axe-core/cli": "^4.11.0",
-    "@axe-core/puppeteer": "^4.11.0",
+    "@axe-core/puppeteer": "^4.11.2",
     "@playwright/test": "^1.59.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
