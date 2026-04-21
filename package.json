@@ -70,7 +70,7 @@
     "html2canvas": "^1.4.1",
     "jose": "^6.2.2",
     "jspdf": "^4.2.1",
-    "marked": "^18.0.0",
+    "marked": "^18.0.2",
     "node-schedule": "^2.1.1",
     "papaparse": "^5.5.3",
     "pdf-lib": "^1.17.1",
