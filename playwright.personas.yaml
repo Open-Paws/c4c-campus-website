@@ -2,10 +2,13 @@ version: "1"
 # Schema: https://github.com/Open-Paws/open-paws-strategy/ecosystem/playwright-persona-schema.md
 
 personas:
-  - id: anonymous-visitor
-    name: Anonymous Visitor
+  - id: prospective-bootcamp-applicant
+    name: Prospective Bootcamp Applicant
     role: anonymous
-    description: Unregistered user exploring the campus website before applying to the bootcamp
+    description: >
+      Developer or non-technical person from anywhere in India (or globally) exploring the free
+      10-week bootcamp. Wants to understand what the program covers, whether it fits their
+      schedule, and how to apply. Primary conversion goal for the public recruitment funnel.
 
     auth:
       state: anonymous
@@ -25,47 +28,194 @@ personas:
 
     flows:
       - id: explore-homepage
-        name: Explore campus homepage
+        name: Explore homepage and understand the three programs
         entry_point: /
         steps:
           - Navigate to /
           - Wait for network idle
-          - Scroll to the course listings or apply section
-        expected_outcome: User sees campus headline and a clear path to apply or learn more
+          - Verify hero headline "Ready to Build Compassionate AI?" is visible
+          - Scroll down to the Three Programs section
+          - Verify all three program cards (Bootcamp, Global Hackathons, Full-Time Accelerator) are visible
+          - Click the "Apply Now" primary CTA
+        expected_outcome: >
+          User lands on /apply with the bootcamp form shown by default; the program selector
+          buttons are visible and the bootcamp section is active
 
-      - id: view-pricing
-        name: View pricing page
-        entry_point: /pricing
+      - id: browse-tracks
+        name: Research available tracks before applying
+        entry_point: /tracks
         steps:
-          - Navigate to /pricing
-          - Wait for content to load
-        expected_outcome: User sees pricing tiers and a call-to-action to apply or enroll
+          - Navigate to /tracks
+          - Wait for network idle
+          - Click the "Animal Advocacy" track button
+          - Verify track detail section is visible and not hidden
+          - Click the "Climate Action" track button
+          - Verify Climate Action detail section replaces Animal Advocacy detail
+        expected_outcome: >
+          Track selector correctly shows and hides detail panels; each panel contains
+          example tools and target organizations
+
+      - id: submit-bootcamp-application
+        name: Complete and submit the bootcamp application form
+        entry_point: /apply
+        steps:
+          - Navigate to /apply
+          - Wait for network idle
+          - Verify bootcamp section is shown by default (not hidden)
+          - Fill in Name, Email, Location, Discord Handle fields
+          - Fill in Password and Confirm Password fields (matching, meeting policy)
+          - Select a track from the track dropdown
+          - Fill in the motivation textarea
+          - Select a commitment option
+          - Select a protected class option
+          - Fill in career goals textarea
+          - Check the data consent checkbox
+          - Submit the form
+        expected_outcome: >
+          Form submits successfully; a success toast notification appears confirming the
+          application was received and prompting email verification; form resets
+
+      - id: view-faq
+        name: Check FAQ for eligibility and scholarship questions
+        entry_point: /faq
+        steps:
+          - Navigate to /faq
+          - Wait for network idle
+        expected_outcome: >
+          FAQ page loads with visible questions and answers; scholarship information
+          for SCs, OBCs, EWS, DNTs, and the Transgender community is present
 
     assertions:
       should_see:
-        - Campus or bootcamp headline
-        - Navigation links
-        - Apply or Sign Up call-to-action
+        - "Ready to Build Compassionate AI?"
+        - Apply Now
+        - Bootcamp
+        - Global Hackathons
+        - Full-Time Accelerator
+        - Full scholarships available
       should_not_see:
-        - Dashboard
+        - Student Dashboard
         - Admin
         - Teacher Portal
+        - Sign Out
       critical_routes:
         accessible:
           - /
           - /about
-          - /pricing
           - /programs
+          - /tracks
+          - /framework
           - /faq
+          - /pricing
           - /apply
+          - /aarc
+          - /blog
+          - /contact
         blocked:
           - /dashboard
-          - /admin
+          - /admin/dashboard
+          - /teacher/courses
+
+  - id: accelerator-applicant
+    name: Accelerator / ARCC Applicant
+    role: anonymous
+    description: >
+      Developer with an existing animal advocacy prototype considering the 12-week
+      in-person accelerator or the 4-week Animal Rights Coding Camp (ARCC) pre-accelerator
+      in Bengaluru. Evaluating investment of time, checking what stipends are provided,
+      and ready to submit a detailed technical application.
+
+    auth:
+      state: anonymous
+
+    device:
+      type: desktop
+      viewport:
+        width: 1280
+        height: 800
+      dark_mode: false
+
+    accessibility:
+      needs: []
+
+    content_sensitivity:
+      tier: minimal
+
+    flows:
+      - id: explore-arcc-page
+        name: Research the ARCC pre-accelerator programme
+        entry_point: /aarc
+        steps:
+          - Navigate to /aarc
+          - Wait for network idle
+          - Verify "Animal Rights Coding Camp" heading is visible
+          - Scroll to the 4-week schedule section
+          - Verify Week 1 "Pitch & Position" and Week 4 "Graduate or Iterate" are visible
+          - Verify entry requirements section is present
+        expected_outcome: >
+          ARCC page renders the full 4-week programme schedule and entry requirements;
+          CTA button links to /apply#accelerator
+
+      - id: submit-accelerator-application
+        name: Complete the accelerator application form
+        entry_point: /apply#accelerator
+        steps:
+          - Navigate to /apply#accelerator
+          - Wait for network idle
+          - Verify the accelerator section is visible (not the bootcamp section)
+          - Fill in Name, Email, Location, Discord Handle fields
+          - Fill in Password and Confirm Password
+          - Select a track
+          - Fill in Project Name, prototype description, prototype link, tech stack, target users, production needs
+          - Fill in technical experience, team size, select current stage
+          - Select commitment option (ARCC or full accelerator)
+          - Select funding type
+          - Select protected class
+          - Fill in career goals
+          - Check both consent checkboxes
+          - Submit the form
+        expected_outcome: >
+          Form submits; success toast appears confirming receipt; form resets
+
+      - id: view-programs-accelerator
+        name: View accelerator program details
+        entry_point: /programs#accelerator
+        steps:
+          - Navigate to /programs#accelerator
+          - Wait for network idle
+          - Verify accelerator detail card is visible with stipend amounts
+        expected_outcome: >
+          Accelerator detail card shows INR 200,000-1,000,000 stipend range,
+          accommodation and meals details, and "Apply to Accelerator" CTA
+
+    assertions:
+      should_see:
+        - Animal Rights Coding Camp
+        - 4 weeks
+        - Bengaluru
+        - Investor Pitch
+        - INR 200
+        - Apply to ARCC
+      should_not_see:
+        - Student Dashboard
+        - Admin
+      critical_routes:
+        accessible:
+          - /aarc
+          - /apply
+          - /programs
+        blocked:
+          - /dashboard
+          - /admin/dashboard
 
   - id: enrolled-student
-    name: Enrolled Student
+    name: Enrolled Bootcamp Student
     role: enrolled
-    description: Logged-in student accessing their dashboard, courses, and assignments
+    description: >
+      Logged-in student in the bootcamp who needs to check course progress,
+      complete lessons, submit assignments, and take quizzes. Based anywhere globally;
+      uses the platform in English. Wants to track cohort progress and use
+      the OpenRouter AI key provisioned through the dashboard.
 
     auth:
       state: enrolled
@@ -86,92 +236,137 @@ personas:
 
     flows:
       - id: view-dashboard
-        name: View student dashboard after login
+        name: View student dashboard with course progress
         entry_point: /dashboard
         steps:
           - Navigate to /dashboard
           - Wait for network idle
-        expected_outcome: Student sees their enrolled courses, progress, and upcoming assignments
+          - Verify "Student Dashboard" heading is present
+          - Verify the Quick Stats section shows Enrolled Courses, Completed, and Total Hours
+          - Verify My Courses section is present
+        expected_outcome: >
+          Dashboard loads authenticated view with course enrollment stats and progress bars;
+          the AI Key Widget renders without error
 
-      - id: browse-courses
-        name: Browse enrolled courses
-        entry_point: /courses
+      - id: browse-and-enter-course
+        name: Navigate from dashboard to a course lesson
+        entry_point: /dashboard
         steps:
-          - Navigate to /courses
-          - Wait for content to load
-        expected_outcome: Student sees their courses with progress indicators
-
-      - id: view-tracks
-        name: View available learning tracks
-        entry_point: /tracks
-        steps:
-          - Navigate to /tracks
+          - Navigate to /dashboard
           - Wait for network idle
-        expected_outcome: Student sees learning tracks relevant to their enrollment
+          - Click "View All" in the My Courses section or navigate to /courses
+          - Wait for course list to load
+          - Click on the first available course card
+          - Verify course detail page loads
+        expected_outcome: >
+          Course page renders with module and lesson structure;
+          progress percentage is shown per lesson
+
+      - id: check-notifications
+        name: View notifications
+        entry_point: /notifications
+        steps:
+          - Navigate to /notifications
+          - Wait for network idle
+        expected_outcome: Notifications page loads without a redirect to login
+
+      - id: language-selector
+        name: Switch dashboard language to Hindi
+        entry_point: /dashboard
+        steps:
+          - Navigate to /dashboard
+          - Wait for network idle
+          - Locate the language selector dropdown
+          - Select the Hindi option
+        expected_outcome: >
+          Page content begins translating; language selector reflects the selected language
 
     assertions:
       should_see:
-        - Dashboard heading or welcome message
-        - Course progress indicators
-        - Navigation with authenticated links
+        - Student Dashboard
+        - Enrolled Courses
+        - My Courses
+        - Sign Out
       should_not_see:
-        - Admin controls
-        - Teacher management tools
+        - Admin
+        - Teacher Portal
+        - Access Denied
+        - Please Sign In
       critical_routes:
         accessible:
           - /dashboard
           - /courses
-          - /tracks
           - /notifications
           - /account
         blocked:
-          - /admin
+          - /admin/dashboard
+          - /teacher/courses
 
-  - id: keyboard-student
-    name: Keyboard-Only Student
-    role: enrolled
-    description: Enrolled student navigating exclusively via keyboard — accessibility compliance test
+  - id: teacher-user
+    name: Course Teacher
+    role: teacher
+    description: >
+      Teacher managing course content, reviewing student assignment submissions,
+      grading quizzes, and tracking cohort analytics. Accesses the teacher portal
+      rather than the student dashboard.
 
     auth:
-      state: enrolled
-      seed_account: student-e2e@c4c.openpaws.ai
+      state: teacher
+      seed_account: teacher-e2e@c4c.openpaws.ai
 
     device:
       type: desktop
       viewport:
-        width: 1280
-        height: 800
+        width: 1440
+        height: 900
       dark_mode: false
 
     accessibility:
-      needs:
-        - keyboard_only
+      needs: []
 
     content_sensitivity:
-      tier: standard
+      tier: detailed
 
     flows:
-      - id: keyboard-navigate-dashboard
-        name: Navigate dashboard using only keyboard
+      - id: access-teacher-portal
+        name: Access the teacher portal and view courses
+        entry_point: /teacher/courses
+        steps:
+          - Navigate to /teacher/courses
+          - Wait for network idle
+          - Verify teacher-specific course management interface is visible
+        expected_outcome: >
+          Teacher portal loads course list with creation and management options;
+          no student-facing course browsing UI shown
+
+      - id: dashboard-redirects-to-teacher
+        name: Confirm /dashboard redirects teacher to teacher portal
         entry_point: /dashboard
         steps:
           - Navigate to /dashboard
-          - Press Tab to move focus into the page
-          - Verify skip-to-main-content link is first focusable element
-          - Tab through all primary navigation items
-        expected_outcome: All interactive elements receive visible focus in a logical order; skip link is present and functional
+          - Wait for network idle
+          - Verify redirect to /teacher/courses occurs
+        expected_outcome: >
+          Teacher role causes automatic redirect from /dashboard to /teacher/courses
 
     assertions:
       should_see:
-        - Skip to main content link
-        - Visible focus indicators on all interactive elements
+        - Teacher
       should_not_see:
-        - Elements that trap keyboard focus with no escape path
+        - Admin Panel
+        - Access Denied
+      critical_routes:
+        accessible:
+          - /teacher/courses
+        blocked:
+          - /admin/dashboard
 
   - id: admin-user
     name: Campus Admin
     role: admin
-    description: Admin managing student applications, cohorts, teacher assignments, and content
+    description: >
+      Admin reviewing applications, managing student accounts and cohorts, monitoring
+      platform-wide analytics, and configuring the LMS. Has full access to all portals.
 
     auth:
       state: admin
@@ -191,31 +386,177 @@ personas:
       tier: detailed
 
     flows:
-      - id: access-admin-panel
-        name: Access admin panel
-        entry_point: /admin
+      - id: access-admin-dashboard
+        name: Access the admin dashboard
+        entry_point: /admin/dashboard
         steps:
-          - Navigate to /admin
+          - Navigate to /admin/dashboard
           - Wait for network idle
-          - Verify admin-only management interface is visible
-        expected_outcome: Admin sees the admin management panel with student and course controls
+          - Verify admin-specific management interface is visible
+        expected_outcome: >
+          Admin dashboard renders with user management, cohort controls,
+          and platform statistics; no 403 or redirect to login
+
+      - id: review-applications
+        name: Review pending applications
+        entry_point: /admin/applications
+        steps:
+          - Navigate to /admin/applications
+          - Wait for content to load
+        expected_outcome: >
+          Application review list renders with approve and reject actions visible
+
+      - id: dashboard-redirects-to-admin
+        name: Confirm /dashboard redirects admin to admin dashboard
+        entry_point: /dashboard
+        steps:
+          - Navigate to /dashboard
+          - Wait for network idle
+          - Verify redirect to /admin/dashboard occurs
+        expected_outcome: Admin role causes automatic redirect from /dashboard to /admin/dashboard
 
     assertions:
       should_see:
-        - Admin heading or panel
-        - Student management controls
-        - Course management options
+        - Admin
       should_not_see:
         - Access Denied
-        - 403 error
+        - "403"
+        - Please Sign In
       critical_routes:
         accessible:
-          - /admin
+          - /admin/dashboard
+          - /admin/applications
 
-  - id: low-bandwidth-user
-    name: Low-Bandwidth User
+  - id: returning-applicant
+    name: Returning Applicant Checking Status
     role: anonymous
-    description: User on a slow mobile connection — tests graceful degradation of campus pages
+    description: >
+      Someone who already submitted an application and is returning to check their
+      application status. Tests the /application-status page and the expired
+      password-reset link redirect handled by the homepage script.
+
+    auth:
+      state: anonymous
+
+    device:
+      type: desktop
+      viewport:
+        width: 1280
+        height: 800
+      dark_mode: false
+
+    accessibility:
+      needs: []
+
+    content_sensitivity:
+      tier: minimal
+
+    flows:
+      - id: check-application-status
+        name: Check application status on /application-status
+        entry_point: /application-status
+        steps:
+          - Navigate to /application-status
+          - Wait for network idle
+          - Verify an application status form or login prompt is visible
+        expected_outcome: >
+          Page loads and either shows an application status lookup UI
+          or prompts the user to log in; no 500 error
+
+      - id: forgot-password-expired-link
+        name: Arrive on homepage with expired OTP hash and get redirected
+        entry_point: /
+        steps:
+          - Navigate to / with URL hash simulating an expired password-reset link (error_code=otp_expired)
+          - Wait for client-side script to run
+        expected_outcome: >
+          Homepage script detects the otp_expired error code and redirects
+          to /forgot-password?error=link-expired
+
+    assertions:
+      should_see:
+        - Application status or login prompt
+      should_not_see:
+        - "500"
+        - Unhandled error
+      critical_routes:
+        accessible:
+          - /application-status
+          - /login
+          - /forgot-password
+
+  - id: keyboard-only-applicant
+    name: Keyboard-Only Applicant
+    role: anonymous
+    description: >
+      Non-technical advocacy worker navigating the public site exclusively via keyboard.
+      Tests WCAG 2.1 AA compliance across the recruitment funnel, including the
+      JavaScript-driven program selector tabs on /apply which must be keyboard-operable.
+
+    auth:
+      state: anonymous
+
+    device:
+      type: desktop
+      viewport:
+        width: 1280
+        height: 800
+      dark_mode: false
+
+    accessibility:
+      needs:
+        - keyboard_only
+
+    content_sensitivity:
+      tier: minimal
+
+    flows:
+      - id: keyboard-navigate-homepage
+        name: Navigate homepage using only keyboard
+        entry_point: /
+        steps:
+          - Navigate to /
+          - Press Tab to move focus into the page
+          - Verify skip-to-main-content link is the first or second focusable element
+          - Tab through all primary navigation links
+          - Verify each link receives a visible focus indicator
+          - Tab to the "Apply Now" CTA button and press Enter
+        expected_outcome: >
+          All interactive elements are reachable in a logical tab order;
+          focus indicators are visible; skip link is present and functional;
+          Enter on CTA navigates to /apply
+
+      - id: keyboard-navigate-apply-tabs
+        name: Use keyboard to switch between program tabs on /apply
+        entry_point: /apply
+        steps:
+          - Navigate to /apply
+          - Press Tab until focus reaches the Bootcamp program selector button
+          - Press Space or Enter to activate it
+          - Verify bootcamp form section is revealed
+          - Tab to the Accelerator program selector button
+          - Press Space or Enter
+          - Verify accelerator form section is revealed
+        expected_outcome: >
+          Program selector buttons are keyboard-operable; activating each button
+          shows the correct form section without requiring a mouse click
+
+    assertions:
+      should_see:
+        - Skip to main content link
+        - Visible focus indicator on all interactive elements
+      should_not_see:
+        - Elements that trap keyboard focus with no escape path
+
+  - id: global-south-mobile-user
+    name: Global South Mobile User
+    role: anonymous
+    description: >
+      Potential applicant from India browsing on a low-end Android device over a 3G
+      connection. The program has a Bengaluru base with explicit outreach to SCs, OBCs,
+      EWS, DNTs, and the Transgender community — this persona represents that target
+      audience. Tests responsive layout, graceful degradation, and that scholarship
+      information is accessible before heavy assets finish loading.
 
     auth:
       state: anonymous
@@ -236,17 +577,50 @@ personas:
 
     flows:
       - id: homepage-on-slow-connection
-        name: Load campus homepage on a slow mobile connection
+        name: Load homepage on slow mobile connection
         entry_point: /
         steps:
-          - Navigate to / with throttled network
+          - Navigate to / with throttled network (simulate 3G)
+          - Wait for load event (not networkidle — acceptable on slow connection)
+          - Verify "Ready to Build Compassionate AI?" headline is visible
+          - Verify "Apply Now" CTA is visible and tappable
+          - Verify the three program cards are stacked vertically in mobile layout
+        expected_outcome: >
+          Core headline and primary CTA render before all assets finish loading;
+          no broken layout; program cards stack cleanly in single-column mobile view
+
+      - id: mobile-application-form
+        name: Navigate apply page on mobile and interact with program selector
+        entry_point: /apply
+        steps:
+          - Navigate to /apply on mobile viewport
           - Wait for load event
-          - Verify primary headline and CTA are visible without full asset load
-        expected_outcome: Page headline and apply call-to-action are visible before all assets finish loading
+          - Verify program selector cards are visible and stacked vertically
+          - Tap the Bootcamp selector card
+          - Verify the bootcamp form section expands below
+          - Scroll to the form and verify all fields are full-width and tappable
+        expected_outcome: >
+          Mobile layout renders program selectors in a single column;
+          tapping a selector reveals the corresponding form;
+          form fields are appropriately sized for touch input
+
+      - id: mobile-scholarship-info
+        name: Find scholarship information on programs page
+        entry_point: /programs
+        steps:
+          - Navigate to /programs on mobile viewport
+          - Wait for load event
+          - Tap the Bootcamp program button
+          - Scroll to verify scholarship information for protected classes is visible
+        expected_outcome: >
+          Scholarship information for SCs, OBCs, EWS, DNTs, and the Transgender
+          community is visible without horizontal scrolling on a 375px viewport
 
     assertions:
       should_see:
-        - Campus headline
-        - Primary call-to-action
+        - "Ready to Build Compassionate AI?"
+        - Apply Now
+        - Full scholarships available
       should_not_see:
         - Broken layout or unstyled content
+        - Horizontal scrollbar on body
