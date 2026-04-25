@@ -35,3 +35,7 @@ coverage/
 .cache/
 .vercel
 .env*.local
+
+# Claude Code agent state — never commit
+.claude/agent-memory/
+.claude/worktrees/
