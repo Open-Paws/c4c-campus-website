@@ -40,7 +40,7 @@
     "db:schema-apply": "npm run db:backup && npm run db:reset && npm run db:validate"
   },
   "dependencies": {
-    "@astrojs/node": "^10.0.4",
+    "@astrojs/node": "^10.0.6",
     "@astrojs/react": "^5.0.3",
     "@astrojs/vercel": "^10.0.4",
     "@floating-ui/dom": "^1.7.5",
