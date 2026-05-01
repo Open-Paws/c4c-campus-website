@@ -48,7 +48,7 @@
     "@supabase/storage-js": "^2.105.0",
     "@supabase/supabase-js": "^2.104.0",
     "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.2.2",
+    "@tailwindcss/vite": "^4.2.4",
     "@tiptap/extension-image": "^3.22.4",
     "@tiptap/extension-link": "^3.22.2",
     "@tiptap/extension-placeholder": "^3.20.0",
