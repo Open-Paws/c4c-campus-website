@@ -22,9 +22,9 @@ C4C Campus is the developer recruitment funnel for the [Open Paws](https://openp
 **Fetch fresh strategy context each session:**
 
 ```bash
-gh api repos/Open-Paws/open-paws-strategy/contents/org-overview.md --jq '.content' | base64 -d
-gh api repos/Open-Paws/open-paws-strategy/contents/priorities.md --jq '.content' | base64 -d
-gh api repos/Open-Paws/open-paws-strategy/contents/settled-decisions.md --jq '.content' | base64 -d
+gh api repos/Open-Paws/context/contents/org-overview.md --jq '.content' | base64 -d
+gh api repos/Open-Paws/context/contents/priorities.md --jq '.content' | base64 -d
+gh api repos/Open-Paws/context/contents/decisions.md --jq '.content' | base64 -d
 ```
 
 ---

@@ -282,9 +282,9 @@ This is the Code for Compassion Campus public website — the developer recruitm
 **Relevant strategy documents — fetch fresh each session:**
 
 ```bash
-gh api repos/Open-Paws/open-paws-strategy/contents/org-overview.md --jq '.content' | base64 -d
-gh api repos/Open-Paws/open-paws-strategy/contents/priorities.md --jq '.content' | base64 -d
-gh api repos/Open-Paws/open-paws-strategy/contents/settled-decisions.md --jq '.content' | base64 -d
+gh api repos/Open-Paws/context/contents/org-overview.md --jq '.content' | base64 -d
+gh api repos/Open-Paws/context/contents/priorities.md --jq '.content' | base64 -d
+gh api repos/Open-Paws/context/contents/decisions.md --jq '.content' | base64 -d
 ```
 
 **Current status (as of 2026-04-09):**
