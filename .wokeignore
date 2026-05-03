@@ -11,3 +11,5 @@ node_modules/
 # Test fixtures use farmed animal species names as quiz option identifiers.
 # These are domain data about animals, not speciesist idioms.
 tests/unit/quiz-grading.test.ts
+# AI review artifacts — contain quoted examples of terms being flagged
+.desloppify/
