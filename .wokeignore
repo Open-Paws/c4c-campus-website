@@ -13,3 +13,11 @@ node_modules/
 tests/unit/quiz-grading.test.ts
 # AI review artifacts — contain quoted examples of terms being flagged
 .desloppify/
+
+# Test files — use placeholder identifiers in test code
+tests/benchmark-progress-tracking.ts
+tests/integration/cohort-schema.test.ts
+# Source data files that reference product naming conventions
+src/data/blog-posts.ts
+# Database migrations that reference existing content
+migrations/
